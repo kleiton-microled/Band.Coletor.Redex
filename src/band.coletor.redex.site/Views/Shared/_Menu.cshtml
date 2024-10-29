@@ -1,0 +1,24 @@
+﻿@using Band.Coletor.Redex.Site.Helpers
+@using Band.Coletor.Redex.Site.Extensions
+@using Band.Coletor.Redex.Business.Extensions
+
+@if (User.Identity.IsAuthenticated)
+{
+
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="@Url.Action("Index", "Home")">
+                <img src="@Url.Content("~/Content/img/logo-coletor.png")" class="d-inline-block align-top" alt="">
+            </a>
+
+            @*<a class="nav-link"  href="@Url.Action("Index", "Home")"><i class="fa fa-home"></i>&nbsp;&nbsp;Menu</a>*@
+            <div class="float-right m-auto">
+                <span data-id="@User.ObterLocalPatio().ToValue()">Local: <strong>@User.ObterLocalPatio().ToName()</strong></span>
+            </div>
+            <div class="float-right">
+                <a class="nav-link" href="@Url.Content("~/Home/Logout")"><i class="fa fa-power-off mr-3"></i>Sair</a>
+            </div>                     
+
+        </nav>
+    </header>
+}

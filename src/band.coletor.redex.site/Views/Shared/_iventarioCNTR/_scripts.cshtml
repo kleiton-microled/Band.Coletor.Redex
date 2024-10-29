@@ -1,0 +1,267 @@
+﻿<script>
+    $('#txtConteiner').change(function () {
+        var id = $(this).val();
+        if (id != "") {
+            if (id.length != 4) {
+                toastr.error('Conteiner infomado em formato incorreto');
+                $(this).val();
+            }
+        }
+    });
+    $('#btnBusca').click(function () {
+        var txtConteiner = $('#txtContainer').val();
+        var txtCNTR = $('#txtCTNR').val();
+
+
+        var txtConteinerBusca = txtConteiner;
+        if (txtConteiner == "" && txtCTNR == "") {
+
+            toastr.info('Preenchimento ao menos um campo para fazer consulta ', 'Busca');
+        }
+        else if (txtConteiner != "" && txtCTNR != "") {
+
+            toastr.info('Preencha somente um dos campos para fazer a consulta', 'Busca');
+        }
+        //else if (txtConteiner.length != 4) {
+
+        //    toast.info('Conteiner informado em formato incorreto ', 'Busca');
+        //}
+
+        else {
+            $.ajax({
+
+                url: '@Url.Content("~/IventarioCNTR/GetDadosBusca")',
+                type: 'GET',
+                data: { conteiner: txtConteiner, ctnr: txtCNTR },
+
+                beforeSend: function () {
+                    $('#preloader').show();
+
+                },
+                success: function (Dados) {
+                    var mensagem = Dados.Mensagem;
+                    var status = Dados.statusRetorno;
+                    var possuiDados = Dados.possuiDados;
+
+                    $('#preloader').hide();
+
+                    if (possuiDados) {
+                        if (status == "200") {
+                            var impExp = Dados.objetoRetorno.IMPEXP;
+                            var descricao = Dados.objetoRetorno.DESCRICAO;
+                            var ef = Dados.objetoRetorno.EF;
+                            var dataENT = Dados.objetoRetorno.DATA_ENT_TEMP;
+                            var scale = Dados.objetoRetorno.SCALE;
+                            var bruto = Dados.objetoRetorno.BRUTO;
+                            var imo1 = Dados.objetoRetorno.IMO1;
+                            var nome = Dados.objetoRetorno.NOME;
+                            var yard = Dados.objetoRetorno.YARD;
+                            var tamanho = Dados.objetoRetorno.TAMANHO;
+                            var temperature = Dados.objetoRetorno.TEMPERATURE;
+                            var tipoBasico = Dados.objetoRetorno.TIPOBASICO;
+                            var descricaoMotivo = Dados.objetoRetorno.DESC_MOTIVO_POSIC;
+                            var finality = Dados.objetoRetorno.FINALITY;
+                            var oog = Dados.objetoRetorno.FLAG_OOG;
+                            var spc = Dados.objetoRetorno.FLAG_SPC;
+                            var dvlTerm = Dados.objetoRetorno.DVL_TERM;
+                            var autonum = Dados.objetoRetorno.AUTONUM;
+                            var sistema = Dados.objetoRetorno.SISTEMA;
+
+                            $('txtCATEG').val(impExp);
+                            $('txtRegime').val(descricao);
+                            $('#txtEF').val(ef);
+                            $('#txtEntrada').val(dataENT);
+                            $('#txtEscala').val(scale);
+                            $('#txtGWT').val(bruto);
+                            $('#txtIMO').val(imo1);
+                            $('#txtNavio').val(nome);
+                            $('#txtTamanho').val(tamanho);
+                            $('#txtYard').val(yard);
+                            $('#txtTemp').val(temperature);
+                            $('#txtTipo').val(tipoBasico);
+                            $('#txtPosicionamento').val(descricaoMotivo);
+                            $('#txtAutonum').val(autonum);
+                            $('#txtSistema').val(sistema);
+                        }
+                        else {
+                            toastr.error('Não foram encontrados resultados para a sua consulta', 'Erro');
+                        }
+                    }
+                    else {
+                        toastr.error(mensagem, 'Erro');
+                    }
+                },
+                error: function () {
+
+                    $('#preloader').hide();
+
+                    toastr.error('Os dados não foram carregados', 'Erro');
+                },
+
+            });
+        }
+    });
+</script>
+
+<script>
+    $('#btnSalvar').click(function () {
+        var categoria = $('txtCATEG').val();
+        var regime = $('txtRegime').val();
+        var ef = $('#txtEF').val() //ok
+        var entrada = $('#txtEntrada').val();
+        var escala = $('#txtEscala').val();
+        var bruto = $('#txtGWT').val();
+        var imo1 = $('#txtIMO').val();
+        var navio = $('#txtNavio').val();
+        var tamanho = $('#txtTamanho').val();
+        var yard = $('#txtYard').val();
+        var yardAtual = $('#txtYardAtual').val();
+        var temperature = $('#txtTemp').val();
+        var tipo = $('#txtTipo').val();
+        var posicionamento = $('#txtPosicionamento').val();
+        var autonum = $('#txtAutonum').val();
+        var sistema = $('#txtSistema').val();
+        var motivo = $('cbMotivos').val();
+        var empilhadeira = $('#cbEmpilhadeira').val();
+        var flagTruckMov = '@ViewBag.TruckMovColetor';
+        var inserir = {
+            "EF": ef,
+            "IMO": imo1,
+            "MOTIVO": motivo,
+            "TAMANHO": tamanho,
+            "TIPO": tipo,
+            "YARD": yard,
+            "TEMPERATURE": temperature,
+            "DESCR_MOTIVO_POSIC": posicionamento,
+            "ENTRADA": entrada,
+            "AUTONUM": autonum,
+            "YARD_ATUAL": yardAtual,
+            "SISTEMA": sistema,
+            "SCALE": escala,
+            "BRUTO": bruto,
+        }
+
+        if (yard == "") {
+            toastr.info("Preencha o Yard", "Obrigatório");
+        }
+        else if (yard == yardAtual) {
+            toastr.info("Origem e destino iguais", "Obrigatório");
+        }
+        else if (motivo == 0) {
+            toastr.info("Selecione um motivo", "Obrigatório");
+        }
+        //else if (flagTruckMov == 1) {
+        //    if (empilhadeira == 0) {
+        //        toastr.info("Selecione um motivo", "Obrigatório");
+        //    }
+        //}
+        else {
+            $.ajax({
+                url: '@Url.Content("~/IventarioCNTR/GetInserirCTNR")',
+                type: 'GET',
+                data: inserir,
+
+                beforeSend: function () {
+                    $('#preloader').show();
+                },
+                success: function (Dados) {
+                    var mensagem = Dados.Mensagem;
+                    var status = Dados.statusRetorno;
+
+                    if (status == "200") {
+                        toastr.success(mensagem, 'Successo');
+
+                        //Limpar();
+                        setTimeout(function () {
+                            location.reload();
+                        }, 2000);
+
+                        $('#preloader').hide();
+                    }
+                    else {
+                        toastr.error(mensagem, 'Erro')
+                    }
+                },
+                error: function () {
+                    toastr.error('Erro ao salvar dados', 'Aguarde');
+                }
+            });
+        }
+    });
+</script>
+<script>
+    $('#btnLimpar').click(function () {
+        Limpar();
+    });
+    function Limpar() {
+        $('#txtContainer').val("");
+        $('#txtCTNR').val("");
+        $('#txtTamanho').val("");
+        $('#txtTipo').val("");
+        $('#txtEF').val("");
+        $('#txtGWT').val("");
+        $('#txtTemp').val("");
+        $('#txtEscala').val("");
+        $('#txtIMO').val("");
+        $('#txtEntrada').val("");
+        $('#txtCATEG').val("");
+        $('#txtNavio').val("");
+        $('#txtPosicionamento').val("");
+        $('#txtYardAtual').val("");
+        $('#txtRegime').val("");
+        $('#txtSistema').val("");
+        $('#txtAutonum').val("");
+        $('#txtYard').val("");
+        $('#cbMotivos').val(0);
+        $('#cbEmpilhadeira').val(0);   
+    }
+</script>
+<script>
+    $('#txtYard').change(function () {
+        var yard = $(this).val();
+        var countMotivos = $('#cbMotivos').val();
+
+        if (yard != "") {
+
+            if (yard == "SAIDA" || yard == "TREM") {
+                $('#cbMotivo').val(8)
+            }
+            else if (yard) {
+                $('#cbMotivo').val(6);
+            }
+            else if (yard != "" && yardAtual == "") {
+                if (countMotivos >= 12) {
+                    $("#cbMotivo").val(12);
+                }
+            }
+            else if (yard != "" && yardAtual != "") {
+                $('#cbMotivo').val(1);
+            }
+            else {
+                $.ajax({
+                    url: '@Url.Content("~/IventarioCTNR/GetBuscaByYard")',
+                    type: 'GET',
+                    data: { yard: yard },
+
+                    beforeSend: function () {
+                        $('#preloader').show();
+                    },
+
+                    success: function (Dados) {
+                        var countYard = Dados.objetoRetorno.COUNT_YARD;
+
+                        if (countYard > 0) {
+                            $('#cbMotivo').val(33);
+                        }
+                        $('#preloader').hide();
+                    },
+                    error: function () {
+                       $('#preloader').hide();
+                       toast.error('Erro ao carregar dados', 'Erro');
+                    }
+                });
+            }
+        }
+    });
+</script>
+

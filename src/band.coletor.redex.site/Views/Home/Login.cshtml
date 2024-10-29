@@ -1,0 +1,172 @@
+﻿@model Band.Coletor.Redex.Site.Models.UsuarioLoginViewModel
+
+@{
+    Layout = null;
+    ViewBag.Title = "Login";
+}
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Band :: Login</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="icon" href="@Url.Content(" ~/Content/img/favicon.png")" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+
+    @Styles.Render("~/bundles/css")
+</head>
+
+<body>
+
+    @using (Html.BeginForm("Login", "Home", FormMethod.Post, new { @class = "form-signin" }))
+    {
+        <div class="container text-center">
+
+            <div class="row mt-4">
+                <div class="col-12 col-md-12">
+                    <img class="mb-4" src="@Url.Content("~/Content/img/logo-coletor.png")" alt="">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12 col-md-12">
+                    @Html.LabelFor(model => model.Login, new { @class = "sr-only" })
+                    @Html.EditorFor(model => model.Login, new { htmlAttributes = new { @class = "form-control mb-2", placeholder = "Usuário", @Value = "MICROLED" } })
+                    @Html.ValidationMessageFor(m => m.Login, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12 col-md-12">
+                    @Html.LabelFor(model => model.Senha, new { @class = "sr-only" })
+                    @Html.PasswordFor(model => model.Senha, new { @class = "form-control", placeholder = "Senha" })
+                    @Html.ValidationMessageFor(m => m.Senha, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12 col-md-12">
+                    @Html.LabelFor(model => model.LocalPatio, new { @class = "sr-only" })
+                    @Html.EnumDropDownListFor(model => model.LocalPatio, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.LocalPatio, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12 col-md-12">
+                    <div class="text-danger">
+                        @ViewBag.Mensagem
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-2">
+                <div class="col-12 col-md-12">
+                    <div class="checkbox">
+                        <label>
+                            @Html.CheckBoxFor(Model => Model.Lembrar) Lembrar-me
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 col-md-12">
+                    <button class="btn btn-lg btn-primary btn-block" type="submit">Autenticar</button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 col-md-12">
+                    <p class="mt-5 mb-3 text-muted">Copyright &copy; @DateTime.Now.Year</p>
+                </div>
+            </div>
+        </div>
+
+    }
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jquery-url")
+
+    <script>
+
+        var url = $.url('?ReturnUrl');
+
+        if (url && url !== '') {
+            var hash = $.url('#');
+            if (hash && hash !== '') {
+                document.getElementById('ReturnUrl').value = url + '#' + hash;
+            }
+        }
+    </script>
+
+    @section Scripts {
+        @Scripts.Render("~/bundles/jquery-validate")
+    }
+    <!--[if IE 9]>
+    <link href="/Content/css/bootstrap-ie9.css" rel="stylesheet">
+    <![endif]-->
+    <!--[if lte IE 8]>
+    <link href="/Content/css/bootstrap-ie9.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/g/html5shiv@3.7.3"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+        <script>
+            $(document).ready(function () {
+                $.support.transition = (function () {
+                    var thisBody = document.body || document.documentElement
+                      , thisStyle = thisBody.style
+                      , support = thisStyle.transition !== undefined || thisStyle.WebkitTransition !== undefined || thisStyle.MozTransition !== undefined || thisStyle.OTransition !== undefined
+                    return support
+                })()
+
+                // set CSS transition event type
+                if ($.support.transition) {
+                    transitionEnd = "TransitionEnd"
+                    if ($.browser.webkit) {
+                        transitionEnd = "webkitTransitionEnd"
+                    } else if ($.browser.mozilla || $.browser.msie) {
+                        transitionEnd = "transitionend"
+                    } else if ($.browser.opera) {
+                        transitionEnd = "oTransitionEnd"
+                    }
+                }
+            });
+    </script>
+    <![endif]-->
+    <!--[if IE 9]>
+    <script src="/Content/js/bootstrap-ie9.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#modal-exclusao').removeClass('fade');
+            $('#modal-talie-finalizado').removeClass('fade');
+            $('#modal-confirma-fechamento').removeClass('fade');
+            $.support.transition = (function () {
+                var thisBody = document.body || document.documentElement
+                  , thisStyle = thisBody.style
+                  , support = thisStyle.transition !== undefined || thisStyle.WebkitTransition !== undefined || thisStyle.MozTransition !== undefined || thisStyle.OTransition !== undefined
+                return support
+            })()
+
+            // set CSS transition event type
+            if ($.support.transition) {
+                transitionEnd = "TransitionEnd"
+                if ($.browser.webkit) {
+                    transitionEnd = "webkitTransitionEnd"
+                } else if ($.browser.mozilla || $.browser.msie) {
+                    transitionEnd = "transitionend"
+                } else if ($.browser.opera) {
+                    transitionEnd = "oTransitionEnd"
+                }
+            }
+        });
+    </script>
+    <![endif]-->
+    <!--[if lte IE 8]>
+    <script src="/Content/js/bootstrap-ie8.min.js"></script>
+    <![endif]-->
+</body>
+</html>

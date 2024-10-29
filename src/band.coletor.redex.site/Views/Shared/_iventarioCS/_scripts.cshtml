@@ -1,0 +1,419 @@
+﻿<script>
+
+    $('#btnLimpar').click(function () {
+        $('txtLote').val("");
+        $('#txtBL').val("");
+        $('#cbItem').val(0);
+        $('#txtQuantidade').val("");
+        $('#txtEmbalagem').val("");
+        $('#txtVolume').val("");
+        $('#txtLocal').val("");
+        $('#txtMercadoria').val("");
+        $('#txtMarca').val("");
+        $('#txtCliente').val();
+        $('#txtNVOCC').val("");
+        $('#txtConteiner').val("");
+        $('#txtEntrada').val("");
+        $('#txtDoc').val("");
+        $('#txtCanal').val("");
+        $('#txtMovAgenda').val("");
+        $('#txtAnvisa').val("");
+        $('#txtIMO').val("");
+        $('#txtQuantidade').val("");
+        $('#cbArm').val(0);
+        $('#txtlocalpos').val("");
+        $('#cbOcupacao_CT').val(0);
+        $('#cbLocalPOS').val("");
+        $('#txtQuantidadePOS').val("");
+        $('#txtCargaNoLocal').val("");
+        $('#txtSistema').val("");
+        $('#txtYard').val("");
+    });
+    $('#txtLote').change(function () {
+        var lote = $(this).val().replace(" ", "/");       
+        if (lote != "") {
+            $.ajax({
+            url: '/IventarioCS/GetDadosLote/',
+            type: 'GET',
+            data: { lote: lote },
+
+            beforeSend: function () {
+                $('#preloader').show();
+            },
+                success: function (Dados) {
+                    $('#preloader').hide();
+                    var possuiDados = Dados.possuiDados;                    
+                    if (!possuiDados) {
+                        toastr.info('Não foram encontrados registros para este número de lote' , 'Resultado');                    
+                    }
+                    else {
+                        var bl = Dados.objetoRetorno.BL;
+                        var volume = Dados.objetoRetorno.VOLUME;
+                        var mercadoria = Dados.objetoRetorno.MERCADORIA;
+                        var marca = Dados.objetoRetorno.MARCA;
+                        var cliente = Dados.objetoRetorno.IMPORTADOR;
+                        var nvocc = Dados.objetoRetorno.NVOCC;
+                        var conteiner = Dados.objetoRetorno.CNTR_DESOVA;
+                        var entrada = moment(Dados.objetoRetorno.DATA_ENTRADA).format('DD/MM/YYYY');
+                        var doc = Dados.objetoRetorno.TIPO_DOC;
+                        var canal = Dados.objetoRetorno.CANAL_ALF;
+                        var movAgenda = Dados.objetoRetorno.MOTIVO_PROX_MVTO;
+                        var anvisa = Dados.objetoRetorno.ANVISA;
+                        var imo = Dados.objetoRetorno.IMO;
+                        var tipoSistema = Dados.objetoRetorno.FINALITY;
+                        var sistema = Dados.objetoRetorno.Sistema;
+                        var patio = "@ViewBag.GetAutonumPatio";
+
+
+                        $('#txtBL').val(bl);
+                        $('#txtVolume').val(volume);
+                        $('#txtMercadoria').val(mercadoria);
+                        $('#txtMarca').val(marca);
+                        $('#txtCliente').val(cliente);
+                        $('#txtNVOCC').val(nvocc);                        
+                        $('#txtConteiner').val(conteiner);
+                        $('#txtEntrada').val(entrada);                        
+                        if (doc != 'NOT DEFINED YET') {
+                            $('#txtDoc').val(doc);
+                        }
+                        else {
+                            $('#txtDoc').val("");
+                        }
+                        $('#txtCanal').val(canal);
+                        $('#txtMovAgenda').val(movAgenda);
+                        $('#txtAnvisa').val(anvisa);
+                        if (imo != 0 || imo !="") {
+                            $('#txtIMO').val(imo);
+                        }
+                        else {
+                            $('#txtIMO').val("");
+                        }
+                        
+                        $('#txtSistema').val(tipoSistema);
+                        $('#txtSistema').attr('data-sistema', sistema);
+                        
+
+
+                        $.get('/IventarioCS/GetConsultarItensLote/', { lote: lote, patio: patio }, function (Dados) {
+                            $('#cbItem').empty();
+                            $('#cbItem').append('<option value="0">Selecione</option>');
+
+                            $.each(Dados.objetoRetorno, function (i, item) {
+                                var autonum = item.AUTONUM;
+                                var display = item.DISPLAY;
+
+                                $('#cbItem').append('<option value="' + autonum + '">' + display + '</option>');
+
+                            });
+                            var count = $('#cbItem option').length;
+                            if (count == 2) {
+                                $('#cbItem').val(1);
+                                //var cbItem = $('#cbItem option:selected').val();
+                                GetDadosItem($('#cbItem').val());
+                            }
+                        });
+                        $('#cbItem').change(function () {
+                            var itemId = $(this).val();
+                            GetDadosItem(itemId);
+                        });
+                        $('#txtQuantidadePOS').focus();
+                    }
+
+
+                },
+                error: function () {
+                    $('#preloader').hide();
+                    toastr.error("Os dados não foram carregados", 'Erro');
+                }
+
+            });
+        }
+    });
+
+</script>
+<script>
+    $('#txtlocalpos').change(function () {
+        var localPos = $(this).val();
+        var cbArm = $('#cbArm').val();
+        var yard = $('#txtYard').val();
+
+        if (localPos == "SAIDA" || localPos == "TREM" || localPos == "ENTREGA") {
+            $('#cbMotivoPos').val(8);
+
+            return true;
+        }
+        if (localPos == "BAL") {
+            $('#cbMotivoPos').val(6);
+
+            return true;
+        }
+        if (localPos.length == 3) {
+            if (cbArm == 0) {
+                $.ajax({
+                    url: '/IventarioCS/GetLocalPos',
+                    type: 'GET',
+                    data: { localPos: localPos },
+
+                    beforeSend: function () {
+                        $('#preloader').show();
+                    },
+                    success: function (Dados) {
+                        $('#preloader').hide();
+
+                        var armmazen = Dados.objetoRetorno.ARMAZEM;
+                        var status = Dados.statusRetorno;                        
+
+                        if (status == "200") {
+
+
+                        }
+                        else {
+                            toastr.error("Os dados não foram carregados, tente novamente");
+                        }
+                    },
+                    error: function () {
+                        $('#preloader').show();
+                        toastr.error("Os dados não foram carregados, tente novamente ");
+                    }
+                });
+            }
+        }
+        $.ajax({
+            url: '/IventatrioCS/countYard', 
+            type: 'GET', 
+            data: { localPos: localPos }, 
+
+            
+            success: function (Dados) {
+                var count = Dados.objetoRetorno.count;
+
+                if (count > 0) {
+                    $('#cbMotivoPos').val(33);
+                }
+            },
+            error: function () {
+                toastr.error("Os dados não foram carregados, tente novamente ");
+            }
+        });
+        if ((yard == "-") && (localPos == "")) {
+            $('#cbMotivoPos').val(12);
+        }
+
+        if (localPos != "") {
+            $('#cbMotivoPos').val(1);
+        }
+    });
+</script>
+
+<script>
+    function GetDadosItem(id) {
+        $.ajax({
+            url: '/IventarioCS/GetDadosItem',
+            type: 'GET',
+            data: { lote: id },
+
+            beforeSend: function () {
+                $('#preloader').show();
+            },
+            success: function (Dados) {
+                $('#preloader').hide();
+                var quantidade = Dados.objetoRetorno.QTDE;
+                var embalagem = Dados.objetoRetorno.EMBALAGEM;
+                var local = Dados.objetoRetorno.LOCAL;
+                var yard = Dados.objetoRetorno.YARD;
+
+                $('#txtQuantidade').val(quantidade);
+                $('#txtEmbalagem').val(embalagem);
+                $('#txtLocal').val(local);
+
+                if (yard != '-') {
+                    $('#txtYard').val(yard);
+                }
+                else {
+                    $('#txtYard').val('');
+                }
+            },
+            error: function () {
+                $('#preloader').hide();
+
+                toastr.error('Os dados não foram carregados', 'Erro');
+
+            }
+        });
+    }
+</script>
+<script>
+    $('#cbArm').change(function () {
+        var id = $(this).val();
+
+        if (id != 0) {
+            $.ajax({
+                url: '/IventarioCS/GetSetaOcupacao', 
+                type: 'GET', 
+                data: { id: id }, 
+
+                beforeSend: function () {
+                    $('#preloader').show();
+                },
+                success: function (Dados) {
+                    $('#preloader').hide();
+                    var flagCT = Dados.objetoRetorno.FLAG_CT;
+                    var ocupacaoCT = Dados.objetoRetorno.OCUPACAO_CT;
+                    $('#btnSalvar').attr('data-flag-ct', flagCT);
+
+                    
+
+                    if (flagCT == 1) {
+                        $('#divOcupacaoCT').show();                        
+                        $('#cbOcupacao_CT option').each(function () {
+                            var ocupacao = $(this).val();
+                            
+                            if (ocupacao == ocupacaoCT) {
+                                $(this).attr('selected', true);
+                            }
+                        });
+                    }
+
+                }, 
+                error: function () {
+                    $('#preloader').hide();
+                    toastr.error('Os dados não foram carregados', 'Erro');
+
+                }
+            });
+        }
+
+    });
+</script>
+<script>
+    $('#btnSalvar').click(function () {
+        url = '/IventarioCS/SalvarDados/';
+        Gravar(url);
+    });
+</script>
+<script>
+    //Gravar repetir
+    $('#btnGravarRepetir').click(function () {
+        url = '/IventarioCS/GetGravarRepetir/';
+        Gravar(url);
+    });
+</script>
+<script>
+    function Gravar(URL) {
+        var Lote = $('#txtLote').val();
+        var bl = $('#txtBL').val();
+        var item = $('#cbItem').val();
+        var quantidade = $('#txtQuantidade').val();
+        var embalagem = $('#txtEmbalagem').val();
+        var volume = $('#txtVolume').val();
+        var local = $('txtLocal').val();
+        var mercadoria = $('#txtMercadoria').val();
+        var marca = $('#txtMarca').val();
+        var cliente = $('#txtCliente').val();
+        var nvocc = $('#txtNVOCC').val();
+        var conteiner = $('#txtConteiner').val();
+        var entrada = $('#txtEntrada').val();
+        var doc = $('#txtDoc').val();
+        var canal = $('#txtCanal').val();
+        var agenda = $('#txtMovAgenda').val();
+        var anvisa = $('#txtAnvisa').val();
+        var imo = $('#txtIMO').val();
+        var arm = $('#cbArm').val();
+        var localPos = $('#txtlocalpos').val();
+        var ocupacao = $('#cbOcupacao_CT').val();
+        var cbLocalPos = $('#cbLocalPos').val();
+        var quantidadePos = $('#txtQuantidadePos').val();
+        var cargaNoLocal = $('#txtCargaNoLocal').val();
+        var motivo = $('#cbMotivoPos').val();
+        var yard = $('#txtYard').val();
+        var sistema = $('#txtSistema ').val();
+        var flagCT = $(this).attr('data-flag-ct');
+        var sistema = "RDX";
+
+        var inserir = {
+            "LOTE": Lote,
+            "BL": bl,
+            "ID_GRAVACAO": item,
+            "EMBALAGEM": embalagem,
+            "VOLUME": volume,
+            "LOCAL": local,
+            "MERCADORIAS": mercadoria,
+            "MARCA": marca,
+            "CLIENTE": cliente,
+            "NVOCC": nvocc,
+            "CONTEINER": conteiner,
+            "DATA_ENTRADA": entrada,
+            "TIPO_DOC": doc,
+            "CANAL_ALF": canal,
+            "MOTIVO_PROX_MVTO": agenda,
+            "IMO": imo,
+            "AUTONUM_ARMAZEM": arm,
+            "ANVISA": anvisa,
+            "YARD": yard,
+            "SISTEMA": sistema,
+            "OCUPACAO_CT": ocupacao,
+            "FLAG_CT": flagCT,
+            "LOCAL_POS": localPos,
+            "QUANT_POS": quantidadePos,
+            "FINALITY": sistema,
+            "QUANTIDADE": quantidade, 
+        };
+
+        if (Lote == "") {
+            toastr.error("Lote não informado.", 'Campo Obrigatório');
+        }
+        else if (item == 0) {
+            toastr.error("Item não informado", 'Campo Obrigatório');
+        }
+        else if (quantidadePos == "") {
+            toastr.error("Item não informado", 'Campo Obrigatório');
+        }
+        else if (parseInt(quantidadePos) > parseInt(quantidade)) {
+            toastr.error("Quantidade indisponível", 'Campo Obrigatório');
+        }
+        else if (quantidadePos == 0) {
+            toastr.error("Quantidade não informada", 'Campo Obrigatório');
+        }
+        else if (quantidadePos < 0) {
+            toastr.error("Quantidade inválida", 'Campo Obrigatório');
+        }
+        else if (arm == 0) {
+            toastr.error("Armazém não informado", 'Campo Obrigatório');
+        }
+        else if (cbMotivoPos == 0) {
+            toastr.error("Motivo não informado", 'Campo Obrigatório');
+        }
+        else {
+
+            $.ajax({
+                url: URL,
+                type: 'GET',
+                data: inserir,
+
+                beforeSend: function () {
+                    $('#preloader').show();
+                },
+                success: function (Dados) {
+                    $('#preloader').hide();
+                    var mensagem = Dados.Mensagem;
+                    var status = Dados.statusRetorno;
+
+                    if (status == "200") {
+
+                        toastr.success(mensagem, 'Sucesso');
+                    }
+                    else {
+                        toastr.error(mensagem, 'Erro');
+                    }
+                },
+                error: function () {
+
+                    $('#preloader').hide();
+                    toastr.error('Os dados não foram inseridos', 'Erro');
+                }
+            })
+
+        }
+    }
+
+</script>

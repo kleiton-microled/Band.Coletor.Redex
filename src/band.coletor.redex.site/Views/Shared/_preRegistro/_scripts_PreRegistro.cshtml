@@ -1,0 +1,313 @@
+﻿<script>
+        $(document).ready(function(){
+
+
+            toastr.options = {
+                "closeButton": true,
+                "progressBar": true,
+                "positionClass": "toast-top-center"
+            }
+        });
+        $('#FinalidadeId').val("E");
+        $('#PatioDestinoId').val(2);
+
+        $('#FinalidadeId').change(function () {
+            var selection = $(this).val();
+          
+            if (selection == "I") {
+                $('#PatioDestinoId').val("3");
+            }
+
+            if (selection == "E") {
+                $('#PatioDestinoId').val("2");
+            }
+
+
+        });
+        $('#ProtocoloPesquisa').keyup(function(){
+            //console.log($('#ProtocoloPesquisa').val());
+            //$('#ProtocoloPesquisa').addLeadingZeros(8);
+
+            var str = (parseInt($('#ProtocoloPesquisa').val()) || 0).toString();
+            var pad = '00000000';
+            var ans = pad.substring(0, pad.length - str.length) + str
+            $('#ProtocoloPesquisa').val(ans);
+                });
+
+        $.fn.addLeadingZeros = function (length) {
+              for(var el of this){
+                _value = el.value.replace(/^0+/,'');
+                length = length - _value.length;
+                if(length > 0){
+                  while (length--) _value = '0' + _value;
+                }
+                el.value = _value;
+              }
+                };
+
+        function exibirCampos(e) {
+
+            if (e.value === 'Protocolo') {
+                //$('.consultar-protocolo').removeClass('invisivel');
+                $('.consultar-protocolo').show();
+                //$('.consultar-placas').addClass('invisivel');
+                $('.consultar-placas').hide();
+            } else {
+                //$('.consultar-placas').removeClass('invisivel');
+                $('.consultar-placas').show()
+                //$('.consultar-protocolo').addClass('invisivel');
+                $('.consultar-protocolo').hide();
+            }
+
+        }
+
+       
+
+        function ConfirmarEntradaSemAgendamento() {
+
+            event.preventDefault();
+
+            var cavalo = $('#PlacaPesquisa').val();
+            var carreta = $('#PlacaCarretaPesquisa').val();
+            var Ticket = $('#Ticket').val();
+            var finalidadeId = $('#FinalidadeId').val();
+            var patioId = $('#PatioDestinoId').val();
+
+
+            if (cavalo === '' && carreta === '') {
+
+                toastr.error('Informe o as placas', 'Coletor');
+                return;
+            }
+
+            //validação da confirmacao de registro sem agendamento
+            if (cavalo !== '' && carreta === '') {
+
+             //var resultado = confirm("Placa da carreta está em branco deseja continuar");
+             //   if (resultado == false) {
+             //       toastr.error('Informe a Placa  Carreta', 'Coletor');
+             //       return;
+             //   }
+            }
+
+
+            if (cavalo === '' && carreta !== '') {
+
+                toastr.error('Informe a Placa', 'Coletor');
+                return;
+            }
+
+            if (finalidadeId == 0) {
+                toastr.error('Selecione a finalidade', 'Coletor');
+                return;
+            }
+
+            if (patioId == 0) {
+                toastr.error('Selecione o pátio de destino', 'Coletor');
+                return;
+            }
+
+
+            $('#btConfirmarEntradaSemAgendamento')
+                .html('<i class="fa fa-spinner fa-spin"></i>')
+                   .addClass('disabled');
+
+                 $.post('@Url.Action("ConfirmarEntradaSemAgendamento")', { placaCavalo: cavalo, placaCarreta: carreta, ticketent: Ticket, finalidadeId: finalidadeId, patioId: patioId })
+                   .done(function (data, statusText, xhr) {
+                    MensagemSucessoRedirecionar();
+
+                }).fail(function (data) {
+                    if (data.responseText != null) {
+                        toastr.error(data.responseText, 'Coletor');
+                    } else {
+                        toastr.error('Falha ao registrar caminhão', 'Coletor');
+                    }
+                }).always(function () {
+                    $('#btConfirmarEntradaSemAgendamento')
+                        .html('<i class="fa fa-save"></i>&nbsp;Confirmar registro sem agendamento')
+                        .removeClass('disabled');
+
+                });
+
+    }
+
+
+        var MensagemSucessoRedirecionar = function () {
+            setTimeout(function () {
+                toastr.success('Caminhão registrado com sucesso!', 'Coletor');
+                  }, 1500);
+            setTimeout(function () {
+                window.location.href = '@Url.Action("Cadastrar", "PreRegistro")';
+
+            }, 4000);
+
+        };
+
+        function Limpar() {
+
+            //$('.campos-pesquisa').removeClass('invisivel');
+            $('.campos-resultado-pesquisa').addClass('invisivel');
+            //$('.btn-limpar').addClass('invisivel');
+            //$('.linha-botao-salvar-sem-agendamento').addClass('invisivel');
+            $('.linha-btn-pesquisar-placas').removeClass('invisivel');
+
+            alert('teste');
+            $('.linha-btn-pesquisar-placas').show();
+          //   $('.btn-limpar').hide();
+             $('.linha-botao-salvar-sem-agendamento').hide();
+
+            $('#FinalidadeId').val(0);
+            $('#PatioDestinoId').val(1);
+
+             $('#ProtocoloPesquisa').val('');
+             $('#PlacaPesquisa').val('');
+             $('#PlacaCarretaPesquisa').val('');
+             $('#Ticket').val('');
+        }
+
+        function alterarVisibilidadeResultado() {
+            //$('.campos-pesquisa').addClass('invisivel');
+
+            if (!$.browser.msie) {
+                $('#team1').css({ "visibility": "visible" });
+
+                $('.campos-pesquisa').hide();
+                $('.campos-resultado-pesquisa').hide();
+                $('.campos-resultado-pesquisa').removeClass('invisivel');
+                $('.btn-limpar').show();
+            }
+            else {
+                $('.campos-pesquisa').hide();
+                $('.campos-resultado-pesquisa').hide();
+                $('.campos-resultado-pesquisa').removeClass('invisivel');
+                $('.btn-limpar').css({ "visibility": "visible" });
+            //$('.btn-limpar').removeClass('invisivel');
+            }
+
+
+        }
+
+        function alterarVisibilidadeEntradaSemAgendamento() {             
+            $('.linha-btn-pesquisar-placas').hide();
+            $('.btn-limpar').show();
+            $('.linha-botao-salvar-sem-agendamento').show();
+        }
+</script>
+<script>
+        //Verifica se a placa já tem saida
+        $('#PlacaCarretaPesquisa').change(function () {
+            var PlacaCarreta = $(this).val();
+            verificaPlacaSaida(PlacaCarreta);
+        });
+        function verificaPlacaSaida(placa) {
+            $.ajax({
+                url: '@Url.Content("~/PreRegistro/GetVerificaSaidaPlaca")',
+                type: 'GET',
+                data: { placa: placa },
+
+                beforeSend: function () {
+                    $('#preloader').show();
+                },
+                success: function (Dados) {
+                    var possuiDados = Dados.possuiDados;
+                    var countPendenciaSaida = Dados.objetoRetorno.pendenciaSaida;
+
+                    var mensagem = Dados.Mensagem;
+
+                    $('#preloader').hide();
+
+                    if (possuiDados) {
+                        if (countPendenciaSaida != 0) {
+                            $('#PlacaCarretaPesquisa').val("");
+                            toastr.error(mensagem, 'Coletor');
+                        }
+                    }
+                },
+                error: function () {
+                    toastr.error('A placa não pode ser verificada');
+                }
+            });
+        }
+</script>
+<script>
+    $('#btnPesquisarPlacas').click(function () {
+        var tipoId = $('#FinalidadeId').val();
+        var patioId = $('#PatioDestinoId').val();
+        var placa = $('#PlacaPesquisa').val();
+        var placaCarreta = $('#PlacaCarretaPesquisa').val();
+        var ticket = $('#Ticket').val();
+
+        var agendamento = {
+            "FinalidadeId": tipoId,
+            "PatioDestinoId": patioId,
+            "Placa": placa,
+            "PlacaCarreta": placaCarreta,
+            "Ticket": ticket,
+            "Sistema": "R", 
+        }
+
+
+        $.ajax({
+            url: '@Url.Content("~/PreRegistro/GetDadosAgendamento")',
+            type: 'GET',
+            data: agendamento,
+
+            beforeSend: function () {
+                $('#preloader').show(); 
+            },
+            success: function (Dados) {
+                var mensagem = Dados.Mensagem;
+                var statusRetorno = Dados.statusRetorno;
+                
+                if (statusRetorno == "200") {
+                    $('.dados-agendamento-ajax').show();
+
+                    var protocolo = Dados.objetoRetorno.Protocolo;
+                    var periodo = Dados.objetoRetorno.PERIODO;
+                    var periodoInicial = Dados.objetoRetorno.Periodo_Inicial;
+                    var periodoFinal = Dados.objetoRetorno.Periodo_Final;
+                    var placa = Dados.objetoRetorno.Placa;
+                    var placaCarreta = Dados.objetoRetorno.PlacaCarreta;
+                    var motorista = Dados.objetoRetorno.Motorista;
+                    var cnh = Dados.objetoRetorno.CNH;
+
+                    $('#txtProtocolo').val(protocolo);
+                    $('#txtPeriodo').val(periodo);
+                    $('#txtPeriodoInicial').val(periodoInicial);
+                    $('#txtPeriodoFinal').val(periodoFinal);
+                    $('#txtPlaca').val(placa);
+                    $('#txtPlacaCarreta').val(placaCarreta);
+
+                    $('#txtMotorista').val(motorista);
+                    $('#txtMotoristaCNH').val(cnh);
+
+                    $('#btnPesquisarPlacas').hide();
+                }                
+                else if (statusRetorno == "404") {                    
+                    toastr.error(mensagem, "Coletor");
+
+                    $('.linha-btn-pesquisar-placas').hide();
+                    $('.btn-limpar').show();
+                    $('.linha-botao-salvar-sem-agendamento').show();
+                    
+                }
+                else if (statusRetorno === "500") {                    
+                    toastr.error(mensagem, "Coletor");                   
+                    $('.linha-btn-pesquisar-placas').show();
+                   // $('.btn-limpar').hide();
+                    $('.linha-botao-salvar-sem-agendamento').hide();
+                }
+                else {
+                    toastr.error(mensagem, "Coletor");
+                    $('.linha-btn-pesquisar-placas').show();
+                   // $('.btn-limpar').hide();
+                    $('.linha-botao-salvar-sem-agendamento').hide();
+                }
+                $('#preloader').hide();
+            },
+            error: function() {
+                $('#preloader').hide();
+            }
+        });
+    });
+</script>

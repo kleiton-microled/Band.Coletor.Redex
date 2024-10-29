@@ -1,0 +1,5 @@
+ alter table REDEX..tb_talie_item add flag_numerada int
+ go
+ alter table REDEX..tb_talie_item add MARCACAO varchar(300)
+ go
+ alter table REDEX..tb_talie_item add OBSERVACAO text

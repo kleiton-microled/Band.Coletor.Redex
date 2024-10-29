@@ -1,0 +1,150 @@
+﻿@using Band.Coletor.Redex.Site.Helpers
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head runat="server">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Band :: Coletor</title>
+
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+
+    @Styles.Render("~/bundles/css")
+    @RenderSection("Css", required: false)
+</head>
+
+<body>
+    <div style="width:100%; height:100%; position:absolute; background-color: #fff;z-index: 9999; opacity:0.8; display:none" id="preloader">
+        <div class="loader"></div>
+        <div id="txt-loading-page">Aguarde...</div>
+    </div>
+    @Html.Partial("_Menu")
+
+    <main role="main" class="container mt-2">
+        @RenderBody()
+    </main>
+
+    <script>
+        var urlBase = '@Url.Content("~")';
+    </script>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jquery-mask")
+    @Scripts.Render("~/bundles/toastr")
+    @Scripts.Render("~/bundles/site")
+    @Scripts.Render("~/bundles/bootstrap")
+
+<style>
+        @@media (max-width: 375px) {
+            .list-group-horizontal .list-group-item {
+                float: left;
+            }
+
+            .row,
+            .container-fluid,
+            .container,
+            .container-sm,
+            .container-md,
+            .container-lg,
+            .container-xl,
+            section,
+            footer,
+            main,
+            aside,
+            .navbar-nav,
+            .navbar-collapse {
+                display: block;
+                clear: both;
+            }
+        }
+
+        
+</style>
+    <!--[if IE 9]>
+    <link href="/Content/css/bootstrap-ie9.css" rel="stylesheet">
+    <![endif]-->
+    <!--[if lte IE 8]>
+    <link href="/Content/css/bootstrap-ie9.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/g/html5shiv@3.7.3"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+        <script>
+            $(document).ready(function () {
+                $(this).removeClass('no-gutters');
+                $('#modal-exclusao').removeClass('fade');
+                $('#modal-talie-finalizado').removeClass('fade');
+                $('#modal-confirma-fechamento').removeClass('fade');
+                $('#preloader').empty();
+                $('#preloader').attr('background-color', 'transparent');
+                $('.font-home').attr('font-size', '10px');
+                $('.tab-pane').removeClass('fade');
+                $('.tab-pane').removeClass('active');
+                $.support.transition = (function () {
+                    var thisBody = document.body || document.documentElement
+                      , thisStyle = thisBody.style
+                      , support = thisStyle.transition !== undefined || thisStyle.WebkitTransition !== undefined || thisStyle.MozTransition !== undefined || thisStyle.OTransition !== undefined
+                    return support
+                })()
+
+                // set CSS transition event type
+                if ($.support.transition) {
+                    transitionEnd = "TransitionEnd"
+                    if ($.browser.webkit) {
+                        transitionEnd = "webkitTransitionEnd"
+                    } else if ($.browser.mozilla || $.browser.msie) {
+                        transitionEnd = "transitionend"
+                    } else if ($.browser.opera) {
+                        transitionEnd = "oTransitionEnd"
+                    }
+                }
+            });
+    </script>
+    <![endif]-->
+    <!--[if IE 9]>
+    <script src="/Content/js/bootstrap-ie9.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#modal-exclusao').removeClass('fade');
+            $('#modal-talie-finalizado').removeClass('fade');
+            $('#modal-confirma-fechamento').removeClass('fade');
+            $.support.transition = (function () {
+                var thisBody = document.body || document.documentElement
+                  , thisStyle = thisBody.style
+                  , support = thisStyle.transition !== undefined || thisStyle.WebkitTransition !== undefined || thisStyle.MozTransition !== undefined || thisStyle.OTransition !== undefined
+                return support
+            })()
+
+            // set CSS transition event type
+            if ($.support.transition) {
+                transitionEnd = "TransitionEnd"
+                if ($.browser.webkit) {
+                    transitionEnd = "webkitTransitionEnd"
+                } else if ($.browser.mozilla || $.browser.msie) {
+                    transitionEnd = "transitionend"
+                } else if ($.browser.opera) {
+                    transitionEnd = "oTransitionEnd"
+                }
+            }
+        });
+    </script>
+    <![endif]-->
+    <!--[if lte IE 8]>
+    <script src="/Content/js/bootstrap-ie8.min.js"></script>
+    <![endif]-->
+    @Scripts.Render("~/bundles/moment")
+
+    @RenderSection("Scripts", required: false)
+    <script>
+        $(document).ready(function () {
+            $('#preloader').show();
+            setTimeout(function () {
+                $('#preloader').hide();
+            }, 500)
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,78 @@
+﻿<script>
+    $('#txtAutorizaPlaca').mask('AAA-0A00');
+    $('#btnCallModalConteiner').click(function () {
+        var id_conteiner = $('#txtSigla').val();
+
+        $.ajax({
+            url: '@Url.Content("~/MovimentacaoContainer/GetVerificaVeiculoSaidaCntr")',
+            type: 'GET',
+            data: { id_conteiner: id_conteiner },
+
+            beforeSend: function () {
+                $('#preloader').show();
+            },
+            success: function (Dados) {
+                var mensagem = Dados.Mensagem;
+                var statusRetorno = Dados.statusRetorno;
+
+                if (mensagem != "" || statusRetorno != "200") {
+                    toastr.error(mensagem, 'Coletor');
+                }
+                else {
+                    $('#exit-modal').modal('toggle');
+                    //toastr.success("Conteiner autorizado", 'Coletor');
+                }
+
+                $('#preloader').hide();
+            },
+            error: function () {
+                $('#preloader').hide();
+                toastr.error('Container não verificado', 'Coletor');
+            }
+        });
+    })
+</script>
+
+<script>
+    function ConfirmaAutorizacao() {
+        var placa = $('#txtAutorizaPlaca').val();
+        var cntr = $('#txtSigla').val();
+
+        $.ajax({
+            url: '@Url.Content("~/MovimentacaoContainer/GetAutorizaSaidaGate")',
+            type: 'GET',
+            data: { placa: placa, cntr: cntr },
+
+            beforeSend: function () {
+                $('#preloader').show();
+            },
+            success: function (Dados) {
+                var mensagem = Dados.Mensagem;
+                var statusRetorno = Dados.statusRetorno;
+
+
+                if (statusRetorno != "200") {
+                    toastr.error(mensagem, 'Coletor');
+                }
+                else {
+                    toastr.success(mensagem, 'Coletor');
+                    $('#exit-modal').modal('hide');
+                }
+
+                $('#preloader').hide();
+
+            },
+            error: function () {
+                $('#preloader').hide();
+
+                toastr.error('Erro ao verificar saída', 'Coletor');
+            }
+        });
+    }
+</script>
+
+<script>
+    $('#btnCntrModal').click(function () {
+        $('#cntr-modal').modal('show');
+    });
+</script>

@@ -1,0 +1,121 @@
+﻿<div>
+    <div class="row padding-bottom">
+        <div class="col-md-4">
+            <h4><i class="fa fa-check-square fa-lg"></i> Movimentação de Contêiner</h4>
+        </div>
+        <div class="col-md-6"></div>
+        <div class="col-md-2">
+            <a id="lnkHome" href="@Url.Content("~/Home")" class="btn btn-warning btn-block"><span aria-hidden="true" class="fa fa-home"></span>&nbsp;&nbsp;Inicio</a>
+        </div>
+    </div>
+    <div class="row padding-bottom">
+        <div class="col-md-3 form-group">
+            <label for="txtContainer">Conteiner: </label>
+            <input type="text" id="txtContainer" class="form-control" />
+        </div>
+        <div class="col-md-6 form-group">
+            <label for="txtCTNR"></label>
+            <input type="text" id="txtCTNR" class="form-control" maxlength="12" />
+        </div>
+        <div class="col-md-3 form-group">
+            <button style="position:relative; top:15px;" id="btnBusca" class="btn btn-success"><i class="fa fa-search"></i> Buscar</button>
+        </div>
+    </div>
+    <div class="row padding-bottom">
+        <div class="col-md-3">
+            <label for="txtTamanho">Tamanho: </label>
+            <input type="text" id="txtTamanho" class="form-control" />
+        </div>
+        <div class="col-md-3">
+            <label for="txtTipo">Tipo: </label>
+            <input type="text" id="txtTipo" class="form-control" />
+        </div>
+        <div class="col-md-3">
+            <label for="txtEF">EF: </label>
+            <input type="text" id="txtEF" class="form-control" />
+        </div>
+        <div class="col-md-3">
+            <label for="txtGWT">GWT: </label>
+            <input type="text" id="txtGWT" class="form-control" />
+        </div>
+        <div class="col-md-3">
+            <label for="txtTemp">Temper. </label>
+            <input type="text" id="txtTemp" class="form-control" />
+        </div>
+
+        <div class="col-md-3">
+            <label for="txtEscala">Escala: </label>
+            <input type="text" id="txtEscala" class="form-control" />
+        </div>
+        <div class="col-md-3">
+            <label for="txtIMO">IMO: </label>
+            <input type="text" id="txtIMO" class="form-control" />
+        </div>
+        <div class="col-md-3">
+            <label for="txtEntrada">Entrada: </label>
+            <input type="text" id="txtEntrada" class="form-control" />
+        </div>
+        <div class="col-md-3">
+            <label for="txtCATEG">Categoria: </label>
+            <input type="text" id="txtCATEG" class="form-control" />
+        </div>
+        <div class="col-md-3">
+            <label for="txtNavio">Navio: </label>
+            <input type="text" id="txtNavio" class="form-control" />
+        </div>
+        <div class="col-md-3">
+            <label for="txtPosicionamento">Posicionar: </label>
+            <input type="text" id="txtPosicionamento" class="form-control" />
+        </div>
+        <div class="col-md-3">
+            <label for="txtYardAtual">Local: <span>&nbsp;AT.</span></label>
+            <input type="text" id="txtYardAtual" class="form-control" />
+        </div>
+        <div class="col-md-3">
+            <label for="txtRegime">Regime: </label>
+            <input type="text" id="txtRegime" class="form-control" />
+        </div>
+        <div class="col-md-3" style="display:none">
+            <input type="text" id="txtSistema" class="form-control" />
+            <input type="text" id="txtAutonum" class="form-control" />
+        </div>
+        <div class="col-md-3">
+            <label for="txtYard">Local/Mot.:</label>
+            <input type="text" id="txtYard" class="form-control" />
+        </div>
+        <div class="col-md-3">
+            <label for="cbMotivoPos">Motivo Posicionamento: </label>
+            <select id="cbMotivoPos" class="form-control">
+                <option value="0">Selecione</option>
+                @{
+                    foreach (var item in ViewBag.ListarDadosMotivos)
+                    {
+                        <option value="@item.AUTONUM">@item.DESCRICAO</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label for="cbEmpilhadeira">Empilhadeira: </label>
+            <select id="cbEmpilhadeira" class="form-control">
+                <option value="0">Selecione</option>
+                @{
+                    foreach (var item in ViewBag.ListarEmpilhadeiras)
+                    {
+                        <option value="@item.AUTONUM">@item.IDENTIFICACAO</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="col-md-9"></div>
+        <div class="col-md-3" style="margin-top: 35px;">
+            <a style="cursor:pointer" id="btnSalvar" class="btn btn-primary"><i class="fa fa-save"></i> Salvar</a>
+            <button id="btnLimpar" class="btn btn-warning"><i class="fa fa-trash"></i> Limpar</button>
+            <a href="@Url.Content("/Home/")" id="btnSalvar" class="btn btn-success"><i class="fa fa-sign-out-alt"></i> Sair</a>
+        </div>
+    </div>
+</div>
+@section scripts{
+
+    @Html.Partial("_iventarioCNTR/_scripts")
+}

@@ -1,0 +1,87 @@
+﻿* {
+    padding: 0;
+    overflow: hidden;
+    margin-left: 0;
+    margin-right: 0;
+    margin-bottom: 0px;
+}
+
+body {
+    overflow: hidden;
+}
+
+#tblRegistro {
+    width: 480px;
+    height: 636px;
+    background-color: #006699;
+}
+
+.text-field {
+    height: 8%;
+}
+
+.titulo {
+    text-align: center;
+    width: 100%;    
+    font-family: Tahoma;
+    font-size: large;
+    font-weight: bold;
+    color: #006699;
+    background-color: #FFFFFF;
+}
+
+#tbObservacao {
+    width: 100%;
+    background-color: #5D7B9D;
+}
+
+.tbObservacaoButton {
+    width: 75%;
+    height: 32px;
+}
+
+.tbObservacaoTitulo {
+    text-align: center;
+    background-color: #5D7B9D;
+    color: #FFFFFF;
+    font-family: Tahoma;
+    font-size: large;
+    font-weight: bold;
+}
+
+.text-label {
+    width: 25%;
+    height: 8%;
+    text-align: center;
+    font-family: Tahoma;
+    font-size: 16px;
+    font-weight: bold;
+    color: #FFFFFF;
+    text-align: right;
+}
+
+input[type="text"] {
+    font-size: 20px;
+}
+
+input[type="number"] {
+    font-size: 20px;
+}
+
+.texto-focus {
+    background-color: yellow;
+    border: 4px solid red;
+}
+
+.texto-blur {
+    background-color: white;
+    border: 1px solid black;
+}
+
+.botao-focus {
+    border: 4px solid yellow;
+}
+
+.botao-blur {
+    border: 1px solid black;
+}

@@ -1,0 +1,250 @@
+﻿@model  Band.Coletor.Redex.Site.Models.TalieMarcantesViewModel
+
+@{
+    ViewBag.Title = "Marcantes";
+}
+
+<div class="row">
+    <div class="col-md-12">
+
+        @using (Ajax.BeginForm("GravarMarcantes", "Descarga", new AjaxOptions
+        {
+            OnSuccess = "MensagemSucesso",
+            OnFailure = "MensagemErro",
+            HttpMethod = "POST"
+        }, new { id = "frmMarcantes" }))
+        {
+            @Html.HiddenFor(model => model.TalieId)
+            @Html.HiddenFor(model => model.PatioId)
+
+            <div id="cardRegistro" class="card">
+                <div class="card-header">
+                    <i class="fa fa-edit fa-lg"></i>
+                    Descarga - Marcantes
+                    <div class="float-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            @Html.LabelFor(model => model.CodigoMarcante)
+                            @Html.EditorFor(m => m.CodigoMarcante, new { htmlAttributes = new { @class = "form-control", autofocus = "autofocus" } })
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>&nbsp;</label>
+                            <canvas width="320" height="240" id="picture" autoplay style="display: none;"></canvas> <br />
+                            <label class="btn btn-outline-info btn-block btn-as-block mb-0 pt-2 pb-2"><i class="fas fa-barcode"></i>&nbsp;&nbsp;Barcode<input id="CodigoBarras" type="file" accept="image/*" capture style="display: none;" /></label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            @Html.LabelFor(model => model.ArmazemId)
+                            @Html.DropDownListFor(c => c.ArmazemId, new MultiSelectList(Model.Armazens, "Id", "Descricao"), string.Empty, new { @class = "form-control", onchange = "ObterQuadras()" })
+                        </div>
+                        <div class="form-group col-md-3">
+                            @Html.LabelFor(model => model.Quantidade)
+                            @Html.EditorFor(m => m.Quantidade, new { htmlAttributes = new { @class = "form-control", @Value = "1" } })
+                        </div>
+                        <div class="form-group col-md-3">
+                            @Html.LabelFor(model => model.Quadra)
+
+                            @Html.EditorFor(m => m.Quadra, new { htmlAttributes = new { @class = "form-control" } })
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-12">
+                            @Html.Partial("_ConsultaMarcantes", Model.Marcantes)
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <i class="fa fa-calculator fa-lg"></i>
+                                    Resumo
+                                </div>
+                                <div class="card-body">
+
+                                    <div class="row mb-2">
+                                        <div class="form-group col-md-4">
+                                            <label class="float-right mt-2">Quantidade:</label>
+                                        </div>
+                                        <div class="form-group col-md-8">
+                                            @Html.EditorFor(model => model.QuantidadeDescarregada, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="form-group col-md-4">
+                                            <label class="float-right mt-2">Associada:</label>
+                                        </div>
+                                        <div class="form-group col-md-8">
+                                            @Html.EditorFor(model => model.QuantidadeAssociada, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-footer">
+                    <div class="row no-gutters">
+                        <div class="form-group col-md-4">
+                            <button type="button" class="btn btn-secondary btn-block" onclick="Limpar()">Novo</button>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <button type="submit" class="btn btn-secondary btn-block">Salvar</button>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <a id="lnkVoltar" href="@Url.Action("Registro", "Descarga", new { @id = Model.TalieId })" class="btn btn-secondary btn-block">Voltar</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        }
+    </div>
+</div>
+
+@Html.Partial("_ModalExclusao")
+
+@section Scripts{
+
+    @Scripts.Render("~/bundles/quaggaJS")
+
+    <script>
+
+        $(document).ready(function () {
+            AtualizarQuantidades();
+            LeitorCodigoDeBarras('#CodigoMarcante');
+        });
+
+        function ObterQuadras() {
+
+            event.preventDefault();
+
+            var armazemId = $('#ArmazemId option:selected').val();
+
+            $.get(urlBase + 'Descarga/ObterQuadras?armazemId=' + armazemId, function (resultado) {
+
+                var cbQuadras = $('#Quadra');
+                var cbRuas = $('#Rua');
+                var cbFiadas = $('#Fiada');
+                var cbAlturas = $('#Altura');
+
+                cbQuadras.empty();
+
+                $.each(resultado.Quadras, function (key, value) {
+                    cbQuadras.append('<option value=' + value + '>' + value + '</option>');
+                });
+
+                cbRuas.empty();
+
+                $.each(resultado.Ruas, function (key, value) {
+                    cbRuas.append('<option value=' + value + '>' + value + '</option>');
+                });
+
+                cbFiadas.empty();
+
+                $.each(resultado.Fiadas, function (key, value) {
+                    cbFiadas.append('<option value=' + value + '>' + value + '</option>');
+                });
+
+                cbAlturas.empty();
+
+                $.each(resultado.Alturas, function (key, value) {
+                    cbAlturas.append('<option value=' + value + '>' + value + '</option>');
+                });
+            });
+        }
+
+        function AtualizarQuantidades() {
+
+            var id = $('#TalieId').val();
+
+            $.get(urlBase + 'Descarga/ObterQuantidadeDescarga/' + id, function (resultado) {
+
+                if (resultado) {
+                    $('#QuantidadeDescarregada').val(resultado.QuantidadeDescarregada);
+                    $('#QuantidadeAssociada').val(resultado.QuantidadeAssociada);
+                }
+            });
+        }
+
+        function Limpar() {
+
+            $('#CodigoMarcante').val('');
+        }
+
+        function ExcluirMarcante(id) {
+
+            event.preventDefault();
+
+            $('#modal-mensagem').text('Confirma a exclusão do Marcante ' + id + '?');
+            $('#del-modal').data('id', id).modal('show');
+        }
+
+        function ConfirmarExclusao() {
+
+            var _url = '@Url.Action("ExcluirMarcante")';
+
+            var _id = $('#del-modal').data('id');
+
+            $.post(_url, { id: _id })
+                .done(function (data, statusText, xhr) {
+
+                    toastr.success('Marcante excluído com sucesso!', 'Coletor');
+
+                    AtualizarQuantidades();
+
+                    $('#tbMarcantes').html(data);
+
+                }).fail(function () {
+                    toastr.error('O registro não pode ser excluído', 'Coletor');
+                }).always(function () {
+                    $('#del-modal').data('id', '0').modal('hide');
+                });
+        }
+
+        var MensagemSucesso = function (resultado) {
+
+            toastr.success('Informações atualizadas com sucesso!', 'Coletor');
+
+            if (resultado) {
+                $('#tbMarcantes').html(resultado);
+                AtualizarQuantidades();
+            }
+        };
+
+        var MensagemErro = function (xhr, status) {
+
+            if (xhr.responseText !== '') {
+
+                var resultado = JSON.parse(xhr.responseText);
+
+                var mensagens = resultado.erros.map(function (erro) {
+                    return '<li>' + erro.ErrorMessage + '</li>';
+                });
+
+                toastr.error(mensagens, 'Coletor');
+
+                return;
+            }
+
+            if (xhr.statusText != null) {
+                toastr.error(xhr.statusText, 'Coletor');
+            } else {
+                toastr.error('Erro ao gravar o registro', 'Coletor');
+            }
+        };
+    </script>
+}

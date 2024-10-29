@@ -1,0 +1,128 @@
+﻿@{
+    ViewBag.Title = "Cadastrar Contato";
+}
+
+<section class="content-header">
+    <h1>
+        Gerenciamento de Contatos
+        <small>Proposta</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <a href="#">
+                <i class="fa fa-home"></i>Home
+            </a>
+        </li>
+        <li>
+            <a href="#">Contatos</a>
+        </li>
+        <li class="active">Cadastrar Contato</li>
+    </ol>
+</section>
+
+<div class="row">
+    <div class="col-md-12">
+
+        @using (Html.BeginForm())
+        {
+            <div class="card">
+                <div class="card-header">
+                    <i class="fa fa-edit fa-lg"></i>
+                    Detalhes do Contato
+                    <div class="float-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+
+                    <div class="row">
+                        <div class="form-group col-md-12">
+                            <label for="cbContaId"></label>
+                            <select class="form-control form-control-sm" id="cbContaId">
+                                <option value="value"></option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+                        <div class="form-group col-md-6">
+                            <label for="txtNome"></label>
+                            <input type="text" id="txtNome" value="" class="form-control form-control-sm" />
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="txtSobrenome"></label>
+                            <input type="text" id="txtSobrenome" value="" class="form-control form-control-sm" />
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="form-group col-md-6">
+                            <label for="txtEmail"></label>
+                            <input type="text" id="txtEmail" value="" class="form-control form-control-sm" />
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label for="txtTelefone"></label>
+                            <input type="text" id="txtTelefone" value="" class="form-control form-control-sm" />
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            <label for="txtCelular"></label>
+                            <input type="text" id="txtCelular" value="" class="form-control form-control-sm" />
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            <label for="txtDataNascimento"></label>
+                            <input type="text" id="txtDataNascimento" value="" class="form-control form-control-sm" />
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="form-group col-md-6">
+                            <label for="txtDpto"></label>
+                            <input type="text" id="txtDpto" value="" class="form-control form-control-sm" />
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="txtCargo"></label>
+                            <input type="text" id="txtCargo" value="" class="form-control form-control-sm" />
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            <label for="cbStatus"></label>
+                            <select class="form-control form-control-sm" id="cbStatus">
+                                <option value="0">Inativo</option>
+                                <option value="1" selected>Ativo</option>
+                            </select>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="card-footer">
+                    <div class="float-left">
+                        <p>
+                            <a href="#" id="close-window" class="btn btn-secondary btn-sm">Fechar</a>
+                        </p>
+                    </div>
+                    <div class="float-right">
+                        <p>
+                            <a href="#" class="btn btn-secondary btn-sm">Novo Contato</a>
+                            <button type="submit" class="btn btn-primary btn-sm">Salvar</button>
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+        }
+    </div>
+
+</div>
+

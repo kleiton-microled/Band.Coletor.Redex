@@ -1,0 +1,458 @@
+﻿@model  Band.Coletor.Redex.Site.Models.TalieViewModel
+
+@{
+    ViewBag.Title = "Descarga";
+}
+
+@using (Ajax.BeginForm("GravarTalie", "Descarga", new AjaxOptions
+{
+    OnSuccess = "MensagemSucesso",
+    OnFailure = "MensagemErro",
+    HttpMethod = "POST"
+}, new { id = "frmTalie" }))
+{
+
+    @Html.HiddenFor(model => model.BookingId)
+    @Html.HiddenFor(model => model.GateId)
+
+    <div id="cardRegistro">
+
+        <div class="row ">
+            <div class="form-group col-6 col-sm-6 col-md-6 pr-1">
+                @Html.LabelFor(model => model.Registro)
+                @Html.EditorFor(m => m.Registro, new { htmlAttributes = new { @class = "form-control", autofocus = "autofocus" } })
+            </div>
+            <div class="form-group col-6 col-sm-6 col-md-6 pl-1">
+                <label for="btnPesquisarTalie">&nbsp;</label>
+                <a id="btnPesquisarTalie" href="#" class="btn btn-outline-info btn-block btn-as-block" onclick="ObterDadosTaliePorRegistro()"><i class="fas fa-search"></i></a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-6 col-sm-6 col-md-6 pr-1">
+                @Html.LabelFor(model => model.TalieId)
+                @Html.DropDownListFor(c => c.TalieId, new MultiSelectList(Model.Conteiners, "Id", "Descricao"), "-- Selecione --", new { @class = "form-control" })
+            </div>
+            <div class="form-group col-6 col-sm-6 col-md-6 pl-1">
+                <label for="btnAbrirNF">&nbsp;</label>
+                <a id="btnTalie" href="#" class="btn btn-primary btn-block btn-as-block" onclick="ObterDadosTaliePorRegistroConteiner()">Abrir Talie</a>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-6 col-md-6 pr-1">
+                @Html.LabelFor(model => model.TalieNumero)
+                @Html.EditorFor(m => m.TalieNumero, new { htmlAttributes = new { @class = "form-control", @readonly = "@readonly" } })
+            </div>
+            <div class="form-group col-6 col-md-6 text-center pl-1">
+                <label>&nbsp;</label>
+                <div class="mt-1">
+                    <div class="form-check form-check-inline mr-0">
+                        @Html.CheckBoxFor(model => model.CrossDocking, new { @class = "form-check-input" })&nbsp;
+                        <small class="">Cross Docking</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-6 col-sm-6 col-md-6 pr-1">
+                @Html.LabelFor(model => model.Inicio)
+                @Html.EditorFor(m => m.Inicio, new { htmlAttributes = new { @class = "form-control data-hora", @readonly = "@readonly" } })
+            </div>
+            <div class="form-group col-6 col-sm-6 col-md-6 pl-1">
+                @Html.LabelFor(model => model.Termino)
+                @Html.EditorFor(m => m.Termino, new { htmlAttributes = new { @class = "form-control", @readonly = "@readonly" } })
+            </div>
+        </div>
+
+        <div class="row ">
+            <div class="form-group col-12 col-sm-12 col-md-12">
+                @Html.LabelFor(model => model.Placa)
+                @Html.EditorFor(m => m.Placa, new { htmlAttributes = new { @class = "form-control placa", @readonly = "@readonly" } })
+            </div>
+        </div>
+
+        <div class="row ">
+            <div class="form-group col-12 col-sm-12 col-md-12">
+                @Html.LabelFor(model => model.Reserva)
+                @Html.EditorFor(m => m.Reserva, new { htmlAttributes = new { @class = "form-control", @readonly = "@readonly" } })
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-12 col-md-12 ">
+                @Html.LabelFor(model => model.Cliente)
+                @Html.EditorFor(m => m.Cliente, new { htmlAttributes = new { @class = "form-control", @readonly = "@readonly" } })
+            </div>
+        </div>
+
+        <div class="row ">
+            <div class="form-group col-12 col-md-12">
+                @Html.LabelFor(model => model.ConferenteId)
+                @Html.DropDownListFor(c => c.ConferenteId, new MultiSelectList(Model.Conferentes, "Id", "Descricao"), string.Empty, new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="row ">
+            <div class="form-group col-12 col-md-12">
+                @Html.LabelFor(model => model.EquipeId)
+                @Html.DropDownListFor(c => c.EquipeId, new MultiSelectList(Model.Equipes, "Id", "Descricao"), string.Empty, new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="form-group col-12 col-md-12">
+                @Html.LabelFor(model => model.OperacaoId)
+                @Html.DropDownListFor(c => c.OperacaoId, new MultiSelectList(Model.Operacoes, "Sigla", "Descricao"), string.Empty, new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="form-group col-6 col-sm-6 col-md-6 pr-1">
+                <button type="button" class="btn btn-secondary btn-block" onclick="Cancelar()">Cancelar</button>
+            </div>
+            <div class="form-group col-6 col-sm-6 col-md-6 pl-1">
+                <button type="submit" class="btn btn-secondary btn-block">Próximo</button>
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="form-group col-6 col-sm-6 col-md-6 pr-1">
+                <button id="btnExcluir" type="button" class="btn btn-secondary btn-block" onclick="Excluir()" @(Model.TalieNumero == null ? "disabled" : "")>Excluir</button>
+            </div>
+            <div class="form-group col-6 col-sm-6 col-md-6 pl-1">
+                <a id="lnkBalanco" href="/Home" class="btn btn-secondary btn-block">Sair</a>
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="form-group col-6 col-sm-6 col-md-6 pr-1">
+                <button type="button" class="btn btn-secondary btn-block" onclick="AbrirObservacoes()">Observações</button>
+            </div>
+            <div class="form-group col-6 col-sm-6 col-md-6 pl-1">
+                @if (Model.TalieNumero != null)
+                {
+                    <a id="lnkMarcantes" href="@Url.Action("marcantes", "Descarga", new { @id = Model.TalieNumero })" class="btn btn-secondary btn-block">Marcantes</a>
+                }
+                else
+                {
+                    <a id="lnkMarcantes" href="#" class="btn btn-secondary btn-block disabled">Marcantes</a>
+                }
+            </div>
+        </div>
+
+        <div class="row no-gutters">
+            <div class="form-group col-12 col-sm-12 col-md-12 ">
+                <button id="btnFinalizar" type="button" class="btn btn-secondary btn-block" onclick="FinalizarTalie()" @(Model.TalieNumero == null ? "disabled" : "")>Finalizar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="cardObs" class="card invisivel">
+        <div class="card-header pt-3 pl-2 pr-2">
+            <i class="fa fa-edit fa-lg"></i>
+            Observações
+            <div class="float-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+                    <i class="fa fa-minus"></i>
+                </button>
+            </div>
+        </div>
+        <div class="card-body pl-2 pr-2 pt-2 pb-2">
+
+            <div class="row">
+                <div class="form-group col-12 col-md-12">
+                    <textarea id="Observacoes" name="Observacoes" rows="4" class="form-control"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-footer pl-2 pr-2">
+            <div class="float-left">
+                <p>
+                    <button type="button" class="btn btn-secondary" onclick="FecharObservacoes()">Voltar</button>
+                </p>
+            </div>
+        </div>
+    </div>
+
+}
+
+@Html.Partial("_ModalExclusao")
+
+@section Scripts{
+
+    <script>
+
+        function AbrirObservacoes() {
+
+            event.preventDefault();
+
+            $('#cardRegistro').addClass('invisivel');
+            $('#cardObs').removeClass('invisivel');
+        }
+
+        function FecharObservacoes() {
+
+            event.preventDefault();
+
+            $('#cardObs').addClass('invisivel');
+            $('#cardRegistro').removeClass('invisivel');
+        }
+
+        document.getElementById("Registro").addEventListener("keyup", function (event) {
+
+            event.preventDefault();
+
+            if (event.keyCode === 13) {
+                ObterDadosTaliePorRegistro();
+            }
+        });
+
+        function ObterDadosTaliePorRegistro() {
+
+            event.preventDefault();
+
+            var registro = parseInt($('#Registro').val());
+            var inicio = $('#Inicio').val();
+
+            if (registro > 0) {
+
+                $('#btnPesquisarTalie')
+                    .html('<i class="fa fa-spinner fa-spin"></i>')
+                    .addClass('disabled');
+
+                $.get(urlBase + 'Descarga/ObterDadosTaliePorRegistro?registro=' + registro + '&inicio=' + inicio, function (resultado) {
+
+                    if (resultado) {
+
+                        $('#TalieNumero').empty().val(resultado.Id);
+                        $('#Inicio').empty().val(resultado.Inicio);
+                        $('#Termino').empty().val(resultado.Termino);
+                        $('#Placa').empty().val(resultado.Placa);
+                        $('#BookingId').empty().val(resultado.BookingId);
+                        $('#GateId').empty().val(resultado.GateId);
+                        $('#Reserva').empty().val(resultado.Reference);
+                        $('#Cliente').empty().val(resultado.Cliente);
+                        $('#ConferenteId').val(resultado.ConferenteId);
+                        $('#EquipeId').val(resultado.EquipeId);
+                        $('#OperacaoId').val(resultado.OperacaoId);
+                        $('#RegistroId').val(resultado.RegistroId);
+                        $('#Observacoes').val(resultado.Observacoes);
+                        $('#CrossDocking').prop('checked', resultado.CrossDocking);
+
+                        var conteiners = $('#TalieId');
+                        conteiners.empty();
+                        $.each(resultado.talies, function (key, value) {
+                            conteiners.append('<option value=' + value.TalieId + '>' + value.ConteinerId+ '</option>');
+                        });
+
+                        if (resultado.Observacoes != null)
+                            $('#lnObservacoes').removeClass('invisivel');
+
+                        if (resultado.Fechado) {
+                            toastr.info('Talie Fechado', 'Coletor');
+                            return;
+                        }
+
+                        if (parseInt(resultado.Id) > 0) {
+
+                            toastr.info('Já existe talie aberto para esta placa/reserva - Abrindo para edição', 'Coletor');
+
+                            $('#btnFotos').prop('disabled', false);
+                            $('#btnExcluir').prop('disabled', false);
+                            $('#btnFinalizar').prop('disabled', false);
+
+                            $('#lnkProximo')
+                                .attr('href', '@Url.Action("RegistroItem","Descarga")' + '/' + resultado.Id)
+                                .removeClass('disabled');
+
+                            var returnUrl = '@Request.Url.AbsoluteUri' + '?id=' + resultado.Id;
+
+                            $('#lnkBalanco')
+                                .attr('href', '@Url.Action("Balanco","Descarga")' + '/' + resultado.Id)
+                                .removeClass('disabled');
+
+                            $('#lnkMarcantes')
+                                .attr('href', '@Url.Action("Marcantes","Descarga")' + '/' + resultado.Id)
+                                .removeClass('disabled');
+                        }
+                    }
+                }).fail(function (data) {
+                    toastr.error(data.responseText, 'Coletor');
+                }).always(function () {
+
+                    $('#btnPesquisarTalie')
+                        .html('<i class="fas fa-search"></i>')
+                        .removeClass('disabled');
+                });
+            } else {
+                toastr.error('Número do Lote não informado', 'Coletor');
+            }
+    }
+
+       function ObterDadosTaliePorRegistroConteiner() {
+
+            event.preventDefault();
+
+           var registro = parseInt($('#Registro').val());
+           var talieId = parseInt($('#TalieId').val());
+            var inicio = $('#Inicio').val();
+
+            if (registro > 0) {
+
+                $('#btnPesquisarTalie')
+                    .html('<i class="fa fa-spinner fa-spin"></i>')
+                    .addClass('disabled');
+
+                $.get(urlBase + 'Descarga/ObterConteinersPorRegistro?registro=' + registro + '&inicio=' + inicio+'&talieId='+talieId, function (resultado) {
+
+                    if (resultado) {
+
+                        $('#TalieNumero').empty().val(resultado.Id);
+                        $('#Inicio').empty().val(resultado.Inicio);
+                        $('#Termino').empty().val(resultado.Termino);
+                        $('#Placa').empty().val(resultado.Placa);
+                        $('#BookingId').empty().val(resultado.BookingId);
+                        $('#GateId').empty().val(resultado.GateId);
+                        $('#Reserva').empty().val(resultado.Reference);
+                        $('#Cliente').empty().val(resultado.Cliente);
+                        $('#ConferenteId').val(resultado.ConferenteId);
+                        $('#EquipeId').val(resultado.EquipeId);
+                        $('#OperacaoId').val(resultado.OperacaoId);
+                        $('#RegistroId').val(resultado.RegistroId);
+                        $('#Observacoes').val(resultado.Observacoes);
+                        $('#CrossDocking').prop('checked', resultado.CrossDocking);
+
+                        if (resultado.Observacoes != null)
+                            $('#lnObservacoes').removeClass('invisivel');
+
+                        if (resultado.Fechado) {
+                            toastr.info('Talie Fechado', 'Coletor');
+                            return;
+                        }
+
+                        if (parseInt(resultado.Id) > 0) {
+
+                            toastr.info('Já existe talie aberto para esta placa/reserva - Abrindo para edição', 'Coletor');
+
+                            $('#btnFotos').prop('disabled', false);
+                            $('#btnExcluir').prop('disabled', false);
+                            $('#btnFinalizar').prop('disabled', false);
+
+                            $('#lnkProximo')
+                                .attr('href', '@Url.Action("RegistroItem","Descarga")' + '/' + resultado.Id)
+                                .removeClass('disabled');
+
+                            var returnUrl = '@Request.Url.AbsoluteUri' + '?id=' + resultado.Id;
+
+                            $('#lnkBalanco')
+                                .attr('href', '@Url.Action("Balanco","Descarga")' + '/' + resultado.Id)
+                                .removeClass('disabled');
+
+                            $('#lnkMarcantes')
+                                .attr('href', '@Url.Action("Marcantes","Descarga")' + '/' + resultado.Id)
+                                .removeClass('disabled');
+                        }
+                    }
+                }).fail(function (data) {
+                    toastr.error(data.responseText, 'Coletor');
+                }).always(function () {
+
+                    $('#btnPesquisarTalie')
+                        .html('<i class="fas fa-search"></i>')
+                        .removeClass('disabled');
+                });
+            } else {
+                toastr.error('Número do Lote não informado', 'Coletor');
+            }
+        }
+
+        function Excluir() {
+
+            event.preventDefault();
+
+            var id = $('#TalieNumero').val();
+
+            $('#modal-mensagem').text('Confirma a exclusão do Talie?');
+            $('#del-modal').data('id', id).modal('show');
+        }
+
+        function ConfirmarExclusao() {
+
+            var _url = '@Url.Action("ExcluirTalie")';
+
+            var _id = $('#del-modal').data('id');
+
+            $.post(_url, { id: _id })
+                .done(function (data, statusText, xhr) {
+                    toastr.success('Talie excluído com sucesso!', 'Coletor');
+
+                    setTimeout(function () {
+                        document.location.href = urlBase + 'Descarga/Registro';
+                    }, 1000);
+
+                }).fail(function (data) {
+                    if (data.responseText != null) {
+                        toastr.error(data.responseText, 'Coletor');
+                    } else {
+                        toastr.error('O registro não pode ser excluído', 'Coletor');
+                    }
+                }).always(function () {
+                    $('#del-modal').data('id', '0').modal('hide');
+                });
+        }
+
+        function Cancelar() {
+
+            $('#frmTalie')[0].reset();
+            $("input[type=hidden]").val('');
+
+            $('#Registro').focus();
+        }
+
+        function FinalizarTalie() {
+
+            $.post('@Url.Action("FinalizarTalie")', { id: $('#TalieNumero').val() })
+                .done(function (data, statusText, xhr) {
+                    toastr.success('Talie finalizado com sucesso!', 'Coletor');
+                }).fail(function (data) {
+                    if (data.responseText != null) {
+                        toastr.error(data.responseText, 'Coletor');
+                    } else {
+                        toastr.error('Falha ao tentar finalizar o Talie', 'Coletor');
+                    }
+                }).always(function () {
+
+                });
+        }
+
+        var MensagemSucesso = function (resultado) {
+            debugger
+            //toastr.success('Informações atualizadas com sucesso!', 'Coletor');
+            if (resultado.RedirectUrl)
+                document.location.href = decodeURIComponent(resultado.RedirectUrl);
+
+            //setTimeout(function () {
+            //}, 1000);
+        };
+
+        var MensagemErro = function (xhr, status) {
+
+            if (xhr.responseText !== '') {
+
+                var resultado = JSON.parse(xhr.responseText);
+
+                var mensagens = resultado.erros.map(function (erro) {
+                    return '<li>' + erro.ErrorMessage + '</li>';
+                });
+
+                toastr.error(mensagens, 'Coletor');
+
+                return;
+            }
+
+            toastr.error('Erro ao gravar o registro', 'Coletor');
+        };
+    </script>
+}

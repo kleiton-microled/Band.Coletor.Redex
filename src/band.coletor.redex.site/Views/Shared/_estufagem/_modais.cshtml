@@ -1,0 +1,45 @@
+﻿
+<div class="modal fade" id="modal-exclusao" tabindex="-1" role="dialog" aria-labelledby="modal-exclusao-label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="modal-body">
+                <strong>Atenção:</strong> Confirma a Descarga do Registro?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                <button type="button" class="btn btn-danger" id="btnConfirmaDescarga"  >Confirmar Descarga</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-talie-finalizado" tabindex="-1" role="dialog" aria-labelledby="modal-talie-finalizado-label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="modal-body">
+                <strong>Atenção:</strong> Estufagem já finalizada <br />
+                Deseja Cancelar?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Não</button>
+                <button type="button" class="btn btn-danger" onclick="GerarCancelamento()">Sim</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modal-confirma-fechamento" tabindex="-1" role="dialog" aria-labelledby="modal-confirma-fechamento-label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="modal-body">
+                <strong>Confirma o fechamento?</strong><br />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Não</button>
+                <button type="button" class="btn btn-danger" id="btnConfirmaDescarga" onclick="ConfirmarFechamento()" >Sim</button>
+            </div>
+        </div>
+    </div>
+</div>

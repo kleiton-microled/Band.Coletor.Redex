@@ -1,0 +1,202 @@
+﻿@model  Band.Coletor.Redex.Site.Models.PreRegistroViewModel
+
+@{
+    ViewBag.Title = "Pré-Registro";
+    var anoProtocoloPesquisa = DateTime.Now.Year.ToString();
+    var user = Session["USUARIO"];
+
+    var itensTipo = new[]
+{
+        new SelectListItem { Text = "Selecione", Value = "0" },
+        new SelectListItem { Text = "Importação", Value = "I" },
+        new SelectListItem { Text = "Exportação", Value = "E" },
+    };
+
+
+
+
+    ViewBag.ListarTipo = new SelectList(itensTipo, "Value", "Text");
+}
+
+@using (Ajax.BeginForm("Registrar", "PreRegistro", new AjaxOptions
+{
+    OnSuccess = "MensagemSucessoRedirecionar",
+    OnFailure = "mensagemCadastroErro",
+    HttpMethod = "POST"
+
+}, new { id = "frmPreRegistro" }))
+{
+    
+    <div class="row mt-3">
+        <div class="col-sm-12 col-lg-8 offset-lg-2">
+
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-truck fa-lg"></i>
+                    Pré-Registro
+
+                    <div class=" float-right">
+                        <div class="btn-group">
+                            <a href="@Url.Action("Index", "Home")" class="btn btn-link"><i class="fa fa-home"></i>&nbsp;&nbsp;@*Menu*@</a>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="card-body">
+                    <div class="campos-pesquisa">                        
+                        <div class="row consultar-protocolo">
+                            <div class="form-group col-sm-12 col-md-6 pr-md-1">
+                                @Html.LabelFor(model => model.FinalidadeId)
+                                @Html.DropDownListFor(c => c.FinalidadeId, (MultiSelectList)ViewBag.ListarTipo, new { @class = "form-control" })
+                            </div>
+                            <div class="form-group  col-sm-12 col-md-6 pr-md-1">
+                                @Html.LabelFor(model => model.PatioDestinoId)
+                                @Html.DropDownListFor(c => c.PatioDestinoId, new MultiSelectList(Model.PatioDestino, "PatioDestinoId", "DescPatioDestino"), new { @class = "form-control" })
+                            </div>
+                            <div class="form-group col-sm-12 col-md-6 pr-md-1" style="display:none;">
+                                @Html.LabelFor(model => model.ProtocoloPesquisa)
+                                @Html.EditorFor(m => m.ProtocoloPesquisa, new { htmlAttributes = new { @class = "form-control" } })
+                            </div>
+                            <div class="form-group col-sm-12 col-md-6 pr-md-1" style="display:none;">
+                                @Html.LabelFor(model => model.AnoProtocoloPesquisa)
+                                @Html.EditorFor(m => anoProtocoloPesquisa, new { htmlAttributes = new { @class = "form-control " } })
+                            </div>
+                            <div class="form-group col-sm-12 col-md-6 pr-md-1">
+                                @Html.LabelFor(model => model.PlacaPesquisa)
+                                @Html.EditorFor(m => m.PlacaPesquisa, new { htmlAttributes = new { @class = "form-control placa" } })
+                            </div>
+                            <div class="form-group  col-sm-12 col-md-6 pr-md-1">
+                                @Html.LabelFor(model => model.PlacaCarretaPesquisa)
+                                @Html.EditorFor(m => m.PlacaCarretaPesquisa, new { htmlAttributes = new { @class = "form-control placa" } })
+                            </div>
+                        </div>
+                        
+                        <div class="row consultar-ticket">
+                            <div class="form-group col-sm-12 col-md-6 pr-md-1">
+                                @Html.LabelFor(model => model.Ticket)
+                                @Html.EditorFor(m => m.Ticket, new { htmlAttributes = new { @class = "form-control " } })
+                            </div>                             
+                        </div>
+
+                        <div class="row  linha-btn-pesquisar-placas">
+                            <div class="form-group col-12 col-sm-12 col-md-12 ">
+                                <label for="btnPesquisarTalie">&nbsp;</label>
+                                <a id="btnPesquisarPlacas" href="#" class="btn btn-outline-info btn-block btn-as-block"><i class="fas fa-search"></i> Buscar</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="campos-resultado-pesquisa">
+
+                        <div class="row dados-agendamento-ajax" style="display:none;">
+                            <div class="form-group col-sm-12 col-md-6 pr-md-1">
+                                Protocolo: 
+                                <input type="text" class="form-control" id="txtProtocolo" disabled />
+                            </div>
+                            <div class="form-group col-sm-12 col-md-6 pr-md-1">
+                                Periodo: 
+                                <input type="text" class="form-control" id="txtPeriodo" disabled />
+                            </div>
+                            <div class="form-group col-sm-12 col-md-6 pr-md-1">
+                                Periodo Inicial: 
+                                <input type="text" class="form-control" id="txtPeriodoInicial" disabled />
+                            </div>
+                            <div class="form-group col-sm-12 col-md-6 pr-md-1">
+                                Período Final:
+                                <input type="text" class="form-control" id="txtPeriodoFinal" disabled />
+                            </div>
+                        </div>
+                        <div class="row dados-agendamento-ajax" style="display:none;">
+                            <div class="form-group col-sm-12 col-md-6 pr-md-1">
+                                Placa: 
+                                <input type="text" class="form-control" id="txtPlaca" disabled />
+                            </div>
+                            <div class="form-group col-sm-12 col-md-6 pr-md-1">
+                                Placa Carreta:
+                                <input type="text" class="form-control" id="txtPlacaCarreta" disabled />
+                            </div>                            
+                        </div>
+                        <div class="row dados-agendamento-ajax" style="display:none;">
+                            <div class="form-group col-sm-12 col-md-6 pr-md-1">
+                                Motorista:
+                                <input type="text" class="form-control" id="txtMotorista" disabled />
+                            </div>
+                            <div class="form-group col-sm-12 col-md-6 pr-md-1">
+                                CNH:
+                                <input type="text" class="form-control" id="txtMotoristaCNH" disabled />
+                            </div>
+                        </div>
+                        @*<div class="row dados-agendamento" style="display:none;">
+                            <div class="form-group col-sm-12 col-md-6 pr-md-1">
+                                @Html.LabelFor(model => model.Protocolo)
+                                @Html.EditorFor(m => m.Protocolo, new { htmlAttributes = new { @class = "form-control", @readonly = "@readonly" } })
+                            </div>
+                            <div class="form-group col-sm-12 col-md-6 pl-md-1">
+                                @Html.LabelFor(model => model.Periodo)
+                                @Html.EditorFor(m => m.Periodo, new { htmlAttributes = new { @class = "form-control", @readonly = "@readonly" } })
+                            </div>
+                            <div class="form-group col-sm-12 col-md-3 pl-md-1">
+                                @Html.LabelFor(model => model.PeriodoInicial)
+                                @Html.EditorFor(m => m.PeriodoInicial, new { htmlAttributes = new { @class = "form-control", @readonly = "@readonly" } })
+                            </div>
+                            <div class="form-group col-sm-12 col-md-3 pl-md-1">
+                                @Html.LabelFor(model => model.PeriodoFinal)
+                                @Html.EditorFor(m => m.PeriodoFinal, new { htmlAttributes = new { @class = "form-control", @readonly = "@readonly" } })
+                            </div>
+                        </div>*@
+
+                        @*<div class="row dados-agendamento" style="display:none;">
+                            <div class="form-group col-sm-12 col-md-6 md-1">
+                                @Html.LabelFor(model => model.Placa)
+                                @Html.EditorFor(m => m.Placa, new { htmlAttributes = new { @class = "form-control placa" } })
+                            </div>
+                            <div class="form-group col-sm-12 col-md-6 md-1">
+                                @Html.LabelFor(model => model.PlacaCarreta)
+                                @Html.EditorFor(m => m.PlacaCarreta, new { htmlAttributes = new { @class = "form-control placa" } })
+                            </div>
+                     </div>
+
+                        <div class="row dados-agendamento"  style="display:none;">
+                            <div class="form-group col-sm-12 col-md-6 pr-md-1"> 
+                                @Html.LabelFor(model => model.Motorista)
+                                @Html.EditorFor(m => m.Motorista, new { htmlAttributes = new { @class = "form-control", @readonly = "@readonly" } })
+                            </div>
+                            <div class="form-group col-sm-12 col-md-6 pl-md-1">
+                                @Html.LabelFor(model => model.CNH)
+                                @Html.EditorFor(m => m.CNH, new { htmlAttributes = new { @class = "form-control", @readonly = "@readonly" } })
+                            </div>
+                        </div>*@
+
+
+
+                        <div id="linha-botao-salvar " class="row mt-3">
+                            <div class="form-group col-12 col-sm-12 col-md-12 ">
+                                <button type="submit" class="btn btn-primary btn-block dados-agendamento" style="display:none;">Registrar</button>
+                            </div>
+                        </div>
+                        <div id="linha-botao-salvar-sem-agendamento" class=" linha-botao-salvar-sem-agendamento row mt-3 dados-agendamento-ajax" style="display:none">
+                            <div class="form-group col-12 col-sm-12 col-md-12 ">
+                                <button id="btConfirmarEntradaSemAgendamento" onclick="ConfirmarEntradaSemAgendamento()" style="white-space: normal;" class="btn btn-warning btn-block"><i class="fas fa-save"></i>&nbsp;Confirmar registro sem agendamento</button>
+
+                            </div>
+                        </div>
+                        <div class="row btn-limpar mt-3"  >
+                            <div class="form-group col-12 col-sm-12 col-md-12 ">
+                                <button id="btnLimpar" type="button" class="btn btn-secondary btn-block" onclick="Limpar()">Limpar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+}
+
+
+@section Scripts{
+    @Html.Partial("_preRegistro/_scripts_PreRegistro")
+     
+}

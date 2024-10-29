@@ -1,0 +1,137 @@
+﻿_scripts
+<script>
+    $('#txtMarcante').change(function () {
+        var marcante = $(this).val();
+        $.ajax({
+            url: '@Url.Content("~/MovimentacaoCargaSolta/GetDadosByMarcante/")',
+            type: 'GET',
+            data: { marcante: marcante },
+
+
+            beforeSend: function () {
+                $('#preloader').show();
+
+            },
+            success: function (Dados) {
+                var mensagem = Dados.Mensagem;
+                var statusRetorno = Dados.statusRetorno;
+                if (mensagem == "") {
+                    if (statusRetorno == "200") {
+                        var mercadoria = Dados.objetoRetorno.MERCADORIA;
+
+
+                        var marca = Dados.objetoRetorno.MARCA;
+                        var embalagem = Dados.objetoRetorno.EMBALAGEM;
+                        var data_entrada = Dados.objetoRetorno.DATA_ENTRADA;
+                        var importador = Dados.objetoRetorno.IMPORTADOR;
+                        /*var exportador = Dados.objetoRetorno.EXPORTADOR; */
+                        var cntr_desova = Dados.objetoRetorno.CNTR_DESOVA;
+                        var id_Patio = Dados.objetoRetorno.ID_PATIO;
+                        var volume = Dados.objetoRetorno.VOLUME;
+                        var tipo_doc = Dados.objetoRetorno.TIPO_DOC;
+                        var canal_alf = Dados.objetoRetorno.CANAL_ALF;
+                        var motivo_prx = Dados.objetoRetorno.MOTIVO_PROX_MVTO;
+                        var imo = Dados.objetoRetorno.IMO;
+                        var nvocc = Dados.objetoRetorno.NVOCC;
+                        var bl = Dados.objetoRetorno.BL;
+                        var lote = Dados.objetoRetorno.LOTE_STR;
+                        var sistema = Dados.objetoRetorno.SISTEMA;
+                        var anvisa = Dados.objetoRetorno.ANVISA;
+                        var flag_anvisa = Dados.objetoRetorno.FLAG_ANVISA;
+                        var onu = Dados.objetoRetorno.ONU;
+                        var local = Dados.objetoRetorno.LOCAL;
+                        var quantidadeMC = Dados.objetoRetorno.QUANTIDADE;
+                        var saldo = Dados.objetoRetorno.SALDO;
+                        var autonum_cs = Dados.objetoRetorno.AUTONUM_CS;
+                        var reference = Dados.objetoRetorno.REFERENCE;
+                        var num_nf = Dados.objetoRetorno.NUM_NF;
+
+                        $('#txtMercadoria').val(mercadoria);
+                        $('#txtLote').val(lote);
+                        $('#txtBL').val(reference);
+                        $('#txtAnvisa').val(anvisa);
+                        $('#txtEmbalagem').val(embalagem);
+                        $('#txtVolume').val(volume);
+                        $('#txtImo').val(imo);
+                        $('#txtNVOCC').val(nvocc);
+                        $('#txtImportador').val(importador);
+                        $('#txtDataEntrada').val(data_entrada);
+                        $('#txtOnu').val(onu);
+                        $('#txtQuantidade').val(quantidadeMC);
+                        $('#txtQuantidade2').val(saldo);
+                        $('#txtLocal').val(local);
+                        $('#hddnAutonumCs').attr('data-id', autonum_cs);
+                        $('#txtNroNfe').val(num_nf)
+                    }
+                    else {
+                        toastr.error(mensagem, 'Coletor');
+                    }
+                }
+                else {
+                    toastr.error(mensagem, 'Coletor');
+                }
+                $('#preloader').hide();
+            },
+            error: function () {
+                $('#preloader').hide();
+                toastr.error("Os dados não foram carregados", 'Coletor');
+            }
+        })
+
+    });
+</script>
+
+<script>
+    $('#txtEtqPrateleira').change(function () {
+        var etiqueta = $(this).val();
+        var armazem = $('#cbArmador').val();
+        var local = $('#txtLocal').val();
+
+        $.ajax({
+            url: '@Url.Content("~/MovimentacaoCargaSolta/GetDadosByEtiqueta/")',
+            type: 'GET',
+            data: { etiqueta: etiqueta, armazem: armazem, local:local  },
+
+            beforeSend: function () {
+                $('#preloader').show();
+
+            },
+            success: function (Dados) {
+                var mensagem = Dados.Mensagem;
+                var statusRetorno = Dados.statusRetorno;
+
+                if (mensagem == "") {
+                    if (statusRetorno == "200") {
+
+                        var pos = Dados.objetoRetorno.pos;
+                        var amr = Dados.objetoRetorno.idamr;
+
+                        $('#txtEtqPrateleira').val(amr + "-" + pos);
+
+                        $('#cbArmador option').each(function () {
+                            var armador = $(this).val();
+
+                            if (armador == amr) {
+                                $(this).attr('selected', "selected");
+                            }
+
+                            $('#txtLocal').val(pos);
+
+                        });
+                    }
+                    else {
+                        toastr.error(mensagem, 'Coletor');
+                    }
+                }
+                else {
+                    toastr.error(mensagem, 'Coletor');
+                }
+                $('#preloader').hide();
+            },
+            error: function () {
+                $('#preloader').hide();
+                toastr.error("Os dados não foram carregados", 'Coletor');
+            }
+        })
+    });
+</script>

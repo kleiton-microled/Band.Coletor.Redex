@@ -1,0 +1,606 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props')" />
+  <Import Project="..\..\packages\Microsoft.Net.Compilers.2.9.0\build\Microsoft.Net.Compilers.props" Condition="Exists('..\..\packages\Microsoft.Net.Compilers.2.9.0\build\Microsoft.Net.Compilers.props')" />
+  <Import Project="..\..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{B8C23B49-5210-407E-B170-6A4960FB4BAD}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Band.Coletor.Redex.Site</RootNamespace>
+    <AssemblyName>Band.Coletor.Redex.Site</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <MvcBuildViews>false</MvcBuildViews>
+    <UseIISExpress>true</UseIISExpress>
+    <Use64BitIISExpress />
+    <IISExpressSSLPort>44397</IISExpressSSLPort>
+    <IISExpressAnonymousAuthentication>
+    </IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>
+    </IISExpressWindowsAuthentication>
+    <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <TypeScriptToolsVersion>3.3</TypeScriptToolsVersion>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ExcludeGeneratedDebugSymbol>true</ExcludeGeneratedDebugSymbol>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Antlr3.Runtime">
+      <HintPath>..\..\..\..\..\..\..\Publish\EudMarco\Comissao\210317\bin\Antlr3.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="FluentValidation, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7de548da2fbae0f0, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\FluentValidation.7.5.1\lib\net45\FluentValidation.dll</HintPath>
+    </Reference>
+    <Reference Include="Iesi.Collections, Version=4.0.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Iesi.Collections.4.0.4\lib\net461\Iesi.Collections.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform">
+      <HintPath>..\..\..\..\..\..\..\Publish\EudMarco\Comissao\210317\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Remotion.Linq, Version=2.2.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Remotion.Linq.2.2.0\lib\net45\Remotion.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="Remotion.Linq.EagerFetching, Version=2.2.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Remotion.Linq.EagerFetching.2.2.0\lib\net45\Remotion.Linq.EagerFetching.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Annotations, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.ComponentModel.Annotations.4.4.1\lib\net461\System.ComponentModel.Annotations.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel.Primitives, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.ComponentModel.Primitives.4.3.0\lib\net45\System.ComponentModel.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.DirectoryServices" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Runtime.Caching" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.ValueTuple.4.5.0\lib\net461\System.ValueTuple.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.AspNet.WebPages.3.2.6\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.6.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.AspNet.Mvc.5.2.6\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.AspNet.Razor.3.2.6\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.AspNet.WebPages.3.2.6\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.AspNet.WebPages.3.2.6\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.AspNet.WebPages.3.2.6\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Optimization">
+      <HintPath>..\..\packages\Microsoft.AspNet.Web.Optimization.1.1.3\lib\net40\System.Web.Optimization.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="Unity.Abstractions, Version=3.3.1.0, Culture=neutral, PublicKeyToken=6d32ff45e0ccc69f, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Unity.Abstractions.3.3.1\lib\net46\Unity.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Container, Version=5.8.11.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Unity.Container.5.8.11\lib\net46\Unity.Container.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Mvc, Version=5.0.15.0, Culture=neutral, PublicKeyToken=6d32ff45e0ccc69f, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Unity.Mvc.5.0.15\lib\net46\Unity.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="WebActivatorEx, Version=2.0.0.0, Culture=neutral, PublicKeyToken=7b26dc2a43f6a0d4, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\WebActivatorEx.2.2.0\lib\net40\WebActivatorEx.dll</HintPath>
+    </Reference>
+    <Reference Include="WebGrease, Version=1.6.5135.21930, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\WebGrease.1.6.0\lib\WebGrease.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.ApplicationInsights">
+      <HintPath>..\..\packages\Microsoft.ApplicationInsights.2.2.0\lib\net45\Microsoft.ApplicationInsights.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AI.Agent.Intercept">
+      <HintPath>..\..\packages\Microsoft.ApplicationInsights.Agent.Intercept.2.0.6\lib\net45\Microsoft.AI.Agent.Intercept.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AI.DependencyCollector">
+      <HintPath>..\..\packages\Microsoft.ApplicationInsights.DependencyCollector.2.2.0\lib\net45\Microsoft.AI.DependencyCollector.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AI.PerfCounterCollector">
+      <HintPath>..\..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.2.0\lib\net45\Microsoft.AI.PerfCounterCollector.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AI.ServerTelemetryChannel">
+      <HintPath>..\..\packages\Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel.2.2.0\lib\net45\Microsoft.AI.ServerTelemetryChannel.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AI.WindowsServer">
+      <HintPath>..\..\packages\Microsoft.ApplicationInsights.WindowsServer.2.2.0\lib\net45\Microsoft.AI.WindowsServer.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AI.Web">
+      <HintPath>..\..\packages\Microsoft.ApplicationInsights.Web.2.2.0\lib\net45\Microsoft.AI.Web.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App_Start\BundleConfig.cs" />
+    <Compile Include="App_Start\DecimalModelBinder.cs" />
+    <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="App_Start\UnityConfig.cs" />
+    <Compile Include="App_Start\UnityMvcActivator.cs" />
+    <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\ContatosController.cs" />
+    <Compile Include="Controllers\DefaultController.cs" />
+    <Compile Include="Controllers\DescargaController.cs" />
+    <Compile Include="Controllers\EstufagemController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\IventarioCSController.cs" />
+    <Compile Include="Controllers\IventarioCNTRController.cs" />
+    <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Controllers\MovimentacaoCargaSoltaController.cs" />
+    <Compile Include="Controllers\MovimentacaoContainerController.cs" />
+    <Compile Include="Controllers\PreRegistroController.cs" />
+    <Compile Include="Controllers\SaidaCaminhaoController.cs" />
+    <Compile Include="Controllers\TalieColetorDescargaController.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="Extensions\UserExtensions.cs" />
+    <Compile Include="Filtros\AutorizacaoFilterAttribute.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Helpers\ApplicationHelpers.cs" />
+    <Compile Include="Helpers\Codes.cs" />
+    <Compile Include="Helpers\Identity.cs" />
+    <Compile Include="Helpers\Messages.cs" />
+    <Compile Include="Helpers\StringHelpers.cs" />
+    <Compile Include="Models\EstufagemViewModel.cs" />
+    <Compile Include="Models\MovimentacaoConteinerViewModel.cs" />
+    <Compile Include="Models\PreRegistroViewModel.cs" />
+    <Compile Include="Models\RegistroViewModel.cs" />
+    <Compile Include="Models\SaidaCaminhaoViewModel.cs" />
+    <Compile Include="Models\TalieBalancoViewModel.cs" />
+    <Compile Include="Models\TalieMarcantesViewModel.cs" />
+    <Compile Include="Models\UsuarioAutenticado.cs" />
+    <Compile Include="Models\UsuarioLoginViewModel.cs" />
+    <Compile Include="Models\TalieItemViewModel.cs" />
+    <Compile Include="Models\TalieViewModel.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\bootstrap-grid.css" />
+    <Content Include="Content\bootstrap-grid.min.css" />
+    <Content Include="Content\bootstrap-reboot.css" />
+    <Content Include="Content\bootstrap-reboot.min.css" />
+    <Content Include="Content\bootstrap.css" />
+    <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\css\bootstrap-ie5.css" />
+    <Content Include="Content\css\bootstrap-ie8.css" />
+    <Content Include="Content\css\bootstrap-ie9.css" />
+    <Content Include="Content\css\bootstrap.css" />
+    <Content Include="Content\css\bootstrapBOOTSTRAPFUNCIONANDO.css" />
+    <Content Include="Content\bootstrap.min.css.map" />
+    <Content Include="Content\bootstrap.css.map" />
+    <Content Include="Content\bootstrap-reboot.min.css.map" />
+    <Content Include="Content\bootstrap-reboot.css.map" />
+    <Content Include="Content\bootstrap-grid.min.css.map" />
+    <Content Include="Content\bootstrap-grid.css.map" />
+    <None Include="Content\css\bootstrap.cssBOOTSTRAPFUNCIONANDO" />
+    <None Include="Content\css\bootstrap.cssOLD2" />
+    <None Include="Content\css\bootstrap.css_N" />
+    <Content Include="Content\css\alteracoes-bootstrap.css" />
+    <Content Include="Content\css\container-detalhe.css" />
+    <Content Include="Content\css\estilos.css" />
+    <Content Include="Content\css\fontawesome-all.css" />
+    <Content Include="Content\css\login.css" />
+    <Content Include="Content\css\pre-loader.css" />
+    <Content Include="Content\css\select2.css" />
+    <Content Include="Content\css\select2.min.css" />
+    <Content Include="Content\img\arrow.png" />
+    <Content Include="Content\img\caminhao-entrada.png" />
+    <Content Include="Content\img\caminhao-entrada32.png" />
+    <Content Include="Content\img\caminhao-entrada64.png" />
+    <Content Include="Content\img\caminhao-saida.png" />
+    <Content Include="Content\img\caminhao-saida32.png" />
+    <Content Include="Content\img\checked.png" />
+    <Content Include="Content\img\default.png" />
+    <Content Include="Content\img\descarga.png" />
+    <Content Include="Content\img\editar.png" />
+    <Content Include="Content\img\estufagem.jpg" />
+    <Content Include="Content\img\estufagem.png" />
+    <Content Include="Content\img\excluir.png" />
+    <Content Include="Content\img\favicon.ico" />
+    <Content Include="Content\img\fundo-conteineres.png" />
+    <Content Include="Content\img\icones\arquivo.png" />
+    <Content Include="Content\img\icones\aviso.png" />
+    <Content Include="Content\img\icones\empilhadeira.png" />
+    <Content Include="Content\img\icones\navio.png" />
+    <Content Include="Content\img\icones\procurar.png" />
+    <Content Include="Content\img\icones\usuarios.png" />
+    <Content Include="Content\img\loading.gif" />
+    <Content Include="Content\img\logo-coletor.png" />
+    <Content Include="Content\img\logo-header.png" />
+    <Content Include="Content\img\logo-sab.png" />
+    <Content Include="Content\img\logo.png" />
+    <Content Include="Content\img\Logo02.png" />
+    <Content Include="Content\img\LogoMobile.png" />
+    <Content Include="Content\img\minus.png" />
+    <Content Include="Content\img\movimentacao-conteiner.png" />
+    <Content Include="Content\img\movimentoCarga02.png" />
+    <Content Include="Content\img\navio-carga.png" />
+    <Content Include="Content\img\navio-carga32.png" />
+    <Content Include="Content\img\navio-carga64.png" />
+    <Content Include="Content\img\navio.png" />
+    <Content Include="Content\img\pallet.png" />
+    <Content Include="Content\img\plus.png" />
+    <Content Include="Content\img\port.png" />
+    <Content Include="Content\img\unchecked.png" />
+    <None Include="Content\js\bootstrap.js_40" />
+    <Content Include="Content\js\bootstrap-ie8.js" />
+    <Content Include="Content\js\bootstrap-ie9.js" />
+    <Content Include="Content\js\default.js" />
+    <Content Include="Content\js\jquery-3.3.1.js" />
+    <Content Include="Content\js\jquery.unobtrusive-ajax.js" />
+    <Content Include="Content\js\leitorCodigoDeBarras\DecoderWorker.js" />
+    <Content Include="Content\js\leitorCodigoDeBarras\exif.js" />
+    <Content Include="Content\js\leitorCodigoDeBarras\JOB.js" />
+    <Content Include="Content\js\leitorCodigoDeBarras\Leitura.js" />
+    <Content Include="Content\js\moment-with-locales.js" />
+    <Content Include="Content\js\popper.js" />
+    <Content Include="Content\js\pre-registro.js" />
+    <Content Include="Content\js\webcam.min.js" />
+    <Content Include="Content\plugins\ckeditor\ckeditor.js" />
+    <Content Include="Content\plugins\ckeditor\config.js" />
+    <Content Include="Content\plugins\ckeditor\contents.css" />
+    <Content Include="Content\plugins\ckeditor\lang\pt-br.js" />
+    <Content Include="Content\plugins\ckeditor\plugins\font\lang\pt-br.js" />
+    <Content Include="Content\plugins\ckeditor\plugins\font\plugin.js" />
+    <Content Include="Content\plugins\ckeditor\plugins\icons.png" />
+    <Content Include="Content\plugins\ckeditor\plugins\magicline\images\icon-rtl.png" />
+    <Content Include="Content\plugins\ckeditor\plugins\magicline\images\icon.png" />
+    <Content Include="Content\plugins\ckeditor\plugins\pastefromword\filter\default.js" />
+    <Content Include="Content\plugins\ckeditor\plugins\scayt\dialogs\dialog.css" />
+    <Content Include="Content\plugins\ckeditor\plugins\scayt\skins\moono-lisa\scayt.css" />
+    <Content Include="Content\plugins\ckeditor\plugins\tableselection\styles\tableselection.css" />
+    <Content Include="Content\plugins\ckeditor\plugins\table\dialogs\table.js" />
+    <Content Include="Content\plugins\ckeditor\plugins\wsc\skins\moono-lisa\wsc.css" />
+    <Content Include="Content\plugins\ckeditor\skins\moono-lisa\dialog.css" />
+    <Content Include="Content\plugins\ckeditor\skins\moono-lisa\editor.css" />
+    <Content Include="Content\plugins\ckeditor\skins\moono-lisa\icons.png" />
+    <Content Include="Content\plugins\ckeditor\skins\moono-lisa\images\arrow.png" />
+    <Content Include="Content\plugins\ckeditor\skins\moono-lisa\images\close.png" />
+    <Content Include="Content\plugins\ckeditor\skins\moono-lisa\images\lock-open.png" />
+    <Content Include="Content\plugins\ckeditor\skins\moono-lisa\images\lock.png" />
+    <Content Include="Content\plugins\ckeditor\skins\moono-lisa\images\refresh.png" />
+    <Content Include="Content\plugins\ckeditor\skins\moono-lisa\images\spinner.gif" />
+    <Content Include="Content\plugins\ckeditor\styles.js" />
+    <Content Include="Content\plugins\datatables\css\dataTables.bootstrap4.min.css" />
+    <Content Include="Content\plugins\datatables\js\colReorderWithResize.js" />
+    <Content Include="Content\plugins\datatables\js\dataTables.bootstrap4.min.js" />
+    <Content Include="Content\plugins\datatables\js\jquery.dataTables.min.js" />
+    <Content Include="Content\plugins\easyAutocomplete\easy-autocomplete.css" />
+    <Content Include="Content\plugins\easyAutocomplete\jquery.easy-autocomplete.js" />
+    <Content Include="Content\plugins\jquery-mask\jquery.mask.js" />
+    <Content Include="Content\plugins\jquery-url\jquery-url.js" />
+    <Content Include="Content\plugins\jquery-validate\jquery.validate.min.js" />
+    <Content Include="Content\plugins\jquery-validate\language\messages_pt_BR.min.js" />
+    <Content Include="Content\plugins\jsonToTable\json-to-table.js" />
+    <Content Include="Content\plugins\jsonTree\jsonTree.css" />
+    <Content Include="Content\plugins\jsonTree\jsonTree.js" />
+    <Content Include="Content\plugins\moment\moment-with-locales.js" />
+    <Content Include="Content\plugins\summernote\css\summernote-lite.css" />
+    <Content Include="Content\plugins\summernote\js\lang\summernote-pt-BR.js" />
+    <Content Include="Content\plugins\summernote\js\summernote-cleaner.js" />
+    <Content Include="Content\plugins\summernote\js\summernote-lite.js" />
+    <Content Include="Content\plugins\tags\tagsinput.css" />
+    <Content Include="Content\plugins\tags\tagsinput.js" />
+    <Content Include="Content\plugins\toastr\toastr.css" />
+    <Content Include="Content\plugins\toastr\toastr.js" />
+    <Content Include="favicon.ico" />
+    <Content Include="Global.asax" />
+    <Content Include="Content\plugins\datatables\language\pt-br.json" />
+    <Content Include="Scripts\bootstrap.bundle.js" />
+    <Content Include="Scripts\bootstrap.bundle.min.js" />
+    <Content Include="Scripts\bootstrap.js" />
+    <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Scripts\esm\popper-utils.js" />
+    <Content Include="Scripts\esm\popper-utils.min.js" />
+    <Content Include="Scripts\esm\popper.js" />
+    <Content Include="Scripts\esm\popper.min.js" />
+    <Content Include="Scripts\esm\popper.min.js.map" />
+    <Content Include="Scripts\esm\popper.js.map" />
+    <Content Include="Scripts\esm\popper-utils.min.js.map" />
+    <Content Include="Scripts\esm\popper-utils.js.map" />
+    <Content Include="Scripts\bootstrap.min.js.map" />
+    <Content Include="Scripts\bootstrap.js.map" />
+    <Content Include="Scripts\bootstrap.bundle.min.js.map" />
+    <Content Include="Scripts\bootstrap.bundle.js.map" />
+    <Content Include="libman.json" />
+    <None Include="Scripts\jquery-3.0.0-vsdoc.js" />
+    <Content Include="Scripts\i18n\af.js" />
+    <Content Include="Scripts\i18n\ar.js" />
+    <Content Include="Scripts\i18n\az.js" />
+    <Content Include="Scripts\i18n\bg.js" />
+    <Content Include="Scripts\i18n\bn.js" />
+    <Content Include="Scripts\i18n\bs.js" />
+    <Content Include="Scripts\i18n\ca.js" />
+    <Content Include="Scripts\i18n\cs.js" />
+    <Content Include="Scripts\i18n\da.js" />
+    <Content Include="Scripts\i18n\de.js" />
+    <Content Include="Scripts\i18n\dsb.js" />
+    <Content Include="Scripts\i18n\el.js" />
+    <Content Include="Scripts\i18n\en.js" />
+    <Content Include="Scripts\i18n\es.js" />
+    <Content Include="Scripts\i18n\et.js" />
+    <Content Include="Scripts\i18n\eu.js" />
+    <Content Include="Scripts\i18n\fa.js" />
+    <Content Include="Scripts\i18n\fi.js" />
+    <Content Include="Scripts\i18n\fr.js" />
+    <Content Include="Scripts\i18n\gl.js" />
+    <Content Include="Scripts\i18n\he.js" />
+    <Content Include="Scripts\i18n\hi.js" />
+    <Content Include="Scripts\i18n\hr.js" />
+    <Content Include="Scripts\i18n\hsb.js" />
+    <Content Include="Scripts\i18n\hu.js" />
+    <Content Include="Scripts\i18n\hy.js" />
+    <Content Include="Scripts\i18n\id.js" />
+    <Content Include="Scripts\i18n\is.js" />
+    <Content Include="Scripts\i18n\it.js" />
+    <Content Include="Scripts\i18n\ja.js" />
+    <Content Include="Scripts\i18n\ka.js" />
+    <Content Include="Scripts\i18n\km.js" />
+    <Content Include="Scripts\i18n\ko.js" />
+    <Content Include="Scripts\i18n\lt.js" />
+    <Content Include="Scripts\i18n\lv.js" />
+    <Content Include="Scripts\i18n\mk.js" />
+    <Content Include="Scripts\i18n\ms.js" />
+    <Content Include="Scripts\i18n\nb.js" />
+    <Content Include="Scripts\i18n\ne.js" />
+    <Content Include="Scripts\i18n\nl.js" />
+    <Content Include="Scripts\i18n\pl.js" />
+    <Content Include="Scripts\i18n\ps.js" />
+    <Content Include="Scripts\i18n\pt-BR.js" />
+    <Content Include="Scripts\i18n\pt.js" />
+    <Content Include="Scripts\i18n\ro.js" />
+    <Content Include="Scripts\i18n\ru.js" />
+    <Content Include="Scripts\i18n\sk.js" />
+    <Content Include="Scripts\i18n\sl.js" />
+    <Content Include="Scripts\i18n\sq.js" />
+    <Content Include="Scripts\i18n\sr-Cyrl.js" />
+    <Content Include="Scripts\i18n\sr.js" />
+    <Content Include="Scripts\i18n\sv.js" />
+    <Content Include="Scripts\i18n\th.js" />
+    <Content Include="Scripts\i18n\tk.js" />
+    <Content Include="Scripts\i18n\tr.js" />
+    <Content Include="Scripts\i18n\uk.js" />
+    <Content Include="Scripts\i18n\vi.js" />
+    <Content Include="Scripts\i18n\zh-CN.js" />
+    <Content Include="Scripts\i18n\zh-TW.js" />
+    <Content Include="Scripts\jquery-3.0.0.js" />
+    <Content Include="Scripts\jquery-3.0.0.min.js" />
+    <Content Include="Scripts\jquery-3.0.0.slim.js" />
+    <Content Include="Scripts\jquery-3.0.0.slim.min.js" />
+    <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Scripts\popper-utils.js" />
+    <Content Include="Scripts\popper-utils.min.js" />
+    <Content Include="Scripts\popper.js" />
+    <Content Include="Scripts\popper.min.js" />
+    <Content Include="Scripts\respond.js" />
+    <Content Include="Scripts\respond.matchmedia.addListener.js" />
+    <Content Include="Scripts\respond.matchmedia.addListener.min.js" />
+    <Content Include="Scripts\respond.min.js" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Content Include="Scripts\select2.js" />
+    <Content Include="Scripts\select2.min.js" />
+    <Content Include="Scripts\umd\popper-utils.js" />
+    <Content Include="Scripts\umd\popper-utils.min.js" />
+    <Content Include="Scripts\umd\popper.js" />
+    <Content Include="Scripts\umd\popper.min.js" />
+    <Content Include="Views\Descarga\Balanco.cshtml" />
+    <Content Include="Views\Descarga\Marcantes.cshtml" />
+    <Content Include="Views\Descarga\_ConsultaMarcantes.cshtml" />
+    <Content Include="Views\Shared\_ModalCodigoDeBarras.cshtml" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Views\Web.config" />
+    <Content Include="Views\_ViewStart.cshtml" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Webfonts\fa-brands-400.svg" />
+    <Content Include="Webfonts\fa-regular-400.svg" />
+    <Content Include="Webfonts\fa-solid-900.svg" />
+    <Content Include="Webfonts\fa-solid-900.ttf" />
+    <Content Include="Webfonts\fa-solid-900.woff" />
+    <Content Include="Webfonts\fa-solid-900.woff2" />
+    <Content Include="Webfonts\summernote.ttf" />
+    <Content Include="Webfonts\summernote.woff" />
+    <Content Include="Scripts\jquery-3.0.0.slim.min.map" />
+    <Content Include="Scripts\jquery-3.0.0.min.map" />
+    <Content Include="Scripts\umd\popper.min.js.map" />
+    <Content Include="Scripts\umd\popper.js.map" />
+    <Content Include="Scripts\umd\popper-utils.min.js.map" />
+    <Content Include="Scripts\umd\popper-utils.js.map" />
+    <Content Include="Scripts\README.md" />
+    <Content Include="Scripts\popper.min.js.map" />
+    <Content Include="Scripts\popper.js.map" />
+    <Content Include="Scripts\popper-utils.min.js.map" />
+    <Content Include="Scripts\popper-utils.js.map" />
+    <Content Include="Views\Descarga\Registro2.cshtml" />
+    <Content Include="Views\PreRegistro\Cadastrar.cshtml" />
+    <Content Include="Views\MovimentacaoContainer\MovimentacaoConteiner.cshtml" />
+    <Content Include="Views\Estufagem\_Index.cshtml" />
+    <Content Include="Views\Estufagem\_ConsultaEstufagem.cshtml" />
+    <Content Include="Views\SaidaCaminhao\Index.cshtml" />
+    <Content Include="Views\IventarioCNTR\Index.cshtml" />
+    <Content Include="Views\Shared\_iventarioCNTR\_scripts.cshtml" />
+    <Content Include="Views\Estufagem\Index.cshtml" />
+    <Content Include="Views\IventarioCS\Index.cshtml" />
+    <Content Include="Views\TalieColetorDescarga\Index.cshtml" />
+    <Content Include="Views\Shared\_talieColetorDescarga\_modais.cshtml" />
+    <Content Include="Views\Shared\_talieColetorDescarga\_scripts_modais.cshtml" />
+    <Content Include="Views\Shared\_iventarioCS\_scripts.cshtml" />
+    <Content Include="Views\Shared\_estufagem\_scripts.cshtml" />
+    <Content Include="Views\Shared\_talieColetorDescarga\_scripts.cshtml" />
+    <Content Include="Views\Shared\_estufagem\_modais.cshtml" />
+    <Content Include="Views\Shared\_preRegistro\_scripts_PreRegistro.cshtml" />
+    <Content Include="Views\MovimentacaoContainer\Index.cshtml" />
+    <Content Include="Views\MovimentacaoCargaSolta\Index.cshtml" />
+    <Content Include="Views\Shared\_movimentacao_conteiner\_modalAutorizaPlaca.cshtml" />
+    <Content Include="Views\Shared\_movimentacao_conteiner\_modalGridConteiners.cshtml" />
+    <Content Include="Views\Shared\_movimentacao_conteiner\_scripts_autorizacao.cshtml" />
+    <Content Include="Views\Shared\_movimentacao_conteiner\_scripts_dados.cshtml" />
+    <Content Include="Views\Shared\_movimentacao_conteiner\_scripts_inserir.cshtml" />
+    <Content Include="Views\Shared\_movimentacao_conteiner\_verificacao_saida.cshtml" />
+    <Content Include="Views\Shared\_movimentacao_carga_solta\_scripts_dados.cshtml" />
+    <Content Include="Views\Shared\_movimentacao_carga_solta\_scripts_inserir.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Band.Coletor.Redex.Business\Band.Coletor.Redex.Business.csproj">
+      <Project>{3E92D4D3-F2D0-462D-8958-D16D56425D91}</Project>
+      <Name>Band.Coletor.Redex.Business</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Band.Coletor.Redex.Infra\Band.Coletor.Redex.Infra.csproj">
+      <Project>{CB56C925-4AAE-4E92-8E49-BE8DF5965923}</Project>
+      <Name>Band.Coletor.Redex.Infra</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
+    <Content Include="Webfonts\fa-brands-400.eot" />
+    <Content Include="Webfonts\fa-brands-400.ttf" />
+    <Content Include="Webfonts\fa-brands-400.woff" />
+    <Content Include="Webfonts\fa-brands-400.woff2" />
+    <Content Include="Webfonts\fa-regular-400.eot" />
+    <Content Include="Webfonts\fa-regular-400.ttf" />
+    <Content Include="Webfonts\fa-regular-400.woff" />
+    <Content Include="Webfonts\fa-regular-400.woff2" />
+    <Content Include="Webfonts\fa-solid-900.eot" />
+    <Content Include="Views\Shared\_Menu.cshtml" />
+    <Content Include="Views\Contatos\Cadastrar.cshtml" />
+    <Content Include="Views\Contatos\Index.cshtml" />
+    <Content Include="Views\Descarga\Registro.cshtml" />
+    <Content Include="Views\Shared\_ModalExclusao.cshtml" />
+    <Content Include="Views\Descarga\RegistroItem.cshtml" />
+    <Content Include="Views\Home\Login.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <TypeScriptCompile Include="Scripts\index.d.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\PublishProfiles\" />
+    <Folder Include="Views\Default\" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets')" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
+    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
+  </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>51766</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:51767/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
+    <Error Condition="!Exists('..\..\packages\Microsoft.Net.Compilers.2.9.0\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.Net.Compilers.2.9.0\build\Microsoft.Net.Compilers.props'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target> -->
+</Project>

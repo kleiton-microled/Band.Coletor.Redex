@@ -1,0 +1,62 @@
+﻿<div class="modal fade" id="modal-exclusao" tabindex="-1" role="dialog" aria-labelledby="modal-exclusao-label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="modal-body">
+                <strong>Atenção:</strong> Confirma a exclusão do <span id="origem"></span>?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                <button type="button" id="btnConfirmaExclusao" class="btn btn-danger">Confirmar Exclusão</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-fechamento" tabindex="-1" role="dialog" aria-labelledby="modal-fechamento-label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="modal-body">
+                <strong>Atenção:</strong> Confirma o fechamento deste talie e transferência da carga para o estoque?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                <button id="btnConfirmarFechamento" type="button" class="btn btn-danger">Confirmar Fechamento</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-verifica-etiquetas" tabindex="-1" role="dialog" aria-labelledby="modal-verifica-etiquetas-label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="modal-body">
+                <strong>Atenção:</strong> Não Consta geração de etiquetas deste registro. <br />
+                Deseja continuar assim mesmo?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Não</button>                
+                <button id="btnAtualizarAlertaEtiqueta1" type="button" class="btn btn-danger" onclick="AtualizarAlertaEtiqueta1()">Sim</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-verifica-pendencias" tabindex="-1" role="dialog" aria-labelledby="modal-verifica-pendencias-label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="modal-body">
+                <strong>Atenção:</strong> Consta pendencia de emissão de etiquetas deste registro.<br />
+                Deseja continuar assim mesmo?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary">Não</button>
+                <button id="btnVerificaPendenciaEmisssoEtiquetas" type="button" class="btn btn-danger" onclick="VerificaPendenciaEmisssoEtiquetas()">Sim</button>
+            </div>
+        </div>
+    </div>
+</div>
+

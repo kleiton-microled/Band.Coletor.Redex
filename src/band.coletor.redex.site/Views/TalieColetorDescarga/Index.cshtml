@@ -1,0 +1,309 @@
+﻿@using Band.Coletor.Redex.Site.Extensions; 
+<div>
+    <div class="pull-left">
+        <div class="row padding-bottom">
+            <div class="col-md-3"><h4><i class="fa fa-truck"></i> Talie Coletor Descarga</h4></div>
+            <div class="col-md-7"></div>
+            <div class="col-md-2">
+                <a id="lnkHome" href="@Url.Content("~/Home")" class="btn btn-warning btn-block"><span aria-hidden="true" class="fa fa-home"></span>&nbsp;&nbsp;Inicio</a>
+            </div>
+        </div>
+        <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item">
+                <a href="#descarga" id="tabDescarga" class="nav-link active" data-toggle="tab"><i class="fa fa-edit" style="padding-right: 8px;"></i>Descarga</a>
+            </li>
+            <li class="nav-item">
+                <a href="#talies" id="tabTalies"  class="nav-link" data-toggle="tab">
+                    <i class="fa fa-search" style="padding-right: 8px;"></i>Talies
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="tab-content">
+        <div class="tab-pane fade show active" id="descarga">
+
+            <div class="row padding-bottom">
+                <div class="col-sm-3 form-group">
+                    <label for="txtRegistro">Registro: </label>
+                    <input type="text" id="txtRegistro" class="form-control" />
+                    @*<select id="cbRegistro" class="form-control">
+                        </select>*@
+                </div>
+                <div class="col-sm-3 form-group">
+                    <label for="txtTalieNumero">Talie: </label>
+                    <input class="form-control" id="txtTalieNumero" />
+                </div>
+                <div class="col-sm-3 form-group" style="padding-top:20px;" id="pnlTalieFechada">
+                
+                    <input  type="checkbox" id="checkTalieFechado" />
+                    <label for="checkTalieFechado">Talie Fechado? </label>
+                </div>
+                <div class="col-sm-3 form-group" style="padding-top:20px;" id="pnlCrossDocking">
+                
+                    <input  type="checkbox" id="checkCrossDocking" checked />
+                    <label for="checkCrossDocking">Crossdocking? </label>
+                    
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-sm-3 form-group">
+                    <label for="txtInicio">Inicio: </label>
+                    <input type="text" class="form-control" id="txtInicio" />
+                </div>
+                <div class="col-sm-3 form-group">
+                    <label for="txtTernino">Término: </label>
+                    <input type="text" class="form-control" id="txtTermino" />
+                </div>
+                <div class="col-sm-6 form-group">
+                    <label for="txtCliente">Cliente: </label>
+                    <input type="text" class="form-control" id="txtCliente" />
+                </div>
+                <div class="col-sm-3 form-group">
+                    <label for="txtPlaca">Placa: </label>
+                    <input type="text" class="form-control" id="txtPlaca" />
+                </div>
+                @*Ver o panel que aparece aqui para fazer a validacao nesse campo*@
+                <div class="col-sm-3 form-group" style="display:none;" id="divContainer">
+                    <label for="txtConteiner">Contêiner: </label>
+                    <input type="text" class="form-control" id="txtConteiner" />
+                </div>
+
+                <div class="col-sm-3 form-group">
+                    <label for="txtReserva">Reserva: </label>
+                    <input type="text" class="form-control" id="txtReserva" />
+                </div>
+                </div>
+            <div class="row">
+                <div class="col-sm-3 form-group">
+                    <label for="cbConferente">Conferente: </label>
+                    <select class="form-control" id="cbConferente" disabled>                        
+                        @*@foreach (var item in ViewBag.Conferente)
+                        {
+                            <option value="@item.Id">@item.Descricao</option>
+                        }*@
+
+                        <option value="@User.ObterId()">@User.ObterNome()</option>
+                    </select>
+                </div>
+
+                <div class="col-sm-3 form-group">
+                    <label for="cbEquipe">Equipe: </label>
+                    <select class="form-control" id="cbEquipe">
+                        <option value="0">Selecione</option>
+                        @{
+                            foreach (var item in ViewBag.Equipes)
+                            {
+                                <option value="@item.Id">@item.Descricao</option>
+                            }
+                        }
+                    </select>
+                </div>
+
+                <div class="col-sm-3 form-group">
+                    <label for="cbModo">Modo: </label>
+                    <select class="form-control" id="cbModo">
+                        <option value="0">Selecione </option>
+                        <option value="A">Mecanizada</option>
+                        <option value="M">Manual</option>
+                        <option value="P">Parcial</option>
+                    </select>
+                </div>
+
+                <div class="col-sm-4 form-group" style="padding-top:20px;">
+                    <input type="checkbox" id="estufagemCompleta" />
+                    <label for="estufagemCompleta">Estufagem Completa </label>
+                </div>
+
+            </div>
+            <div class="row padding-bottom">
+                <div class="col-md-12">
+                    <input type="hidden" id="hddnTalieId" />
+                    <input type="hidden" id="hddnTalieItensSelIdx" />
+                    <input type="hidden" id="hddnNFItensSelIdx" />
+                    <input type="hidden" id="hddnConteinerId" />
+                    <input type="hidden" id="hddnGateId" />
+                    <input type="hidden" id="hddnReserva" />
+                    <input type="hidden" id="hddnNFId" />
+                    <input type="hidden" id="hddnCrossDocking" />
+                    <input type="hidden" id="hddnNFItemId" />
+                    <input type="hidden" id="hddnNovoNFItem" />
+                    <input type="hidden" id="hddnEmbalagemId" />
+                    <input type="hidden" id="hddnProdutoId" />
+                    <input type="hidden" id="hddnClienteId" />
+                    <input type="hidden" id="hddnReservaId" />
+                    <input type="hidden" id="hddnTalieItemId" />
+                    <input type="hidden" id="hddnTipoDescarga" />
+                    <input type="hidden" id="hddnRowIndex" />
+                    <input type="hidden" id="hddnOrigem" />
+                </div>
+            </div>
+            <div class="row padding-bottom">
+                <div class="col-md-4">
+                    <button class="btn btn-warning btn-block dados-agendamento" id="btnTalieCancelar"><i class="fa fa-eraser"></i>Limpar</button>
+                </div>
+                <div class="col-md-4">                    
+                    <button class="btn btn-primary btn-block dados-agendamento" id="btnTalieGravar"><i class="fa fa-save"></i>Gravar</button>
+                </div>
+                <div class="col-sm-4">
+                    <button class="btn btn-success btn-block" id="btnTalieFinalizar" style="display:none;"><i class="fa fa-truck"></i> Finalizar</button>
+                </div>
+            </div>
+
+            <div class="row padding-bottom" id="pnlEdicaoItem" style="display:none;">
+                <div class="col-sm-12">
+                    <h4>Item: </h4>
+                </div>
+                <div class="col-sm-3 form-group">
+                    <label for="cbNF">NF: </label>
+                    <select id="cbNF" class="form-control">
+                    </select>
+                </div>
+                <div class="col-sm-3 form-group">
+                    <label for="txtEmbalagem">Embalagem: </label>
+                    @*<input type="text" class="form-control" id="txtEmbalagem" disabled />*@
+                    <select id="cbEmbalagens" class="form-control"></select>
+                </div>
+                <div class="col-sm-3 form-group">
+                    <label for="txtProduto">Produto: </label>
+                    <input type="text" class="form-control" id="txtProduto" disabled />
+                </div>
+                <div class="col-sm-3 form-group">
+                    <label for="txtQuantidadeNF">Qtde. NF.: </label>
+                    <input type="text" class="form-control" id="txtQuantidadeNF" disabled />
+                </div>
+                <div class="col-sm-3 form-group">
+                    <label for="txtQuantidadeDescarga">Qtde Descarga.: </label>
+                    <input type="text" class="form-control" id="txtQuantidadeDescarga" />
+                </div>
+                <div class="col-sm-3 form-group">
+                    <label for="txtComprimento">Comprimento : </label>
+                    <input type="text" class="form-control" id="txtComprimento" />
+                </div>
+                <div class="col-sm-3 form-group">
+                    <label for="txtLargura">Largura : </label>
+                    <input type="text" class="form-control" id="txtLargura" />
+                </div>
+                <div class="col-sm-3 form-group">
+                    <label for="txtAltura">Altura : </label>
+                    <input type="text" class="form-control" id="txtAltura" />
+                </div>
+                <div class="col-sm-2 form-group" id="divPeso">
+                    <label for="txtPeso">Peso : </label>
+                    <input type="text" class="form-control" id="txtPeso" />
+                </div>
+                <div class="col-sm-2 form-group">
+                    <label for="txtLocal">Ocupação : </label>
+                    <input type="text" class="form-control" id="txtLocal" />
+                </div>
+                <div class="col-sm-2 form-group" style="padding-top:20px;">
+                    <input type="checkbox" id="checkRemonte" />
+                    <label for="checkRemonte">Remonte </label>
+                </div>
+                <div class="col-sm-2 form-group" style="padding-top:20px;">
+                    <input type="checkbox" id="checkNumerada" />
+                    <label for="checkNumerada">Numerada </label>
+                </div>
+                <div class="col-sm-2 form-group" style="padding-top:20px;">
+                    <input type="checkbox" id="checkFragil" />
+                    <label for="checkFragil">Frágil </label>
+                </div>
+                <div class="col-sm-2 form-group" style="padding-top:20px;">
+                    <input type="checkbox" id="checkCarimbo" />
+                    <label for="checkCarimbo">Carimbo </label>
+                </div>
+                <div class="col-sm-2 form-group" style="padding-top:20px;">
+                    <input type="checkbox" id="checkAvaria" />
+                    <label for="checkAvaria">Avaria </label>
+                </div>
+                <div class="col-sm-6 form-group" style="padding-top:20px;">
+                    <label for="txtMarcacao">Marcação </label>
+                    <input type="text" class="form-control" id="txtMarcacao" style=" float: right; height: 40px;" />
+
+                </div>
+                <div class="col-sm-6 form-group" style="padding-top:20px;">
+                    <label for="txtObservacao">Observação </label>
+                    <input type="text" class="form-control" id="txtObservacao" style="  float:right; height:40px; " />
+
+                </div>
+                <div class="col-sm-3 form-group">
+                    <label for="txtImo">Imo : </label>
+                    <input type="text" class="form-control" id="txtImo" style=" float:right;" />
+                </div>
+                <div class="col-md-3 form-group">
+                    <label for="txtImo2">&nbsp;</label>
+                    <input type="text" class="form-control" id="txtImo2" style="  float:right;" />
+                </div>
+                <div class="col-md-3 form-group">
+                    <label for="txtImo3">&nbsp;</label>
+                    <input type="text" class="form-control" id="txtImo3" style="  float:right;" />
+                </div>
+                <div class="col-md-3 form-group">
+                    <label for="txtImo4">&nbsp;</label>
+                    <input type="text" class="form-control" id="txtImo4" style="  float:right;" />
+                </div>
+
+                <div class="col-md-3 form-group">
+                    <label for="txtUno">Uno : </label>
+                    <input type="text" class="form-control" id="txtUno" style=" float:right;" />
+                </div>
+                <div class="col-md-3 form-group">
+                    <label for="txtUno2">&nbsp;</label>
+                    <input type="text" class="form-control" id="txtUno2" style="  float:right;" />
+                </div>
+                <div class="col-md-3 form-group">
+                    <label for="txtUno3">&nbsp;</label>
+                    <input type="text" class="form-control" id="txtUno3" style="  float:right;" />
+                </div>
+                <div class="col-md-3 form-group">
+                    <label for="txtUno4">&nbsp;</label>
+                    <input type="text" class="form-control" id="txtUno4" style="  float:right;" />
+                </div>
+
+
+                <div class="col-sm-9 form-group padding-bottom"></div>
+                <div class="col-sm-3 form-group padding-bottom">
+                    <button class="btn btn-warning" id="btnItemCancelar"><i class="fa fa-times"></i>Cancelar</button>
+                    <button class="btn btn-primary" id="btnItemSalvar"><i class="fa fa-save"></i>Salvar</button>
+                </div>
+            </div>
+            <div class="row padding-bottom">
+                <div class="table-responsive">
+                    <table class="table table-hover table-sm data-table-grid" id="grdItens" style="display:none"></table>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="talies">
+            <div class="row" style="padding-top: 10px; display:none;">
+                <div class="col-md-3">
+                    <label for="txtFiltroRegistro">Registro</label>
+                    <input type="text" id="txtFiltroRegistro" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <label for="txtFiltroRegistro">Talie</label>
+                    <input type="text" id="txtFiltroTalie" class="form-control" />
+                </div>
+                <div class="col-md-5 padding-bottom" style="padding-top:30px;">
+                    <button id="btnPesquisarTalie" class="btn btn-primary"><i class="fa fa-search"></i> Pesquisar</button>
+                    <button id="btnCancelarFiltro" class="btn btn-primary"><i class="fa fa-times"></i> Cancelar</button>
+                </div>
+
+            </div>
+            <div class="row padding-bottom">
+                <div class="table-responsive">
+                    <table class="table table-hover table-sm data-table-grid" id="grdViewTable" style="display:none"></table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+@Html.Partial("_talieColetorDescarga/_modais")
+@section  scripts{
+    @Styles.Render("~/bundles/datatablesCSS")
+    @Scripts.Render("~/bundles/datatables")
+
+    @Html.Partial("_talieColetorDescarga/_scripts")
+    @Html.Partial("_talieColetorDescarga/_scripts_modais")
+}

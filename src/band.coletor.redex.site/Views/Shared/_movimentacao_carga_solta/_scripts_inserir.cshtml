@@ -1,0 +1,69 @@
+﻿
+<script>
+    $('#btnGravar').click(function () {
+        var marcante = $('#txtMarcante').val();
+        var lote = $('#txtLote').val();
+        var bl = $('#txtBL').val();
+        var itens = $('#cbItens').val();
+        var etq = $('#txtEtqPrateleira').val();
+        var ocupacao = $('#txtOcupacao').val();
+        var cbArmazem = $('#cbArmador').val();
+        var cbMotivos = $('#cbMotivo').val();
+        var quantidade = $('#txtQuantidade').val();
+        var local = $('#txtLocal').val();
+        var anvisa = $('#txtAnvisa').val();
+        var nfe = $('#txtNroNfe').val();
+        var embalagem = $('#txtEmbalagem').val();
+        var volumes = $('#txtVolume').val();
+        var localPOS = $('#txtLocal2').val();
+        var mercadoria = $('#txtMercadoria').val();
+        var importador = $('#txtImportador').val();
+        var nvocc = $('#txtNvocc').val();
+        var dataEntrada = $('#txtDataEntrada').val()
+        var cntr = $('#txtContainer').val();
+        var imo = $('#txtImo').val();
+        var onu = $('#txtOnu').val();
+        var etiqueta = $('#txtEtqPrateleira').val();
+        var autonum_cs = $('#hddnAutonumCs').attr('data-id');
+
+
+        var inserir = {
+            "LOTE": lote,
+            "MARCANTE": marcante,
+            "ARMADOR": cbArmazem,
+            "MOTIVO_COL": cbMotivos,
+            "LOCAL": local,
+            "ETIQUETA": etiqueta,
+            "AUTONUM_CS": autonum_cs,
+
+        };
+
+        $.ajax({
+            url: '@Url.Content("~/MovimentacaoCargaSolta/GetInserirMovimentacaoCS")',
+            type: 'GET',
+            data: inserir,
+
+            beforeSend: function () {
+                $('#preloader').show();
+            },
+            success: function (Dados) {
+                var mensagem = Dados.Mensagem;
+                var statusRetorno = Dados.statusRetorno;
+
+                if (statusRetorno == "200") {
+                    toastr.success(mensagem, 'Coletor');
+                }
+                else {
+                    toastr.error(mensagem, 'Coletor');
+                }
+
+                $('#preloader').hide();
+            },
+            error: function () {
+                $('#preloader').hide();
+            }
+        });
+
+    });
+
+</script>

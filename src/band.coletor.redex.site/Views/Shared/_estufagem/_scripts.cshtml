@@ -1,0 +1,1302 @@
+﻿@Styles.Render("~/bundles/datatablesCSS")
+@Scripts.Render("~/bundles/datatables")
+<script>
+    $(document).ready(function () {
+        $('#txtInicio').attr('disabled', true);
+        $('#txtTermino').attr('disabled', true);
+        $('#txtNF').attr('disabled', true);
+        //$('#txtQuantidade').attr('disabled', true);
+        $('#txtReservaNF').attr('disabled', true);
+        $('#txtSoma').attr('disabled', true);
+        $('#txtQuntNota').attr('disabled', true);
+        $('#txtEstufadaInd').attr('disabled', true);
+        //$('#btnGravar').hide();
+        $('#txtConteiner').mask('SSSS000000-0');
+    });
+</script>
+<script>
+
+    $("#limpar").click(function (e) {
+        window.location.reload();
+
+    });
+
+
+    $('#txtConteiner').change(function () {
+        var conteiner = $(this).val();
+        var browser = navigator.appName;
+
+        if (conteiner == "") {
+            if (browser == 'Microsoft Internet Explorer') {
+                alert('Informe o erro');
+            }
+            else {
+                toastr.error('Informe o conteiner', 'Erro');
+            }
+
+        }
+        else {
+            $.ajax({
+                url: '@Url.Content("~/Estufagem/GetCarregaDadosConteiner")',
+                type: 'GET',
+                data: { conteiner: conteiner },
+
+                beforeSend: function () {
+                    $('#preloader').show();
+                },
+                success: function (Dados) {
+                    $('#preloader').hide();
+
+                    var possuiDados = Dados.possuiDados;
+                    var status = Dados.statusRetorno;
+
+                    if (status == "200") {
+                        if (possuiDados) {
+                            var reserva = Dados.objetoRetorno.RESERVA;
+                            var autonum_boo = Dados.objetoRetorno.AUTONUM_BOO;
+                            var autonum_patio = Dados.objetoRetorno.AUTONUM_PATIO;
+                            var autonum_romaneio = Dados.objetoRetorno.AUTONUM_RO;
+                            var obs = Dados.objetoRetorno.Obs;
+
+                            $('#txtOS').val('');
+                            $('#cbItemNF').empty();
+                            $('#txtQuantidade').val('');
+                            $('#txtReservaNF').val('');
+                            $('#grdCargaEstufada').hide();
+                            $('#txtReserva').val(reserva);
+                            $('#txtObs').val(obs);
+
+                            $.get('@Url.Content("~/Estufagem/GetTalieId")', { patio: autonum_patio,romaneio: autonum_romaneio }, function (DadosTalie) {
+                                var posssuiDados = DadosTalie.possuiDados;
+                                if (posssuiDados) {
+                                    var autonum_talie = DadosTalie.objetoRetorno.AUTONUM_TALIE;
+                                }
+                                else {
+                                    var autonum_talie = 0;
+                                }
+
+                                $('#txtReserva').val(reserva);
+                                $('#hddnAutonumBOO').val(autonum_boo);
+                                $('#hddnAutonumPatio').val(autonum_patio);
+                                $('#hddnAutonumRomaneio').val(autonum_romaneio);
+                                $('#hddnAutonumTalie').val(autonum_talie);
+
+                                $.get('@Url.Content("~/Estufagem/GetDadosClienteByReserva")', { reserva: reserva }, function (DadosReserva) {
+                                    var autonum_cli = DadosReserva.objetoRetorno.AUTONUM_CLIENTE;
+                                    var cliente = DadosReserva.objetoRetorno.CLIENTE;
+
+                                    $('#txtCliente').val(cliente);
+                                    $('#hddnAutonumCliente').val(autonum_cli);
+
+                                    carregaDadosTalie(autonum_talie, autonum_patio);
+                                });
+                            });
+                        }
+                        else
+                        {
+                            if (browser == 'Microsoft Internet Explorer') {
+                                alert('Conteiner não encontrado');
+                            }
+                            else {
+                                toastr.info('Conteiner não encontrado', 'Coletor');
+                            }
+
+                            $('#txtConteiner').val('');
+                            $('#txtReserva').val('');
+                            $('#txtCliente').val('');
+                            $('#txtInicio').val('');
+                            $('#txtTermino').val('');
+                            $('#cbConferente').val(0);
+                            $('#cbEquipe').val(0);
+                            $('#cbOperacao').val(0);
+                            $('#txtOS').val('');
+                            $('#cbItemNF').empty();
+                            $('#txtQuantidade').val('');
+                            $('#txtReservaNF').val('');
+                            $('#grdCargaEstufada').hide();
+                            $('#grdCargaEstufada').DataTable().destroy();
+
+                        }
+                    }
+                    else {
+                        if (browser == 'Microsoft Internet Explorer') {
+                            alert('Os dados não foram carregados');
+                            $('#preloader').hide();
+                        }
+                        else {
+                            toastr.error('Os dados não foram carregados', 'Portal', { onHidden: function () { window.location.reload()}});
+                            $('#preloader').hide();
+                        }
+
+
+                    }
+                },
+                error: function () {
+
+                    $('#preloader').hide();
+
+                    toastr.error('Os dados não foram carregados', 'Erro');
+                }
+            });
+        }
+    });
+</script>
+<script>
+    function carregaDadosTalie(id, patio) {
+        var browser = navigator.appName;
+        $.ajax({
+            url: '@Url.Content("~/Estufagem/GetCarregaDadosTalieById")',
+            type: 'GET',
+            data: { id: id },
+
+            beforeSend: function () {
+                $('#preloader').show();
+            },
+            success: function (Dados) {
+                $('#preloader').hide();
+                var status = Dados.statusRetorno;
+                var possuiDados = Dados.possuiDados;
+                //alert(id);
+                if (status == "200") {
+                   if (possuiDados) {
+                        var inicio = moment(Dados.objetoRetorno.INICIO).format('DD-MM-YYYY HH:mm:ss');
+                        var termino = moment(Dados.objetoRetorno.TERMINO).format('DD-MM-YYYY HH:mm:ss');
+                      //var inicio = Dados.objetoRetorno.INICIO;
+                        //var termino = Dados.objetoRetorno.TERMINO;
+                        var conferente = Dados.objetoRetorno.CONFERENTE;
+                        var equipe = Dados.objetoRetorno.EQUIPE;
+                        var modo = Dados.objetoRetorno.FORMA_OPERACAO;
+                        var fechado = Dados.objetoRetorno.Fechado;
+
+                        $('#txtInicio').val(inicio);
+                        $('#txtTermino').val(termino);
+                 
+                        $('#cbConferente option').each(function () {
+                            var conferenteId = $(this).val();
+
+
+                                $(this).attr('selected', true);
+
+                        });
+
+                        $('#cbEquipe option').each(function () {
+                            var equipeId = $(this).val();
+
+                     /*       if (equipe == equipeId) {*/
+                                $(this).attr('selected', true);
+
+                            //}
+                        });
+                        $('#cbOperacao option').each(function () {
+                            var modoId = $(this).val();
+
+                            if (modo == modoId) {
+                                $(this).attr('selected', true);
+                            } else {
+
+                            }
+                        });
+                        if (fechado == 1) {
+                            $('#btnGravar').hide();
+                        }
+
+                        CarregaCargaEstufada(id, patio);
+                    }
+                   else {
+                       if (browser == 'Microsoft Internet Explorer') {
+                           alert('Conteiner não encotrado');
+                       }
+                       else {
+                           toastr.info('Conteiner não encotrado', 'Info');
+                           $('#preloader').hide();
+                       }
+
+                    }
+                }
+                else {
+                    if (browser == 'Microsoft Internet Explorer') {
+                        alert('Os dados não foram carregados');
+                    }
+                    else {
+                        toastr.error('Os dados não foram carregados', 'Erro');
+                        $('#preloader').hide();
+                    }
+                }
+            },
+            error: function () {
+                $('#preloader').hide();
+                toastr.error('Os dados não foram carregados', 'Erro');
+            }
+        });
+    }
+</script>
+<script>
+    $('#btnGravarEstufagem').click(function () {
+
+        var quantidade = $('#txt_Quantidade').val();
+        var autonumPatio = $('#hddnAutonumPatio').val();
+        var autonumTalie = $('#hddnAutonumTalie').val();
+        var autonumRomaneio = $('#hddnAutonumRomaneio').val();
+        var quantidade = $('#txtQuantidade').val();
+        var conteiner = $('#txtConteiner').val();
+
+        var os = $('#txtOS').val();
+
+        var inicio = moment().format('DD-MM-YYYY');
+
+        var saldoAtualizado = 0;
+
+        var browser = navigator.appName;
+
+        var quant = $("#txtQuantidade").val();
+       
+        var estuf = $("#txtEstufadaInd").val();
+     
+        var nota = $("#txtQuntNota").val();
+        quant = Number(quant) + Number(estuf);
+        
+
+        if (Number(nota) < Number(quant)) {
+
+            toastr.error('Quantidade informada não pode ser maior que Quantidade da Nota', 'Erro');
+        }
+        else {
+
+
+            $.get('@Url.Content("~/Estufagem/GetNFByIdOsRo")', { romaneio: autonumRomaneio, os: os }, function (Dados) {
+                var nf = Dados.objetoRetorno.NF;
+
+                $.get('@Url.Content("~/Estufagem/GetDadosByIdOsRo")', { romaneio: autonumRomaneio, idNF: nf }, function (Dados) {
+                    saldoAtualizado = Dados.objetoRetorno.SALDO;
+
+                    if (quantidade == 0) {
+                        if (browser == 'Microsoft Internet Explorer') {
+                            alert('A quantidade deve ser superior a zero');
+                        }
+                        else {
+                            toastr.error('A quantidade deve ser superior a zero', 'Erro');
+                        }
+                    }
+                    else if (parseFloat(quantidade) > parseFloat(saldoAtualizado)) {
+                        if (browser == 'Microsoft Internet Explorer') {
+                            alert('Quantidade insuficiente em estoque');
+                        }
+                        else {
+                            toastr.error('Quantidade insuficiente em estoque', 'Erro');
+                        }
+                    }
+                    else if (autonumPatio == 0) {
+                        if (browser == 'Microsoft Internet Explorer') {
+                            alert('Informe o conteiner');
+                        }
+                        else {
+                            toastr.error('Informe o conteiner', 'Erro');
+                        }
+
+                    }
+                    else if (nf == 0) {
+                        if (browser == 'Microsoft Internet Explorer') {
+                            alert('Informe a NF');
+                        }
+                        else {
+                            toastr.error('Informe a NF ', 'Erro');
+                        }
+
+                    }
+                    else if (autonumTalie == 0) {
+
+                        if (browser == 'Microsoft Internet Explorer') {
+                            alert('Não consta talie para este conteiner');
+                        }
+                        else {
+                            toastr.error('Não consta talie para este conteiner ', 'Erro');
+                            $('#preloader').hide();
+                        }
+
+                    }
+                    else if (autonumTalie > 0) {
+                        $.get('@Url.Content("~/Estufagem/GetFlagFechado")', { id: autonumTalie }, function (Dados) {
+                            var flagFechado = Dados.objetoRetorno;
+
+                            if (flagFechado == 1) {
+
+                                if (browser == 'Microsoft Internet Explorer') {
+                                    alert('Talie Fechado - Estufagem não permitida');
+                                }
+                                else {
+                                    toastr.error('Talie Fechado - Estufagem não permitida ', 'Erro');
+                                    $('#preloader').hide();
+                                }
+                            }
+                            else {
+
+                                $.ajax({
+                                    url: '@Url.Content("~/Estufagem/GetGravaCarga")',
+                                    type: 'GET',
+                                    //data: inserir,
+                                    data: { romaneio: autonumRomaneio, nf: nf, quantidade: quantidade, data: $('#txtInicio').val(), saldo: saldoAtualizado },
+
+                                    beforeSend: function () {
+                                        $('#preloader').show();
+                                    },
+                                    success: function (Dados) {
+                                        $('#preloader').hide();
+
+                                        var mensagem = Dados.Mensagem;
+                                        var status = Dados.statusRetorno;
+
+                                        if (status == "200") {
+
+                                            if (browser == 'Microsoft Internet Explorer') {
+                                                alert(mensagem);
+                                            }
+                                            else {
+                                                toastr.success(mensagem, 'Sucesso');
+                                            }
+
+
+
+                                            CarregaCargaEstufada(autonumTalie, autonumPatio);
+
+                                           $("#txtEstufadaInd").val("");
+                                            $("#txtQuntNota").val("");
+                                            $('#txtOS').val("");
+                                            $('#cbItemNF').empty();
+                                            $('#txtQuantidade').val("");
+                                            $('#txtReservaNF').val("");
+                                            $('#txtLote').val("");
+                                        }
+                                        else {
+                                            if (browser == 'Microsoft Internet Explorer') {
+                                                alert(mensagem);
+                                            }
+                                            else {
+                                                toastr.error(mensagem, 'Erro');
+                                                $('#preloader').hide();
+                                            }
+
+                                        }
+                                    },
+                                    error: function () {
+                                        $('#preloader').hide();
+                                        toastr.error('OS dados não foram inseridos', 'Erro');
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            });
+        }
+   });
+</script>
+
+<script>
+
+    function CarregaCargaEstufada(talie, conteiner) {
+        var browser = navigator.appName;
+        $.ajax({
+            url: '@Url.Content("~/Estufagem/GetItensEstufadosPorTalieConteinerId")',
+            type: 'GET',
+            data: { talie: talie, conteiner: conteiner },
+
+            beforeSend: function () {
+                $('#preloader').show();
+            },
+            success: function (Dados) {
+                $('#preloader').hide();
+
+                $('#grdCargaEstufada').show();
+                $('#grdCargaEstufada').empty();
+                $('#grdCargaEstufada').append('<thead>'
+                    + '<tr>'
+                            + '<th>NF.</th>'
+                            + '<th>Qtde.</th>'
+                            + '<th>Reserva</th>'
+                            //+ '<th>ID Conteiner</th>'
+                            + '<th>Embalagem</th>'
+                            //+ '<th>Mercadoria</th>'
+                            + '<th>Peso</th>'
+                            + '<th>Volume</th>'
+                            + '<th>Cliente</th>'
+                            //+ '<th>Navio/Viagem</th>'
+                            //+ '<th>Cód Barra</th>'
+                            + '<th>Ações</th>'
+                        + '</tr>'
+                    + '</thead>'
+                    + '<tbody>'
+                   );
+
+                $.each(Dados.objetoRetorno, function (i, item) {
+                    var Conteiner = item.Conteiner;
+                    var Reserva = item.Reserva;
+                    var Embalagem = item.Embalagem;
+                    var Produto = item.Produto;
+                    var Quantidade = item.Quantidade;
+                    var Mercadoria = item.Mercadoria;
+                    var Peso = item.Peso;
+                    var Volume = item.Volume;
+                    var Autonum_Sc = item.AUTONUM_SC;
+                    var PatioCargaId = item.PatioCargaId;
+                    var Cliente = item.Cliente;
+                    var NavioViagem = item.NavioViagem;
+                    var NF = item.NF;
+                    var AutonumNFI = item.AUTONUM_NFI;
+                    var patio = item.AUTONUM_PATIO;
+
+                    $('#txtSoma').val(item.SomaQuant);
+
+
+                    $('#grdCargaEstufada').append('<tr>'
+                        + '<td> ' + NF + ' </td>'
+                        + '<td> ' + Quantidade + ' </td>'
+                        + '<td> ' + Reserva + ' </td>'
+                        //+ '<td> ' + Conteiner + ' </td>'
+                        + '<td> ' + Embalagem + ' </td>'
+                        //+ '<td> ' + Mercadoria + ' </td>'
+                        + '<td> ' + Peso + ' </td>'
+                        + '<td> ' + Volume + ' </td>'
+                        + '<td> ' + Cliente + ' </td>'
+                        //+ '<td> ' + NavioViagem + ' </td>'
+                        //+ '<td> ' + Produto + ' </td>'
+                        + '<td>'
+                        + '<a href="#" class="btn btn-danger btn-sm btnDescarga" data-patio="' + patio + '" data-toggle="modal" data-nfi="' + AutonumNFI + '" data-sc = "' + Autonum_Sc + '" data-quantidade = "' + Quantidade + '" data-produto= "' + Produto + '"  role="button" data-target="#modal-exclusao"  title="Descarga"><i class="fa fa-undo"></i>&nbsp Descarga</a>'
+                        + '</td>'
+                    + '</tr>'
+                    );
+                });
+                $('#grdCargaEstufada').append('</tbody></table>');
+                $('#grdCargaEstufada').DataTable().destroy();
+                $('#grdCargaEstufada').DataTable({
+                    language: {
+                        url: '//cdn.datatables.net/plug-ins/1.10.24/i18n/Portuguese-Brasil.json',
+                    }
+                });
+                $('.btnDescarga').click(function (e) {
+                    e.preventDefault();
+                    var nfi = $(this).attr('data-nfi');
+                    var scId = $(this).attr('data-sc');
+                    var patio = $(this).attr('data-patio');
+                    var quantidade = $(this).attr('data-quantidade');
+                    var produto = $(this).attr('data-produto');
+
+                    $('#btnConfirmaDescarga').attr('data-nfi', nfi);
+                    $('#btnConfirmaDescarga').attr('data-sc', scId);
+                    $('#btnConfirmaDescarga').attr('data-patio', patio);
+                    $('#btnConfirmaDescarga').attr('data-quantidade', quantidade);
+                    $('#btnConfirmaDescarga').attr('data-produto', produto);
+
+                })
+
+            },
+            error: function () {
+
+                $('#preloader').hide();
+
+                toastr.error('Os dados não foram carregados', 'Erro');
+            }
+        });
+    }
+
+     $('#btnConfirmaDescarga').click(function () {
+                    var nfi = $(this).attr('data-nfi');
+                    var scId = $(this).attr('data-sc');
+                    var patio = $(this).attr('data-patio');
+                    var quantidade = $(this).attr('data-quantidade');
+                    var produto = $(this).attr('data-produto');
+                    var autonumTalie = $('#hddnAutonumTalie').val();
+                    var browser = navigator.appName;
+         
+
+                      $.ajax({
+                        url: '@Url.Content("~/Estufagem/GetSalvarDescarga")',
+                        type: 'GET',
+                        data: { nfi: nfi, scId: scId, patio: patio, quantidade: quantidade, produto: produto },
+
+                        beforeSend: function () {
+                            $('#preloader').show();
+                        },
+                          success: function (Dados) {
+                            $('#preloader').hide();
+                            var mensagem = Dados.Mensagem;
+                            var status = Dados.statusRetorno;
+
+                              if (status == "200") {
+                                  if (browser == 'Microsoft Internet Explorer') {
+                                      alert(mensagem);
+                                  }
+                                  else {
+
+                                      toastr.success(Dados.Mensagem, 'Sucesso');
+                                  }
+                              }
+                              else {
+                                  if (browser == 'Microsoft Internet Explorer') {
+                                      alert(mensagem);
+                                  }
+                                  else {
+                                      toastr.error(mensagem, 'Erro');
+                                  }
+
+                                  //$('#modal-exclusao').modal('toggle');
+
+                                  ////CarregaCargaEstufada(autonumTalie, patio);
+                              }
+
+                              $('#modal-exclusao').modal('toggle');
+                              CarregaCargaEstufada(autonumTalie, patio);
+                              return;
+                        },
+                        error: function () {
+                            $('#preloader').hide();
+                            if (browser == 'Microsoft Internet Explorer') {
+                                alert('Os dados não foram salvos');
+                            }
+                            else {
+                                toastr.error('Os dados não foram salvos');
+                                $('#preloader').hide();
+                            }
+                        }
+                    });
+                });
+</script>
+<script>
+    $('#txtLote').change(function () {
+
+        var lote = $(this).val();
+        var conteiner = $('#txtConteiner').val();
+
+        $.ajax({
+            url: '@Url.Content("~/Estufagem/GetNfLote")',
+            type: 'GET',
+            data: {lote: lote,cntr: conteiner },
+
+            success: function (Dados) {
+                $('#preloader').hide();
+                $('#cbItemNF').empty();
+                $('#cbItemNF').append('<option value="0">Selecione</option>');
+
+
+                var status = Dados.statusRetorno;
+
+                var possuiDados = Dados.possuiDados;
+                
+                var mensagem = Dados.Mensagem;
+
+
+                $('#cbItemNF').empty();
+                if (possuiDados == true) {
+
+                    if (status == "200") {
+
+                        $.each(Dados.objetoRetorno, function (i, item) {
+                            var rcsId = item.AUTONUM_RCS;
+                          $('#txtOS').val(item.NUM_NF);
+
+                            var display = item.DISPLAY;
+
+
+                            $('#cbItemNF').append('<option value="' + rcsId + '">' + display + '</option>');
+
+                        });
+                        var itemId = $('#cbItemNF').val();
+                        CarregaDadosNF(itemId);
+
+                        //Deixar o change event comentado caso tenha usar
+                        //$('#cbItemNF').change(function () {
+
+                        //});
+
+                    }
+                    else
+                    {
+                        if (status == "300") {
+                            toastr.info('Lote Bagagem,NF não é obrigatoria');
+                           
+                            $('#txtQuntNota').val(Dados.objetoRetorno);
+                        }
+                        if (browser == 'Microsoft Internet Explorer') {
+                            alert(mensagem);
+                        }
+                        else {
+                            toastr.info(mensagem, 'Erro');
+                            $('#preloader').hide();
+                        }
+                    }
+                }
+                else {
+                    if (browser == 'Microsoft Internet Explorer') {
+                        alert("NF(s) não encontradas para esta OS e este conteiner");
+                    }
+                    else {
+                        toastr.error("NF(s) não encontradas para esta OS e este conteiner", 'Erro');
+                        $('#preloader').hide();
+                    }
+
+                }
+
+            },
+            error: function () {
+
+                $('#preloader').hide();
+
+                toastr.error('Os itens não foram carregados', 'Error');
+            }
+        });
+
+
+    });
+
+    $('#txtOS').change(function () {
+
+        var os = $(this).val();
+        var romaneio = $('#hddnAutonumRomaneio').val();
+        var conteiner = $('#txtConteiner').val();
+        var boo = $('#hddnAutonumBOO').val();
+        var browser = navigator.appName;
+
+        $.ajax({
+            url: '@Url.Content("~/Estufagem/GetDadosByIdOs")',
+            type: 'GET',
+            data: { conteiner: conteiner, romaneio: romaneio, os: os },
+
+            beforeSend: function () {
+                $('#preloader').show();
+                $('#cbItemNF').empty();
+                $('#cbItemNF').append('<option value="0">Aguarde...</option>');
+            },
+            success: function (Dados) {
+                $('#preloader').hide();
+                $('#cbItemNF').empty();
+                $('#cbItemNF').append('<option value="0">Selecione</option>');
+
+                var status = Dados.statusRetorno;
+                var possuiDados = Dados.possuiDados;
+                var mensagem = Dados.Mensagem;
+
+                $('#cbItemNF').empty();
+                if (possuiDados == true) {
+
+                    if (status == "200") {
+
+                        $.each(Dados.objetoRetorno, function (i, item) {
+                            var rcsId = item.AUTONUM_RCS;
+                            var display = item.DISPLAY;
+
+                            $('#cbItemNF').append('<option value="' + rcsId + '">' + display + '</option>');
+
+                        });
+                        var itemId = $('#cbItemNF').val();
+                        CarregaDadosNF(itemId);
+
+                        //Deixar o change event comentado caso tenha usar
+                        //$('#cbItemNF').change(function () {
+
+                        //});
+
+                    }
+                    else {
+                        if (browser == 'Microsoft Internet Explorer') {
+                            alert(mensagem);
+                        }
+                        else {
+                            toastr.info(mensagem, 'Erro');
+                            $('#preloader').hide();
+                        }
+                    }
+                }
+                else {
+                    if (browser == 'Microsoft Internet Explorer') {
+                        alert("NF(s) não encontradas para esta OS e este conteiner");
+                    }
+                    else {
+                        toastr.error("NF(s) não encontradas para esta OS e este conteiner", 'Erro');
+                        $('#preloader').hide();
+                    }
+
+                }
+
+            },
+            error: function () {
+
+                $('#preloader').hide();
+
+                toastr.error('Os itens não foram carregados', 'Error');
+            }
+        });
+    });
+</script>
+<script>
+    $('#cbItemNF').change(function () {
+        var itemId = $(this).val();
+        CarregaDadosNF(itemId);
+    })
+</script>
+
+<script>
+    function CarregaDadosNF(id) {
+        $.ajax({
+            url: '@Url.Content("~/Estufagem/GetDadosNF")',
+            type: 'GET',
+            data: { id: id },
+
+            beforeSend: function () {
+                $('#preloader').show();
+            },
+            success: function (Dados) {
+                var mensagem = Dados.Mensagem;
+                var statusRetorno = Dados.statusRetorno;
+
+                if (mensagem == "") {
+                    if (statusRetorno == "200") {
+                        var os = Dados.objetoRetorno.OS;
+                        var conteinerId = Dados.objetoRetorno.ID_Conteiner;
+                        var boo = Dados.objetoRetorno.AUTONUM_BOO;
+                        var reserva = Dados.objetoRetorno.RESERVA;
+                        var qtdeSaida = Dados.objetoRetorno.QTDE_SAIDA;
+                        var quantidade = Dados.objetoRetorno.Quantidade;
+                        var saldo = Dados.objetoRetorno.SALDO;
+
+                        var autonumPcs = Dados.objetoRetorno.AUTONUM_PCS;
+                        var autonumEmb = Dados.objetoRetorno.AUTONUM_EMB;
+                        var bruto = Dados.objetoRetorno.BRUTO;
+                        var comprimento = Dados.objetoRetorno.COMPRIMENTO;
+                        var largura = Dados.objetoRetorno.LARGURA;
+                        var altura = Dados.objetoRetorno.ALTURA;
+                        var autonumPro = Dados.objetoRetorno.AUTONUM_PRO;
+                        var autonumRcs = Dados.objetoRetorno.AUTONUM_RCS;
+                        var codProduto = Dados.objetoRetorno.CODPRODUTO;
+                        var quantidadeF = 1;
+                        $('#txtQuntNota').val(quantidade);
+                        $('#txtEstufadaInd').val(qtdeSaida);
+                        $('#txtReservaNF').val(reserva);
+                        $('#txtQuantidade').val(quantidadeF);
+                        $('#preloader').hide();
+
+
+                        var vol = parseFloat(largura * altura * comprimento).toFixed(2);
+
+                        vol = parseFloat(vol / 1000000).toFixed(2);
+                    }
+                    else {
+                        toastr.error(mensagem, "Coletor")
+                    }
+                }
+                else {
+                    toastr.error(mensagem, "Coletor")
+                }
+                $('#preloader').hide();
+            },
+            error: function () {
+                toastr.error('Os dados não foram carregados', 'Erro');
+                $('#preloader').hide();
+            }
+        });
+    }
+
+</script>
+<script>
+    $('#btnGravar').click(function () {
+        var inicio = moment($('#txtInicio').val()).format('DD-MM-YYYY HH:mm');
+        var termino = moment($('#txtTermino').val()).format('DD-MM-YYYY HH:mm');
+        var talie = $('#hddnAutonumTalie').val();
+        var hddnAutonumBOO = $('#hddnAutonumBOO').val();
+        var hddnAutonumRomaneio = $('#hddnAutonumRomaneio').val();
+        var cbConferente = $('#cbConferente').val();
+        var cbEquipe = $('#cbEquipe').val();
+        var cbOperacao = $('#cbOperacao').val();
+        var patio = $('#hddnAutonumPatio').val();
+        var gate = "0";
+        var browser = navigator.appName;
+
+
+
+        if (hddnAutonumRomaneio == 0) {
+            if (browser == "Microsoft Internet Explorer") {
+                alert('Informe um contêiner válido');
+            }
+            else {
+                toastr.error('Informe um contêiner válido', 'Erro');
+            }
+        }
+        else if (hddnAutonumBOO == 0) {
+            if (browser == 'Microsoft Internet Explorer') {
+                alert('Informe um contêiner válido');
+            }
+            else {
+                toastr.error('Informe um contêiner válido', 'Erro');
+            }
+        }
+        else if (cbConferente == 0) {
+            if (browser == 'Microsoft Internet Explorer') {
+                alert('Informe o conferente');
+            }
+            else {
+                alert('teste');
+                alert(cbConferente);
+                toastr.error('Informe o conferente', 'Erro');
+            }
+        }
+        else if (cbEquipe == 0) {
+            if (browser == 'Microsoft Internet Explorer') {
+                alert('Informe a equipe');
+            }
+            else {
+                toastr.error('Informe a equipe', 'Erro');
+            }
+        }
+        else if (cbOperacao == 0) {
+            if (browser == 'Microsoft Internet Explorer') {
+                alert('Informe o modo da operação');
+            }
+            else {
+                toastr.error('Informe o modo da operação', 'Erro');
+                $('#preloader').hide();
+            }
+        }
+        else {
+            $.ajax({
+                url: '@Url.Content("~/Estufagem/Gravar")',
+                type: 'GET',
+                data: { inicio: inicio, termino: termino, talie: talie, boo: hddnAutonumBOO, romaneio: hddnAutonumRomaneio, conferente: cbConferente, equipe: cbEquipe, modo: cbOperacao, patio: patio, gate: gate  },
+
+                    beforeSend: function () {
+                        $('#preloader').show();
+                    },
+                    success: function (Dados) {
+                        $('#preloader').hide();
+
+                        var mensagem = Dados.Mensagem;
+                        var status = Dados.statusRetorno;
+                        if (talie == 0) {
+                            var talieID = Dados.objetoRetorno.talieID;
+                            var dtInicio = Dados.objetoRetorno.dtInicio;
+
+
+                            $('#hddnAutonumTalie').val(talieID);
+
+                            $('#txtInicio').val(dtInicio);
+
+                            carregaDadosTalie(talieID, patio);
+                            CarregaCargaEstufada(talieID, patio);
+
+                        }
+
+                        if (status == "200") {
+                            if (browser == 'Microsoft Internet Explorer') {
+                                alert(mensagem);
+                            }
+                            else {
+                                toastr.success(mensagem, 'Successo');
+                            }
+
+                        }
+                        else {
+                            if (browser == 'Microsoft Internet Explorer') {
+                                alert(mensagem);
+                            }
+                            else {
+                                toastr.success(mensagem, 'Erro');
+                                $('#preloader').hide();
+                            }
+                        }
+                    },
+                    error: function () {
+                        $('#preloader').hide();
+                        toastr.error('OS dados não foram inseridos', 'Erro');
+                    }
+                });
+        }
+    });
+</script>
+<script>
+    function FinalizarTalie() {
+        var browser = navigator.appName;
+        if ($('#lblTalieNumero').val() == '') {
+            if (browser == 'Microsoft Internet Explorer') {
+                alert('Finalize somente após o lançamento do talie');
+            }
+            else {
+                toastr.error('Finalize somente após o lançamento do talie', 'Coletor');
+            }
+            return;
+        }
+
+        if (ValidarFechamento() == 0) {
+            if (browser == 'Microsoft Internet Explorer') {
+                alert('Não foi encontrado lancamento de carga para o talie selecionado');
+            }
+            else {
+                toastr.error('Não foi encontrado lancamento de carga para o talie selecionado', 'Coletor');
+            }
+            return;
+        }
+
+        $('#modal-fechamento').data('id', $('#lblTalieNumero').val());
+        $('#modal-fechamento').modal('show');
+
+    }
+
+    function ValidarFechamento() {
+        var _talie = $('#hddnAutonumTalie').val();
+        var _autonumRomaneio = $('#hddnAutonumRomaneio').val();
+        var _autonumPatio = $('#hddnAutonumPatio').val();
+        var _autonumBOO = $('#hddnAutonumBOO').val();
+        var browser = navigator.appName;
+        $.ajax({
+            type: "GET",
+            url: "@Url.Content("~/Estufagem/ValidarFechamento")",
+            data: { talie: _talie, romaneio: _autonumRomaneio },
+
+            success: function (Dados) {
+                var possuiDados = Dados.possuiDados;
+                var mensagem = Dados.Mensagem;
+
+                if (possuiDados) {
+                    var fechado = Dados.objetoRetorno.flagFechado;
+
+                    if (fechado == 0) {
+                        ValidarFechamentoParte2()
+                    } else {
+                        $('#modal-talie-finalizado').data('id', _talie);
+                        $('#modal-talie-finalizado').modal('show');
+                    }
+                }
+                else {
+                    if (browser == 'Microsoft Internet Explorer') {
+                        alert(mensagem);
+                    }
+                    else {
+                        toastr.error(mensagem, 'Coletor');
+                        $('#preloader').hide();
+                    }
+
+                }
+
+            },
+            error: function () {
+
+                toastr.error("Os dados não foram validados", 'Coletor');
+                $('#preloader').hide();
+            }
+        });
+    }
+
+    function ValidarFechamentoParte2() {
+        var _talie = $('#hddnAutonumTalie').val();
+        var _autonumRomaneio = $('#hddnAutonumRomaneio').val();
+        var _autonumPatio = $('#hddnAutonumPatio').val();
+        var _autonumBOO = $('#hddnAutonumBOO').val();
+        var browser = navigator.appName;
+
+        $.ajax({
+            type: "GET",
+            url: "@Url.Content("~/Estufagem/ValidarFechamentoParte2")",
+            data: { talie: _talie, autonumRomaneio: _autonumRomaneio, autonumPatio: _autonumPatio },
+
+            success: function (data) {
+                var dataMensagem = data.Mensagem;
+
+                if (dataMensagem != "") {
+
+                    if (browser == 'Microsoft Internet Explorer') {
+                        alert(dataMensagem);
+                    }
+                    else if (dataMensagem == "") {
+                        toastr.success(dataMensagem, 'Coletor');
+
+                    }
+                    else
+                    {
+
+                        toastr.error(dataMensagem, 'Coletor');
+                    }
+
+                }
+                else {
+
+                    $('#modal-confirma-fechamento').data('id', _talie);
+                    $('#modal-confirma-fechamento').modal('show');
+                }
+
+
+            },
+            error: function () {
+
+                toastr.error("Erro ao validar fechamento", 'Coletor');
+                $('#preloader').hide();
+            }
+        });
+    }
+
+</script>
+<script>
+    function ConfirmarFechamento() {
+        var _talie = $('#hddnAutonumTalie').val();
+        var _autonumRomaneio = $('#hddnAutonumRomaneio').val();
+        var _autonumPatio = $('#hddnAutonumPatio').val();
+        var _autonumBOO = $('#hddnAutonumBOO').val();
+        var _conteiner = $('#txtConteiner').val();
+        var _conferente = $('#cbConferente').val();
+        var _equipe = $('#cbEquipe').val();
+      
+        var browser = navigator.appName;
+   
+
+        $.ajax({
+            type: "GET",
+            url: "@Url.Content("~/Estufagem/ConfirmaFechamento")",
+            data: { talie: _talie , autonumRomaneio: _autonumRomaneio , autonumPatio: _autonumPatio ,conferente: _conferente,equipe:_equipe },
+
+            success: function (response) {
+
+                if (browser == 'Microsoft Internet Explorer') {
+                    alert(response.Mensagem);
+                }
+                else {
+                    toastr.success(response.Mensagem, 'Coletor');
+                }
+
+
+                $('#modal-fechamento')
+                    .data('id', '0')
+                    .modal('hide');
+
+                setTimeout(function () {
+                    location.reload();
+
+                }, 1500);
+            },
+            error: function () {
+
+                toastr.error("Erro ao fechar talie", 'Coletor');
+                $('#preloader').hide();
+            }
+        });
+    }
+</script>
+<script>
+    function GerarCancelamento() {
+        var _talie = $('#hddnAutonumTalie').val();
+        var _autonumRomaneio = $('#hddnAutonumRomaneio').val();
+        var _autonumPatio = $('#hddnAutonumPatio').val();
+        var _autonumBOO = $('#hddnAutonumBOO').val();
+        var _conteiner = $('#txtConteiner').val();
+        var browser = navigator.appName;
+
+        $.ajax({
+            type: "GET",
+            url: "@Url.Content("~/Estufagem/GerarCancelamento")",
+            data: { talie: _talie,  autonumRomaneio: _autonumRomaneio  },
+
+            success: function (data) {
+
+                if (browser == 'Microsoft Internet Explorer') {
+                    alert(data.Mensagem);
+                }
+                else {
+                    toastr.success(data.Mensagem, 'Coletor');
+                }
+
+                $('#modal-talie-finalizado')
+                    .data('id', '0')
+                    .modal('hide');
+
+                setTimeout(function () {
+                    location.reload();
+                }, 1500);
+
+            },
+            error: function () {
+
+                toastr.error("Erro ao gerar cancelamemto", 'Coletor');
+                $('#preloader').hide();
+            }
+        });
+    }
+</script>
+@*Metodo de gravacao de estufagem descontinuado*@
+<script>
+    $('#btnGravarEstufagem000').click(function () {
+
+        var quantidade = $('#txt_Quantidade').val();
+        var autonumPatio = $('#hddnAutonumPatio').val();
+        var autonumTalie = $('#hddnAutonumTalie').val();
+        var autonumRomaneio = $('#hddnAutonumRomaneio').val();
+        var quantidade = $('#txtQuantidade').val();
+        var conteiner = $('#txtConteiner').val();
+
+   
+            var os = $('#txtOS').val();
+            var nf = $('#cbItemNF').val();
+
+
+            var inicio = moment().format('DD-MM-YYYY');
+
+            var saldoAtualizado = 0;
+
+            var browser = navigator.appName;
+
+            $.get('@Url.Content("~/Estufagem/GetDadosNF")', { id: nf }, function (DadosNF) {
+                var pcs = DadosNF.objetoRetorno.AUTONUM_PCS;
+                var emb = DadosNF.objetoRetorno.AUTONUM_EMB;
+                var peso = DadosNF.objetoRetorno.BRUTO;
+                var comprimento = DadosNF.objetoRetorno.COMPRIMENTO;
+                var largura = DadosNF.objetoRetorno.LARGURA;
+                var altura = DadosNF.objetoRetorno.ALTURA;
+                var produto = DadosNF.objetoRetorno.CODPRODUTO;
+                var nfId = DadosNF.objetoRetorno.autonum_nf;
+                var numeroNF = DadosNF.objetoRetorno.NUM_NF;
+
+                var volume = parseFloat(largura) * parseFloat(altura) * parseFloat(comprimento);
+
+                var volumeD = parseFloat(volume) / parseFloat(1000000);
+
+                var conteinerId = DadosNF.objetoRetorno.AUTONUM_PRO;
+
+                if (quantidade > 0) {
+                    volumeD = parseFloat(volumeD) * parseFloat(quantidade);
+                }
+
+                var inserir = {
+                    "Quantidade": quantidade,
+                    "PatioCSId": pcs,
+                    "EmbalagemId": emb,
+                    "Bruto": peso,
+                    "Altura": altura,
+                    "Comprimento": comprimento,
+                    "Largura": largura,
+                    "VolumeTotal": volumeD.toFixed(3),
+                    "PatioId": autonumPatio,
+                    "Conteiner": conteiner,
+                    "ConteinerId": conteinerId,
+                    "Produto": produto,
+                    "NFItemId": nfId,
+                    "TlieId": autonumTalie,
+                    "Inicio": $('#txtInicio').val(),
+                    "ProdutoId": os,
+                    "autonum_ro": autonumRomaneio,
+                    "AUTONUM_RCS": nf
+
+                };
+
+
+                $.get('@Url.Content("~/Estufagem/GetDadosByIdOsRo")', { romaneio: romaneio, os: os }, function (Dados) {
+                    saldoAtualizado = Dados.objetoRetorno.SALDO;
+
+                    if (quantidade == 0) {
+                        if (browser == 'Microsoft Internet Explorer') {
+                            alert('A quantidade deve ser superior a zero');
+                        }
+                        else {
+                            toastr.error('A quantidade deve ser superior a zero', 'Erro');
+                        }
+                    }
+                    else if (parseFloat(quantidade) > parseFloat(saldoAtualizado)) {
+                        if (browser == 'Microsoft Internet Explorer') {
+                            alert('Quantidade insuficiente em estoque');
+                        }
+                        else {
+                            toastr.error('Quantidade insuficiente em estoque', 'Erro');
+                        }
+                    }
+                    else if (autonumPatio == 0) {
+                        if (browser == 'Microsoft Internet Explorer') {
+                            alert('Informe o conteiner');
+                        }
+                        else {
+                            toastr.error('Informe o conteiner', 'Erro');
+                        }
+
+                    }
+                    else if (nf == 0) {
+                        if (browser == 'Microsoft Internet Explorer') {
+                            alert('Informe a NF');
+                        }
+                        else {
+                            toastr.error('Informe a NF ', 'Erro');
+                        }
+
+                    }
+                    else if (autonumTalie == 0) {
+
+                        if (browser == 'Microsoft Internet Explorer') {
+                            alert('Não consta talie para este conteiner');
+                        }
+                        else {
+                            toastr.error('Não consta talie para este conteiner ', 'Erro');
+                        }
+
+                    }
+                    else if (autonumTalie > 0) {
+                        $.get('@Url.Content("~/Estufagem/GetFlagFechado")', { id: autonumTalie }, function (Dados) {
+                            var flagFechado = Dados.objetoRetorno;
+
+                            if (flagFechado == 1) {
+
+                                if (browser == 'Microsoft Internet Explorer') {
+                                    alert('Talie Fechado - Estufagem não permitida');
+                                }
+                                else {
+                                    toastr.error('Talie Fechado - Estufagem não permitida ', 'Erro');
+                                }
+                            }
+                            else {
+                                $.ajax({
+                                    url: '@Url.Content("~/Estufagem/GetGravaCarga")',
+                                    type: 'GET',
+                                    data: inserir,
+
+                                    beforeSend: function () {
+                                        $('#preloader').show();
+                                    },
+                                    success: function (Dados) {
+                                        $('#preloader').hide();
+
+                                        var mensagem = Dados.Mensagem;
+                                        var status = Dados.statusRetorno;
+
+                                        if (status == "200") {
+
+                                            if (browser == 'Microsoft Internet Explorer') {
+                                                alert(mensagem);
+                                            }
+                                            else {
+                                                toastr.success(mensagem, 'Sucesso');
+                                            }
+
+                                            CarregaCargaEstufada(autonumTalie, autonumPatio);
+
+                                            $('#txtOS').val("");
+                                            $('#cbItemNF').empty();
+                                            $('#txtQuantidade').val("");
+                                            $('#txtReservaNF').val("");
+                                        }
+                                        else {
+                                            if (browser == 'Microsoft Internet Explorer') {
+                                                alert(mensagem);
+                                            }
+                                            else {
+                                                toastr.error(mensagem, 'Erro');
+                                            }
+
+                                        }
+
+                                    },
+                                    error: function () {
+                                        $('#preloader').hide();
+                                        toastr.error('OS dados não foram inseridos', 'Erro');
+                                    }
+                                });
+                            }
+                        });
+                    }
+
+                });
+
+            });
+        
+        });
+
+</script>
+@*Metodo de estufagem descontinuado*@

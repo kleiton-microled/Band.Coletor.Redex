@@ -1,0 +1,47 @@
+﻿@model IEnumerable<Band.Coletor.Redex.Business.Models.Estufgem>
+
+<br />
+
+<div class="table-responsive">
+    <table id="tbMarcantes" class="table table-striped" cellspacing="0">
+        <thead class="table-success">
+            <tr>
+                <th scope="col">NF</th>
+                <th scope="col">NF</th>
+                <th scope="col">Qtde.</th>
+                <th scope="col">Reserva</th>
+                <th scope="col">Id Contêiner</th>
+                <th scope="col">Embalagem</th>
+                <th scope="col">Mercadoria</th>
+                <th scope="col">Peso</th>
+                <th scope="col">Volume</th>
+                <th scope="col">Cliente</th>
+                <th scope="col">Navio / Viagem</th>
+                <th scope="col">Cód. Barra</th>
+                <th scope="col">&nbsp;</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr id="linha-@item.PatioCargaId">
+                    <td>@item.NF</td>
+                    <td>@item.Quantidade</td>
+                    <td>@item.Reserva</td>
+                    <td>@item.Conteiner</td>
+                    <td>@item.Embalagem</td>
+                    <td>@item.Produto</td>
+                    <td>@item.Peso</td>
+                    <td>@item.Volume</td>
+                    <td>@item.Cliente</td>
+                    <td>@item.NavioViagem</td>
+                    <td>@item.CodigoBarra</td>
+                    <td class="float-right mr-2"><a href="#" onclick="Descarga(@item.NF)" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i>&nbsp;Excluir</a></td>
+                    <td class="campo-acao">
+                        <a href="@Url.Action("Descarga","Estufagem", new { id = item.NF})" class="btn btn-info btn-sm btn-acao"><i class="fa fa-edit"></i></a>
+                    </td></tr>
+            }
+        </tbody>
+    </table>
+</div>
+

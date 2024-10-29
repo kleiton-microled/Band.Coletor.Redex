@@ -1,0 +1,277 @@
+﻿
+<script>
+    $('#btnBuscaCntr').click(function () {
+         getDadosCntr();
+    });
+</script>
+<script>
+    $('#txtContainer').change(function () {
+        var id = $(this).val();
+
+        if (id.length < 4) {
+            toastr.error('Preencha os 4 digitos do container para fazer a consulta', 'Coletor')
+            return;
+        }
+        getDadosCntr4Dg();
+    });
+</script>
+<script>
+    $('#txtSigla').change(function () {
+        var id = $(this).val();
+        $("#txtSigla").mask("SSSS000000-0");
+        if (id.length < 12) {
+            toastr.error('Preencha todos da sigla do container para fazer a consulta', 'Coletor')
+            return;
+        }
+        getDadosCntr();
+    });
+</script>
+<script>
+    function getDadosCntr4Dg() {
+        var container = $('#txtContainer').val();
+
+        $('#txtLocal').val("");
+
+        var cntr = {
+            "ID_CONTEINER": container,
+        }
+
+         $.ajax({
+            url: '@Url.Content("~/MovimentacaoContainer/GetBuscaCntr/")',
+            type: 'GET',
+             data: cntr,
+
+
+            beforeSend: function () {
+                $('#preloader').show();
+
+            },
+            success: function (Dados) {
+                var mensagem = Dados.Mensagem;
+                var statusRetorno = Dados.statusRetorno;
+
+                if (mensagem == "") {
+                    if (statusRetorno == "200") {
+                        var tamanho = Dados.objetoRetorno.TAMANHO;
+                        var tipo = Dados.objetoRetorno.TIPOBASICO;
+                        var bruto = Dados.objetoRetorno.BRUTO;
+                        var regime = Dados.objetoRetorno.DESCRICAO;
+                        var temperatura = Dados.objetoRetorno.TEMPERATURE;
+                        var imo = Dados.objetoRetorno.IMO1;
+                        var mapa = Dados.objetoRetorno.SITUACAO_BL;
+                        var viagem = Dados.objetoRetorno.VIAGEM;
+                        var categoria = Dados.objetoRetorno.IMPEXP;
+                        var ef = Dados.objetoRetorno.EF;
+                        var posic = Dados.objetoRetorno.DESCR_MOTIVO_POSIC + " - " + Dados.objetoRetorno.dt_prevista_posic;
+                        var data_ent_temp = moment(Dados.objetoRetorno.DATA_ENT_TEMP).format('DD/MM/YYYY HH:mm');
+                        var cntrRet = Dados.objetoRetorno.ID_CONTEINER;
+                        var quantidade = Dados.objetoRetorno.QTD;
+                        var camera = Dados.objetoRetorno.CAMERA;
+                        var autonum = Dados.objetoRetorno.AUTONUM;
+                        var yard = Dados.objetoRetorno.YARD;
+
+                        $('#txtContainer').val(cntrRet.substring(13, 7).replace("-", ""));
+                        $('#txtSigla').val(cntrRet);
+                        $('#txtSigla').attr('data-id', autonum);
+                        $('#txtTamanho').val(tamanho);
+                        $('#txtTipo').val(tipo);
+                        $('#txtGWT').val(bruto);
+                        $('#txtRegime').val(regime);
+                        $('#txtTemperatura').val(temperatura);
+                        $('#txtIMO').val(imo);
+                        $('#txtMapa').val(mapa);
+                        $('#txtDataEntrada').val(data_ent_temp);
+                        $('#txtViagem').val(viagem);
+                        $('#txtCategoria').val(categoria);
+                        $('#txtEF').val(ef);
+                        $('#txtPosicionar').val(posic);
+                        $('#txtQuantidade').val(quantidade);
+                        $('#txtCamera').val(camera);
+                        $('#txtLocalAtual').val(yard);
+
+                        carregaInfLote(cntrRet);
+
+                        $('#preloader').hide();
+                    }
+                    else {
+                        toastr.error(mensagem, 'Coletor');
+                        $('#txtContainer').val("");
+                    }
+                }
+                else {
+                    toastr.error(mensagem, 'Coletor');
+                    $('#txtContainer').val("");
+                }
+                $('#preloader').hide();
+            },
+            error: function () {
+                $('#preloader').hide();
+                toastr.error("Os dados não foram carregados", 'Coletor');
+            }
+        })
+    }
+</script>
+<script>
+    function getDadosCntr() {
+        var container = $('#txtSigla').val();
+
+        $('#txtLocal').val("");
+
+        var cntr = {
+            "ID_CONTEINER": container,
+        }
+
+         $.ajax({
+            url: '@Url.Content("~/MovimentacaoContainer/GetBuscaCntr/")',
+            type: 'GET',
+             data: cntr,
+
+
+            beforeSend: function () {
+                $('#preloader').show();
+
+            },
+            success: function (Dados) {
+                var mensagem = Dados.Mensagem;
+                var statusRetorno = Dados.statusRetorno;
+
+                if (mensagem == "") {
+                    if (statusRetorno == "200") {
+                        var tamanho = Dados.objetoRetorno.TAMANHO;
+                        var tipo = Dados.objetoRetorno.TIPOBASICO;
+                        var bruto = Dados.objetoRetorno.BRUTO;
+                        var regime = Dados.objetoRetorno.DESCRICAO;
+                        var temperatura = Dados.objetoRetorno.TEMPERATURE;
+                        var imo = Dados.objetoRetorno.IMO1;
+                        var mapa = Dados.objetoRetorno.SITUACAO_BL;
+                        var viagem = Dados.objetoRetorno.VIAGEM;
+                        var categoria = Dados.objetoRetorno.IMPEXP;
+                        var ef = Dados.objetoRetorno.EF;
+                        var posic = Dados.objetoRetorno.DESCR_MOTIVO_POSIC + " - " + Dados.objetoRetorno.dt_prevista_posic;
+                        var data_ent_temp = moment(Dados.objetoRetorno.DATA_ENT_TEMP).format('DD/MM/YYYY HH:mm');
+                        var cntrRet = Dados.objetoRetorno.ID_CONTEINER;
+                        var quantidade = Dados.objetoRetorno.QTD;
+                        var camera = Dados.objetoRetorno.CAMERA;
+                        var autonum = Dados.objetoRetorno.AUTONUM;
+                        var yard = Dados.objetoRetorno.YARD;
+
+                        $('#txtContainer').val(cntrRet.substring(13, 7).replace("-", ""));
+                        $('#txtSigla').val(cntrRet);
+                        $('#txtSigla').attr('data-id', autonum);
+                        $('#txtTamanho').val(tamanho);
+                        $('#txtTipo').val(tipo);
+                        $('#txtGWT').val(bruto);
+                        $('#txtRegime').val(regime);
+                        $('#txtTemperatura').val(temperatura);
+                        $('#txtIMO').val(imo);
+                        $('#txtMapa').val(mapa);
+                        $('#txtDataEntrada').val(data_ent_temp);
+                        $('#txtViagem').val(viagem);
+                        $('#txtCategoria').val(categoria);
+                        $('#txtEF').val(ef);
+                        $('#txtPosicionar').val(posic);
+                        $('#txtQuantidade').val(quantidade);
+                        $('#txtCamera').val(camera);
+                        $('#txtLocalAtual').val(yard);
+
+                        carregaInfLote(cntrRet);
+
+                        $('#preloader').hide();
+                    }
+                    else {
+                        toastr.error(mensagem, 'Coletor');
+                        $('#txtSigla').val("");
+                    }
+                }
+                else {
+                    toastr.error(mensagem, 'Coletor');
+                    $('#txtSigla').val("");
+                }
+                $('#preloader').hide();
+            },
+            error: function () {
+                $('#preloader').hide();
+                toastr.error("Os dados não foram carregados", 'Coletor');
+            }
+        })
+    }
+</script>
+<script>
+    function carregaInfLote(cntr) {
+        $.ajax({
+            url: '@Url.Content("~/MovimentacaoContainer/GetInfoLote/")',
+            type: 'GET',
+            data: { id_conteiner: cntr },
+
+
+            beforeSend: function () {
+                $('#preloader').show();
+
+            },
+            success: function (Dados) {
+                var mensagem = Dados.Mensagem;
+                var statusRetorno = Dados.statusRetorno;
+
+                if (mensagem == "") {
+                    if (statusRetorno == "200") {
+                        $('#cbInfLote').append("<option value=" + Dados.objetoRetorno.AUTONUM + ">" + Dados.objetoRetorno.DESCR + "</option>");
+                    }
+                    else {
+                        toastr.error(mensagem, 'Coletor');
+                    }
+                }
+                else {
+                    toastr.error(mensagem, 'Coletor');
+                }
+                $('#preloader').hide();
+            },
+            error: function () {
+                $('#preloader').hide();
+                toastr.error("Os dados não foram carregados", 'Coletor');
+            }
+        })
+    }
+
+</script>
+
+<script>
+    $('#btnLimparCntr').click(function () {
+        Limpar();
+    });
+</script>
+<script>
+    function Limpar() {
+        $('#txtContainer').val("");
+        $('#txtSigla').val("");
+        $('#txtTamanho').val("");
+        $('#txtTipo').val();
+        $('#txtGWT').val("");
+        $('#txtMapa').val("");
+        $('#txtTemperatura').val("");
+        $('#txtImo').val("");
+        $('#txtDataEntrada').val("");
+        $('#txtViagem').val("");
+        $('#txtCategoria').val("");
+        $('#txtEF').val("");
+        $('#txtPosicionar').val("");
+        $('#txtLocalAtual').val("");
+        $('#txtLocal').val("");
+        $('#cbMotivo').val(0);
+        $('#cbInfLote').val(0);
+        $('#txtQuantidade').val(0);
+        $('#txtCamera').val("");
+        $('#txtTipo').val("");
+    }
+</script>
+<script>
+    $(document).ready(function () {
+        $('#txtRegime').hide();
+        $('#txtMapa').hide();
+        $('#txtCategoria').hide();
+        $('#cbInfLote').hide();
+        $('#txtQuantidade').hide();
+        $('#txtCamera').hide();
+        $('#cbVeiculo').hide();
+        $('#cbVeiculoCarregamento').hide();
+    });
+</script>

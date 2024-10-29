@@ -1,0 +1,193 @@
+﻿<div>
+    <div class="row padding-bottom">
+        <div class="col-md-12">
+            <h4>
+                <i class="fas fa-truck fa-lg"></i>
+                Movimentação de conteiner
+            </h4>
+        </div>
+        <div class="col-md-12 padding-bottom"></div>
+        <div class="col-md-8"></div>
+
+        @*<div class="col-md-2 form-group padding-bottom">
+                <a href="#" class="btn btn-outline-success btn-block" id="btnCntrModal"><i class="fa fa-check"></i> Ver Autorizados</a>
+            </div>*@
+
+        <div class="col-md-2 form-group padding-bottom">
+            <a href="#" class="btn btn-success btn-block" id="btnBuscaCntr"><i class="fa fa-search"></i> Filtrar</a>
+        </div>
+
+
+    </div>
+    <div class="row padding-bottom">
+        <div class="col-md-2 form-group">
+            Container: <br />
+            <input type="text" id="txtContainer" class="form-control" maxlength="4" />
+        </div>
+        <div class="col-md-2 form-group">
+            Sigla: <br />
+            <input type="text" id="txtSigla" class="form-control" maxlength="12" />
+        </div>
+        @*<div class="col-md-2 form-group btn-cntr">
+                <a style="cursor:pointer; position:relative; color:#fff" class="btn btn-danger" id="btnCallModalConteiner"><i class="fa fa-arrow-alt-circle-right"></i> Autoriza Conteiner</a>
+            </div>*@
+        <div class="col-md-3 form-group">
+            Local Atual: <br />
+            <input type="text" id="txtLocalAtual" class="form-control" readonly />
+        </div>
+        <div class="col-md-3 form-group">
+            Local: <br />
+            <input type="text" id="txtLocal" class="form-control" />
+        </div>
+        <div class="col-md-6 form-group">
+            Motivo: <br />
+            <select id="cbMotivo" class="form-control">
+                <option value="0">Selecione</option>
+                @{
+                    foreach (var item in ViewBag.Motivos)
+                    {
+                        <option value="@item.AUTONUM">@item.DESCRICAO</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="col-md-2 form-group padding-bottom">
+            <a href="#" id="btnGravar" class="btn btn-outline-success btn-block" style="position:relative;top:20px;"><i class="fa fa-save"></i> Gravar </a>
+        </div>
+        <div class="col-md-2 form-group">
+            Tamanho: <br />
+            <input type="text" id="txtTamanho" class="form-control" readonly />
+        </div>
+        <div class="col-md-2 form-group">
+            Tipo: <br />
+            <input type="text" id="txtTipo" class="form-control" readonly />
+        </div>
+        <div class="col-md-2 form-group">
+            GWT: <br />
+            <input type="text" id="txtGWT" class="form-control" readonly />
+        </div>
+        <div class="col-md-2 form-group" style="display:none">
+            Regime:<br />
+            <input type="text" id="txtRegime" class="form-control" readonly />
+        </div>
+        <div class="col-md-3 form-group">
+            Temperatura: <br />
+            <input type="text" id="txtTemperatura" class="form-control" readonly />
+        </div>
+        <div class="col-md-3 form-group">
+            IMO: <br />
+            <input type="text" id="txtIMO" class="form-control" readonly />
+        </div>
+        <div class="col-md-6 form-group" style="display:none">
+            MAPA: <br />
+            <input type="text" id="txtMapa" class="form-control" readonly />
+        </div>
+        <div class="col-md-3 form-group">
+            Entrada:<br />
+            <input type="text" id="txtDataEntrada" class="form-control" readonly />
+        </div>
+        <div class="col-md-3 form-group">
+            Viagem: <br />
+            <input type="text" id="txtViagem" class="form-control" readonly />
+        </div>
+        <div class="col-md-3 form-group" style="display:none">
+            Categoria: <br />
+            <input type="text" id="txtCategoria" class="form-control" readonly />
+        </div>
+        <div class="col-md-3 form-group">
+            EF: <br />
+            <input type="text" id="txtEF" class="form-control" readonly />
+        </div>
+        <div class="col-md-9 form-group">
+            Posicionar: <br />
+            <input type="text" id="txtPosicionar" class="form-control" />
+        </div>
+
+
+        <div class="col-md-6 form-group" style="display:none">
+            Inf. Lote: <br />
+            <select id="cbInfLote" class="form-control">
+                <option value="0">Selecione</option>
+            </select>
+        </div>
+        <div class="col-md-3 form-group" style="display:none">
+            Quantidade: <br />
+            <input type="text" id="txtQuantidade" class="form-control" />
+        </div>
+        <div class="col-md-3 form-group" style="display:none">
+            Camera: <br />
+            <input type="text" id="txtCamera" class="form-control" />
+        </div>
+        <div class="col-md-12 padding-bottom" style="height:20px; display:none;"></div>
+        <div class="col-md-12 form-group" style="display:none; ">
+            Selecione um veiculo: <br />
+            <select id="cbVeiculo" class="form-control">
+                <option value="0">Veículo</option>
+                @{
+                    foreach (var item in ViewBag.DescarregarVeiculos)
+                    {
+                        <option value="@item.AUTONUM">@item.IDENTIFICACAO</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="col-md-12 padding-bottom" style="height:20px; display:none;"></div>
+        <div class="col-md-12 form-group" style="display:none;">
+            Selecione um veiculo (Carregamento): <br />
+            <select id="cbVeiculoCarregamento" class="form-control">
+                <option value="0">Veículo</option>
+                @{
+                    foreach (var item in ViewBag.CarregarVeiculos)
+                    {
+                        <option value="@item.AUTONUM">@item.IDENTIFICACAO</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="col-md-12 padding-bottom" style="height:20px;"></div>
+
+        <div class="col-md-12 padding-bottom">
+            @*<div class="col-md-2">
+                    <a href="#" class="btn btn-success"><i class="fa fa-pics"></i> Foto 7 </a>
+                </div>
+                <div class="col-md-2">
+                    <a href="#" class="btn btn-success"><i class="fa fa-pics"></i> Foto 17 </a>
+                </div>
+                <div class="col-md-2">
+                    <a href="#" class="btn btn-success"><i class="fa fa-search"></i> Avarias </a>
+                </div>*@
+            <div class="col-md-2">
+
+            </div>
+        </div>
+    </div>
+    <div class="row padding-bottom">
+        <div class="col-md-3"></div>
+        <div class="col-md-3 form-group padding-bottom">
+            <a href="#" class="btn btn-outline-secondary btn-block" style="position:relative;" id="btnHistoricoMovimento"><i class="fa fa-history"></i> Histórico de Movimentos</a>
+        </div>
+
+        <div class="col-md-2 form-group padding-bottom">
+            <a href="#" class="btn btn-outline-danger btn-block" id="btnLimparCntr"><i class="fa fa-trash"></i> Limpar</a>
+        </div>
+
+        <div class="col-md-2">
+            <a id="lnkHome" href="@Url.Content("~/Home")" class="btn btn-warning btn-block"><span aria-hidden="true" class="fa fa-home"></span>&nbsp;&nbsp;Inicio</a>
+        </div>
+    </div>
+</div>
+@Html.Partial("_movimentacao_conteiner/_modalAutorizaPlaca")
+@Html.Partial("_movimentacao_conteiner/_modalGridConteiners")
+@section Scripts{
+    @Styles.Render("~/bundles/datatablesCSS")
+    @Scripts.Render("~/bundles/datatables")
+
+    @Html.Partial("_movimentacao_conteiner/_scripts_dados")
+    @Html.Partial("_movimentacao_conteiner/_scripts_inserir")
+    @Html.Partial("_movimentacao_conteiner/_scripts_autorizacao")
+
+    <script>
+        $("#txtSigla").mask("SSSS000000-0");
+    </script>
+
+}

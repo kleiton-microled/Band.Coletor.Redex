@@ -1,0 +1,336 @@
+﻿@model  Band.Coletor.Redex.Site.Models.SaidaCaminhaoViewModel
+
+@{
+    ViewBag.Title = "Saída Caminhão";
+    var anoProtocoloPesquisa = DateTime.Now.Year.ToString();
+}
+
+@using (Ajax.BeginForm("RegistrarSaida", "SaidaCaminhao", new AjaxOptions
+{
+    OnSuccess = "MensagemSucessoRedirecionar",
+    OnFailure = "mensagemCadastroErro",
+    HttpMethod = "POST"
+}, new { id = "frmSaidaCaminhao" }))
+{
+    <div class="row mt-3">
+        <div class="col-sm-12 col-lg-8 offset-lg-2">
+
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-truck fa-lg"></i>
+                    Registrar Saída do Caminhão
+
+                    <div class=" float-right">
+                        <div class="btn-group">
+                            <a href="@Url.Action("Index", "Home")" class="btn btn-link"><i class="fa fa-home"></i>&nbsp;&nbsp;@*Menu*@</a>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="card-body">
+
+                    <div class="campos-pesquisa">
+                        <div class="row consultar-protocolo">
+                            <div class="form-group col-sm-12 col-md-6 pr-md-1">
+                                @Html.LabelFor(model => model.ProtocoloPesquisa)
+                                @Html.EditorFor(m => m.ProtocoloPesquisa, new { htmlAttributes = new { @class = "form-control" } })
+                            </div>
+                            <div class="form-group col-sm-12 col-md-6 pr-md-1">
+                                @Html.LabelFor(model => model.AnoProtocoloPesquisa)
+                                @Html.EditorFor(m => anoProtocoloPesquisa, new { htmlAttributes = new { @class = "form-control " } })
+                            </div>
+                        </div>
+                        <div class="row consultar-placas">
+                            <div class="form-group col-sm-12 col-md-6 pr-md-1">
+                                @Html.LabelFor(model => model.PlacaPesquisa)
+                                @Html.EditorFor(m => m.PlacaPesquisa, new { htmlAttributes = new { @class = "form-control placa" } })
+                            </div>
+                            <div class="form-group col-sm-12 col-md-6 pr-md-1">
+                                @Html.LabelFor(model => model.PlacaCarretaPesquisa)
+                                @Html.EditorFor(m => m.PlacaCarretaPesquisa, new { htmlAttributes = new { @class = "form-control placa" } })
+                            </div>
+                        </div>
+
+                        <div class="row linha-btn-pesquisar-placas">
+                            <div class="form-group col-12 col-sm-12 col-md-12 ">
+                                <label for="btnPesquisarTalie">&nbsp;</label>
+                                <a id="btnPesquisarPlacas" href="#" class="btn btn-outline-info btn-block btn-as-block" onclick="ObterDadosCaminhao()"><i class="fas fa-search"></i> Buscar</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="campos-resultado-pesquisa ">
+                        @Html.HiddenFor(m => m.PreRegistroId)
+                        <div class="row dados-agendamento invisivel">
+                            <div class="form-group col-sm-12 col-md-6 pr-md-1">
+                                @Html.LabelFor(model => model.Protocolo)
+                                @Html.EditorFor(m => m.Protocolo, new { htmlAttributes = new { @class = "form-control", @readonly = "@readonly" } })
+                            </div>
+                            @*<div class="form-group col-sm-12 col-md-6 pl-md-1">
+                @Html.LabelFor(model => model.Periodo)
+                @Html.EditorFor(m => m.Periodo, new { htmlAttributes = new { @class = "form-control", @readonly = "@readonly" } })
+            </div>*@
+                        </div>
+
+                        <div class="row dados-agendamento invisivel">
+                            <div class="form-group col-sm-12 col-md-6 pr-md-1">
+                                @Html.LabelFor(model => model.Placa)
+                                @Html.EditorFor(m => m.Placa, new { htmlAttributes = new { @class = "form-control placa" } })
+                            </div>
+                            <div class="form-group col-sm-12 col-md-6 pr-md-1">
+                                @Html.LabelFor(model => model.PlacaCarreta)
+                                @Html.EditorFor(m => m.PlacaCarreta, new { htmlAttributes = new { @class = "form-control placa" } })
+                            </div>
+                        </div>
+
+                        <div class="row dados-agendamento invisivel">
+                            <div class="form-group col-sm-12 col-md-6 pr-md-1">
+                                @Html.LabelFor(model => model.Ticket)
+                                @Html.EditorFor(m => m.Ticket, new { htmlAttributes = new { @class = "form-control", @readonly = "@readonly" } })
+                            </div>
+                            
+                        </div>
+
+                        <div class="row dados-agendamento invisivel">
+                            <div class="form-group col-sm-12 col-md-6 pr-md-1">
+                                @Html.LabelFor(model => model.PesoBruto)
+                                @Html.EditorFor(m => m.PesoBruto, new { htmlAttributes = new { @class = "form-control", @readonly = "@readonly" } })
+                            </div>
+                            @*<div class="form-group col-sm-12 col-md-6 pl-md-1">
+                @Html.LabelFor(model => model.CNH)
+                @Html.EditorFor(m => m.CNH, new { htmlAttributes = new { @class = "form-control", @readonly = "@readonly" } })
+            </div>*@
+                        </div>
+
+
+
+                        <div id="linha-botao-salvar " class="row mt-3">
+                            <div class="form-group col-12 col-sm-12 col-md-12 ">
+                                <button type="submit" class="btn btn-primary btn-block dados-agendamento invisivel">Registrar</button>
+                            </div>
+                        </div>
+                        <div id="linha-botao-salvar-sem-agendamento" class=" linha-botao-salvar-sem-agendamento row mt-3 invisivel">
+                            <div class="form-group col-12 col-sm-12 col-md-12 ">
+                                <button id="btConfirmarEntradaSemAgendamento" onclick="ConfirmarEntradaSemAgendamento()" style="white-space: normal;" class="btn btn-warning btn-block"><i class="fas fa-save"></i>&nbsp;Confirmar registro sem agendamento</button>
+                            </div>
+                        </div>
+                        <div class="row btn-limpar mt-3 invisivel">
+                            <div class="form-group col-12 col-sm-12 col-md-12 ">
+                                <button id="btnLimpar" type="button" class="btn btn-secondary btn-block" onclick="Limpar()">Limpar</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+}
+
+@section Scripts{
+
+    <script>
+        $(document).ready(function(){
+
+            toastr.options = {
+                "closeButton": true,
+                "progressBar": true,
+                "positionClass": "toast-top-left"
+            }
+        });
+
+        $('#ProtocoloPesquisa').keyup(function(){
+            //console.log($('#ProtocoloPesquisa').val());
+            //$('#ProtocoloPesquisa').addLeadingZeros(8);
+
+            var str = (parseInt($('#ProtocoloPesquisa').val()) || 0).toString();
+            var pad = '00000000';
+            var ans = pad.substring(0, pad.length - str.length) + str
+            $('#ProtocoloPesquisa').val(ans);
+                });
+
+        $.fn.addLeadingZeros = function (length) {
+              for(var el of this){
+                _value = el.value.replace(/^0+/,'');
+                length = length - _value.length;
+                if(length > 0){
+                  while (length--) _value = '0' + _value;
+                }
+                el.value = _value;
+              }
+                };
+
+                function exibirCampos(e) {
+
+                    if (e.value === 'Protocolo') {
+                        $('.consultar-protocolo').removeClass('invisivel');
+                        $('.consultar-placas').addClass('invisivel');
+                    } else {
+                        $('.consultar-placas').removeClass('invisivel');
+                        $('.consultar-protocolo').addClass('invisivel');
+                    }
+
+                }
+
+        function ObterDadosCaminhao() {
+
+             event.preventDefault();
+             var protocolo = $('#ProtocoloPesquisa').val();
+             var anoProtocolo = $('#anoProtocoloPesquisa').val();
+             var placa = $('#PlacaPesquisa').val();
+             var placaCarreta = $('#PlacaCarretaPesquisa').val();
+       
+
+            if (protocolo === '' && placa === '' && placaCarreta === '') {
+
+                toastr.error('Informe o protocolo ou as placas', 'Coletor').css("width","90%");;
+                return;
+             }
+
+             //if ( placa !== '' && placaCarreta === '') {
+
+             //   toastr.error('Informe a Placa Carreta', 'Coletor').css("width","90%");;
+             //   return;
+             //}
+
+             if ( placa === '' && placaCarreta !== '') {
+
+                toastr.error('Informe a Placa', 'Coletor').css("width","90%");;
+                return;
+            }
+
+            $('#btnPesquisarPlacas')
+                .html('<i class="fa fa-spinner fa-spin"></i>')
+                .addClass('disabled');
+
+            $.get(urlBase + 'SaidaCaminhao/ObterDadosCaminhao?protocolo=' + protocolo + '&ano=' + anoProtocolo + '&placa=' + placa + '&placaCarreta=' + placaCarreta , function (resultado) {
+
+                    if (resultado) {
+
+                        $('#Protocolo').empty().val(resultado.Protocolo);
+                        $('#Placa').empty().val(resultado.Placa);
+                        $('#PlacaCarreta').empty().val(resultado.PlacaCarreta);
+                        $('#Ticket').empty().val(resultado.Ticket );
+                        $('#PesoBruto').empty().val(resultado.PesoBruto);
+                        $('#PreRegistroId').empty().val(resultado.PreRegistroId);
+                        $('#Periodo').empty().val(resultado.Periodo);
+                        $('#Motorista').empty().val(resultado.Motorista);
+                        $('#CNH').empty().val(resultado.CNH);
+                        $('.dados-agendamento').removeClass('invisivel');
+                        //alterarVisibilidadeResultado();
+
+                    }
+                }).fail(function (data) {
+                    toastr.error(data.responseText, 'Coletor').css("width", "90%");
+                    //alterarVisibilidadeEntradaSemAgendamento();
+                }).always(function () {
+                    $('#btnPesquisarPlacas')
+                        .html('<i class="fas fa-search"></i>')
+                        .removeClass('disabled');
+                });
+
+            }
+
+           function ConfirmarEntradaSemAgendamento() {
+
+             event.preventDefault();
+
+             var cavalo = $('#PlacaPesquisa').val();
+             var carreta = $('#PlacaCarretaPesquisa').val();
+
+            if (cavalo === '') {
+
+                toastr.error('Informe o as placa', 'Coletor').css("width", "90%");;
+                return;
+            }
+            //if (cavalo === '' && carreta === '') {
+
+            //    toastr.error('Informe o as placas', 'Coletor').css("width","90%");;
+            //    return;
+            // }
+
+             //if ( cavalo !== '' && carreta === '') {
+
+             //   toastr.error('Informe a Placa Carreta', 'Coletor').css("width","90%");;
+             //   return;
+             //}
+
+             if ( cavalo === '' && carreta !== '') {
+
+                toastr.error('Informe a Placa', 'Coletor').css("width","90%");;
+                return;
+            }
+
+
+            $('#btConfirmarEntradaSemAgendamento')
+                .html('<i class="fa fa-spinner fa-spin"></i>')
+                   .addClass('disabled');
+
+               $.post('@Url.Action("ConfirmarEntradaSemAgendamento")', { placaCavalo: cavalo, placaCarreta: carreta   })
+                   .done(function (data, statusText, xhr) {
+                    MensagemSucessoRedirecionar();
+
+                }).fail(function (data) {
+                    if (data.responseText != null) {
+                        toastr.error(data.responseText, 'Coletor');
+                    } else {
+                        toastr.error('Falha ao registrar caminhão', 'Coletor');
+                    }
+                }).always(function () {
+
+
+                });
+
+    }
+
+
+        var MensagemSucessoRedirecionar = function () {
+            setTimeout(function () {
+                toastr.success('Saída do Caminhão registrada com sucesso!', 'Coletor').css("width","90%");
+                  }, 1500);
+            setTimeout(function () {
+                window.location.href = '@Url.Action("Index", "SaidaCaminhao")';
+
+            }, 4000);
+
+        };
+
+        function Limpar() {
+
+            //$('.campos-pesquisa').removeClass('invisivel');
+            //$('.campos-resultado-pesquisa').addClass('invisivel');
+            //$('.btn-limpar').addClass('invisivel');
+            //$('.linha-botao-salvar-sem-agendamento').addClass('invisivel');
+            //$('.linha-btn-pesquisar-placas').removeClass('invisivel');
+
+
+             $('.linha-btn-pesquisar-placas').removeClass('invisivel');
+             $('.btn-limpar').addClass('invisivel');
+             $('.linha-botao-salvar-sem-agendamento').addClass('invisivel');
+
+            $('#ProtocoloPesquisa').val('');
+            $('#PlacaPesquisa').val('');
+             $('.PlacaCarretapesquisa').val('');
+
+        }
+
+        function alterarVisibilidadeResultado() {
+
+            $('.campos-pesquisa').addClass('invisivel');
+            $('.campos-resultado-pesquisa').removeClass('invisivel');
+            $('.btn-limpar').removeClass('invisivel');
+
+
+        }
+
+        //function alterarVisibilidadeEntradaSemAgendamento() {
+        //     $('.linha-btn-pesquisar-placas').addClass('invisivel');
+        //     $('.btn-limpar').removeClass('invisivel');
+        //     $('.linha-botao-salvar-sem-agendamento').removeClass('invisivel');
+        //}
+    </script>
+}

@@ -1,0 +1,173 @@
+﻿@using Band.Coletor.Redex.Site.Extensions;
+    <div>
+        <div class="row padding-bottom">
+            <div class="col-md-3">
+                <h4>
+                    <i class="fas fa-truck fa-lg"></i>
+                    Estufagem
+                </h4>
+            </div>
+            <div class="col-md-7"></div>
+            <div class="col-md-2">
+                <a id="limpar" href="#" class="btn btn-warning btn-block"><span aria-hidden="true" class="fa fa-sync"></span>&nbsp;&nbsp;Limpar</a>
+           
+                <a id="lnkHome" href="@Url.Content("~/Home")" class="btn btn-warning btn-block"><span aria-hidden="true" class="fa fa-home"></span>&nbsp;&nbsp;Inicio</a>
+            </div>
+        </div>
+        <div class="row padding-bottom">
+            <div class="form-group col-sm-3">
+                <label for="txtConteiner">Conteiner: </label>
+                <input type="text" class="form-control" id="txtConteiner" />
+            </div>
+            <div class="form-group col-sm-2">
+                <label for="txtReserva">Reserva: </label>
+                <input type="text" class="form-control" id="txtReserva" />
+            </div>
+            <div class="form-group col-sm-3">
+                <label for="txtClientte">Cliente: </label>
+                <input type="text" id="txtCliente" class="form-control" />
+            </div>
+            <div class="form-group col-sm-2">
+                <label for="txtInicio">Início: </label>
+                <input type="text" class="form-control" id="txtInicio" />
+            </div>
+            <div class="form-group col-sm-2">
+                <label for="txtTermino">Término: </label>
+                <input type="text" class="form-control" id="txtTermino" />
+            </div>
+        </div>
+        <div class="row padding-bottom">
+            <div class="form-group col-sm-4">
+                <label for="cbConferente">Conferente: </label>
+                <select id="cbConferente" class="form-control">
+                    @{
+
+                        foreach (var item in ViewBag.Conferentes)
+                        {
+                            if (item.Id > 0)
+                            {
+                                <option value="@item.Id">@item.Descricao</option>
+                            }
+                            else
+                            {
+                                <option value="0">Sem Conferente valido</option>
+                            }
+
+                        }
+
+
+
+
+
+                    }
+                </select>
+            </div>
+            <div class="form-group col-sm-4">
+                <label for="cbEquipe">Equipe: </label>
+                <select id="cbEquipe" class="form-control">
+                    <option value="0">Selecione</option>
+                    @foreach (var item in ViewBag.Equipes)
+                    {
+                        <option value="@item.Id">@item.Descricao</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group col-sm-4">
+                <label for="cbOperacao">Modo: </label>
+                <select id="cbOperacao" class="form-control">
+                    <option value="0">Selecione</option>
+                    @{
+                        foreach (var item in ViewBag.Operacoes)
+                        {
+
+                            <option value="@item.Sigla">@item.Descricao</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="row padding-bottom">
+            <div class="form-group col-sm-12">
+                <label for="txtConteiner">Obs: </label>
+                <textarea type="text" class="form-control" id="txtObs" ></textarea>
+            </div>
+        </div>
+            <div class="row padding-bottom">
+                <div class="col-md-4"></div>
+                <div class="col-md-4">
+                    <button id="btnFinalizar" type="button" onclick="FinalizarTalie()" style="width: 100%" class="btn btn-success"><span aria-hidden="true" class="fa fa-truck"></span>&nbsp;&nbsp;Finalizar</button>
+                </div>
+                <div class="form-group col-sm-4 ">
+                    <button type="button" class="btn btn-primary btn-block dados-agendamento" id="btnGravar"><i class="fa fa-save"></i> Gravar</button>
+                </div>
+            </div>
+            <div class="row padding-bottom">
+                <div class="col-sm-3 form-group">
+                    <label for="txtLote">Lote: </label>
+                    <input type="text" class="form-control" id="txtLote" />
+                </div>
+                <div class="col-sm-3 form-group">
+                    <label for="txtOS">NF: </label>
+                    <input type="text" class="form-control" id="txtOS" />
+                </div>
+                <div class="col-sm-3 form-group" style="display:none;">
+                    <label for="cbItemNF">Item NF: </label>
+                    <select id="cbItemNF" class="form-control"></select>
+                </div>
+                <div class="col-sm-3 form-group">
+                    <label for="txtQuantidade">Quantidade: </label>
+                    <input type="text" class="form-control" id="txtQuantidade" />
+                </div>
+                <div class="col-sm-3 form-group">
+                    <label for="txtReservaCarga">Reserva: </label>
+                    <input type="text" class="form-control" id="txtReservaNF" />
+                </div>
+                <div class="col-sm-2 form-group">
+                    <label for="txtReservaCarga">Quantidade Estufada: </label>
+                    <input type="text" class="form-control" id="txtSoma" />
+                </div>
+                <div class="col-sm-2 form-group">
+                    <label for="txtReservaCarga">Quantidade Nota: </label>
+                    <input type="text" class="form-control" id="txtQuntNota" />
+                </div>
+                <div class="col-sm-2 form-group">
+                    <label for="txtReservaCarga">Quantidade Estufada Nota Ind: </label>
+                    <input type="text" class="form-control" id="txtEstufadaInd" />
+                </div>
+            </div>
+            <div class="row padding-bottom">
+                <div class="col-md-9"></div>
+                <div class="col-md-3">
+                    <button id="btnGravarEstufagem" type="button" class="btn btn-primary btn-block"><i class="fa fa-save"></i> Gravar Estufagem</button>
+                </div>
+            </div>
+            <div class="row padding-bottom">
+                <div class="col-md-12">
+                    <div class="table-responsive">
+                        <table id="grdCargaEstufada" class="table table-hover table-sm grdViewTable" style="display:none"></table>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <input type="hidden" id="hddnMensagemConfirmacao" />
+                    <input type="hidden" id="hddnAutonumNFI" />
+                    <input type="hidden" id="hddnSC" />
+                    <input type="hidden" id="hddnPatio" />
+                    <input type="hidden" id="hddnQtdeSaida" />
+                    <input type="hidden" id="hddnCodProduto" />
+                    <input type="hidden" id="hddnRowIndex" />
+                    <input type="hidden" id="hddnRegistro" />
+                    <input type="hidden" id="hddnAutonumBOO" />
+                    <input type="hidden" id="hddnAutonumPatio" />
+                    <input type="hidden" id="hddnAutonumRomaneio" />
+                    <input type="hidden" id="hddnAutonumCliente" />
+                    <input type="hidden" id="hddnAutonumTalie" />
+                </div>
+            </div>
+        </div>
+
+        @section Scripts{
+            @Html.Partial("_estufagem/_modais")
+            @Html.Partial("_estufagem/_scripts")
+        }

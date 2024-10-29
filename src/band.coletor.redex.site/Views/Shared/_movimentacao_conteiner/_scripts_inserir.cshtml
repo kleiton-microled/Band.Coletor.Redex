@@ -1,0 +1,78 @@
+﻿
+<script>
+    $('#btnGravar').click(function () {
+        var sigla = $('#txtSigla').val();
+        var conteiner = $('#txtContainer').val();
+        var tamanho = $('#txtTamanho').val();
+        var yard = $('#txtLocalAtual').val();
+        var yard_destino = $('#txtLocal').val();
+        var motivo = $('#cbMotivo').val();
+        var EF = $('#txtEF').val();
+        var quantidade = $('#txtQuantidade').val();
+        var camera = $('#txtCamera').val();
+        var tipo = $('#txtTipo').val();
+        var posicionar = $('#txtPosicionar').val();
+        var viagem = $('#txtViagem').val();
+        var temperatura = $('#txtTemperatura').val();
+        var imo = $('#txtIMO').val();
+        var mapa = $('#txtMapa').val();
+        var autonum = $('#txtSigla').attr('data-id');
+
+        var inserir = {
+
+            "AUTONUM_CNTR": autonum,
+            "EF": EF,
+            "ID_MOTIVO": motivo,
+            "ID_CONTEINER": sigla,
+            "TAMANHO": tamanho,
+            "YARD": yard,
+            "YARD_DESTINO": yard_destino,
+            "QTD": quantidade,
+            "CAMERA": camera,
+            "TIPOBASICO": tipo,
+            "DESCR_MOTIVO_POSIC": posicionar,
+            "VIAGEM": viagem,
+            "TEMPERATURE": temperatura,
+            "IMO1": imo,
+            "SITUACAO_BL": mapa
+
+        };
+
+        $.ajax({
+            url: '@Url.Content("~/MovimentacaoContainer/GetInserir")',
+            type: 'GET',
+            data: inserir,
+
+            beforeSend: function () {
+                $('#preloader').show();
+            },
+            success: function (Dados) {
+                var mensagem = Dados.Mensagem;
+                var statusRetorno = Dados.statusRetorno;
+
+
+                if (statusRetorno == "200") {
+                    var saida = Dados.objetoRetorno.saida;
+
+                    toastr.success(mensagem, 'Coletor');
+
+                    if (saida == 1) {
+                        $('#exit-modal').modal('toggle');
+                    }
+                    Limpar();
+                }
+
+                else {
+                    toastr.error(mensagem, 'Coletor');
+                }
+
+                $('#preloader').hide();
+            },
+            error: function () {
+                $('#preloader').hide();
+            }
+        });
+
+    });
+
+</script>

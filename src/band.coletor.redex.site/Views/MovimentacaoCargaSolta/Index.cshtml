@@ -1,0 +1,177 @@
+﻿<div>
+    <div class="row padding-bottom">
+        <div class="col-md-6">
+            <h4>
+                <i class="fas fa-truck fa-lg"></i>
+                Movimentação de carga solta
+            </h4>
+        </div>
+        <div class="col-md-4"></div>
+        <div class="col-md-2">
+            <a id="lnkHome" href="@Url.Content("~/Home")" class="btn btn-warning btn-block"><span aria-hidden="true" class="fa fa-home"></span>&nbsp;&nbsp;Inicio</a>
+        </div>
+    </div>
+    <div class="row padding-bottom">
+        <div class="form-group col-sm-4">
+            <label for="txtMarcante">Marcante: </label>
+            <input type="text" class="form-control" id="txtMarcante" />
+        </div>
+        <div class="form-group col-sm-4">
+            <label for="txtLote">Lote: </label>
+            <input type="text" class="form-control" id="txtLote" readonly />
+        </div>
+        <div class="form-group col-sm-4">
+            <label for="txtBL">Reserva: </label>
+            <input type="text" id="txtBL" class="form-control" readonly />
+        </div>
+
+    </div>
+    <div class="row padding-bottom">
+        <div class="form-group col-sm-12">
+            <label for="cbItens">Item: </label>
+            <select id="cbItens" class="form-control">
+                <option value="0">Selecione</option>
+
+            </select>
+        </div>
+    </div>
+    <div class="row padding-bottom">
+        <div class="form-group col-sm-3">
+            <label for="txtEtqPrateleira">Etq. Prateleira: </label>
+            <input type="text" id="txtEtqPrateleira" class="form-control" />
+        </div>
+        <div class="form-group col-sm-3">
+            <label for="txtOcupacao">Ocupação: </label>
+            <input type="text" id="txtOcupacao" class="form-control" readonly />
+        </div>
+        <div class="form-group col-sm-3">
+            <label for="cbArmador">ARM: </label>
+            <select id="cbArmador" class="form-control">
+                <option value="0">Selecione</option>
+                @{
+                    foreach (var item in ViewBag.Armazem)
+                    {
+                        <option value="@item.AUTONUM">@item.DISPLAY</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="form-group col-sm-3">
+            <label for="cbMotivo">Motivo: </label>
+            <select id="cbMotivo" class="form-control">
+                <option value="0">Selecione</option>
+                @{
+                    foreach (var item in ViewBag.Motivos)
+                    {
+                        <option value="@item.AUTONUM">@item.DESCRICAO</option>
+                    }
+                }
+            </select>
+        </div>
+    </div>
+
+    <div class="row padding-bottom">
+        <div class="form-group col-sm-4">
+            <label for="txtQuantidade">Quantidade: </label>
+            <input type="text" id="txtQuantidade" class="form-control" readonly />
+        </div>
+        <div class="form-group col-sm-4">
+            <label for="txtLocal">Local: </label>
+            <input type="text" id="txtLocal" class="form-control" readonly />
+        </div>
+        <div class="form-group col-sm-4">
+            <label for="txtAnvisa">Anvisa: </label>
+            <input type="text" id="txtAnvisa" class="form-control" readonly />
+        </div>
+    </div>
+
+
+    <div class="row padding-bottom">
+        <div class="form-group col-sm-4">
+            <label for="txtQuantidade">Número NFE: </label>
+            <input type="text" id="txtNroNfe" class="form-control" readonly />
+        </div>
+        <div class="form-group col-sm-4">
+            <label for="txtEmbalagem">Embalagem: </label>
+            <input type="text" id="txtEmbalagem" class="form-control" readonly />
+        </div>
+        <div class="form-group col-sm-4">
+            <label for="txtVolume">Volume: </label>
+            <input type="text" id="txtVolume" class="form-control" readonly />
+        </div>
+    </div>
+
+
+
+    <div class="row padding-bottom">
+        <div class="form-group col-sm-3">
+            <label for="txtLocal2">Local: </label>
+            <input type="text" id="txtLocal2" class="form-control" readonly />
+        </div>
+        <div class="form-group col-sm-3">
+            <label for="txtMercadoria">Mercadoria: </label>
+            <input type="text" id="txtMercadoria" class="form-control" readonly />
+        </div>
+        <div class="form-group col-sm-3">
+            <label for="txtImportador">Cliente: </label>
+            <input type="text" id="txtImportador" class="form-control" readonly />
+        </div>
+        <div class="form-group col-sm-3">
+            <label for="txtNvocc">NVOCC: </label>
+            <input type="text" id="txtNVOCC" class="form-control" readonly />
+        </div>
+    </div>
+
+    <div class="row padding-bottom">
+        <div class="form-group col-sm-3">
+            <label for="txtDataEntrada">Entrada: </label>
+            <input type="text" id="txtDataEntrada" class="form-control" readonly />
+        </div>
+        <div class="form-group col-sm-3">
+            <label for="txtContainer">Container: </label>
+            <input type="text" id="txtContainer" class="form-control" readonly />
+        </div>
+        <div class="form-group col-sm-3">
+            <label for="txtImo">IMO: </label>
+            <input type="text" id="txtImo" class="form-control" readonly />
+        </div>
+        <div class="form-group col-sm-3">
+            <label for="txtOnu">ONU: </label>
+            <input type="text" id="txtOnu" class="form-control" readonly />
+            <input type="hidden" id="hddnAutonumCs" />
+        </div>
+    </div>
+
+    <div class="row padding-bottom">
+        <div class="col-md-3"></div>
+        <div class="col-md-3">
+            @*<a href="@Url.Content("~/MovimentacaoCargaSolta/")" class="btn btn-primary btn-block dados-agendamento" id="btnMC"><i class="fa fa-pics"></i> Sem MC</a>*@
+        </div>
+        <div class="form-group col-sm-3 ">
+            <button type="button" class="btn btn-primary btn-block dados-agendamento" id="btnGravar"><i class="fa fa-save"></i> Gravar</button>
+        </div>
+        <div class="form-group col-sm-3 ">
+            <a href="@Url.Content("~/home/index")" class="btn btn-danger btn-block dados-agendamento" id="btnSair"><i class="fa fa-save"></i> Sair</a>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-12">
+
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    @Html.Partial("_movimentacao_carga_solta/_scripts_dados")
+    @Html.Partial("_movimentacao_carga_solta/_scripts_inserir")
+
+
+
+    <script>
+        $("#txtMarcante").mask("000000000000");
+    </script>
+}
+
+

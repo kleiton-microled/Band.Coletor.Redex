@@ -1,0 +1,396 @@
+﻿@model  Band.Coletor.Redex.Site.Models.TalieItemViewModel
+
+@{
+    ViewBag.Title = "Descarga";
+}
+
+@using (Ajax.BeginForm("GravarItemTalie", "Descarga", new AjaxOptions
+{
+    OnSuccess = "MensagemSucesso",
+    OnFailure = "MensagemErro",
+    HttpMethod = "POST"
+}, new { id = "frmTalieItem" }))
+{
+    @Html.HiddenFor(model => model.TalieId)
+    @Html.HiddenFor(model => model.RegistroId)
+    @Html.HiddenFor(model => model.RegistroCsId)
+    @Html.HiddenFor(model => model.NotaFiscalId)
+
+    <div class="row">
+        <div class="form-group col-sm-8 col-md-10">
+            @Html.LabelFor(model => model.TalieItemId)
+            @Html.DropDownListFor(c => c.TalieItemId, new MultiSelectList(Model.Itens, "Id", "Descricao"), "-- Selecione --", new { @class = "form-control" })
+        </div>
+        <div class="form-group col-sm-4 col-md-2">
+            <label for="btnAbrirNF">&nbsp;</label>
+            <a id="btnAbrirNF" href="#" class="btn btn-primary btn-block btn-as-block" onclick="AbrirNF()">Abrir</a>
+        </div>
+    </div>
+
+    <div class="row ">
+        <div class="form-group col-sm-8 col-md-10">
+            @Html.LabelFor(model => model.NFId)
+            @Html.DropDownListFor(c => c.NFId, new MultiSelectList(Model.NFs, "Id", "NumNF"), new { @class = "form-control" })
+        </div>
+        <div class="form-group col-sm-4 col-md-2">
+            <label for="btnCarregarNF">&nbsp;</label>
+            <a id="btnCarregarNF" href="#" class="btn btn-primary btn-block btn-as-block" onclick="CarregarNF()"><i class="fas fa-search"></i></a>
+        </div>
+    </div>
+
+    <div class="row no-gutters">
+        <div class="form-group col-6 col-sm-6 col-md-6 pr-1">
+            @Html.LabelFor(model => model.EmbalagemId)
+            @Html.DropDownListFor(c => c.EmbalagemId, new MultiSelectList(Model.Embalagens, "Id", "Descricao"), new { @class = "form-control" })
+        </div>
+
+        <div class="form-group col-6 col-sm-6 col-md-6 pl-1">
+            @Html.LabelFor(model => model.ProdutoId)
+            @Html.DropDownListFor(c => c.ProdutoId, new MultiSelectList(Model.Produtos, "Id", "Descricao"), new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="row no-gutters invisivel">
+        <div class="form-group col-4 col-sm-3 col-md-3 pr-1">
+            @Html.LabelFor(model => model.QuantidadeNF)
+            @Html.EditorFor(m => m.QuantidadeNF, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+        <div class="form-group col-8 col-sm-9 col-md-9 pl-1">
+            @Html.LabelFor(model => model.QuantidadeDescarga)
+            @Html.EditorFor(m => m.QuantidadeDescarga, new { htmlAttributes = new { @class = "form-control", onblur = "CalcularPeso()" } })
+        </div>
+    </div>
+
+    <div class="row no-gutters">
+        <div class="form-group col-6 col-sm-6 col-md-6 pr-1">
+            @Html.LabelFor(model => model.Patio)
+            @Html.EditorFor(m => m.PatioId, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+        <div class="form-group col-6 col-sm-6 col-md-6 pl-1">
+            @Html.LabelFor(model => model.ConteinerId)
+            @Html.EditorFor(m => m.ConteinerId, new { htmlAttributes = new { @class = "form-control", onblur = "CalcularPeso()" } })
+        </div>
+    </div>
+
+    <div class="row no-gutters">
+        <div class="form-group col-4 col-sm-3 col-md-3 pr-1">
+            @Html.LabelFor(model => model.Descarga)
+            @Html.EditorFor(m => m.Descarga, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+        <div class="form-group col-8 col-sm-9 col-md-9 pl-1">
+            @Html.LabelFor(model => model.Quantidade)
+            @Html.EditorFor(m => m.Quantidade, new { htmlAttributes = new { @class = "form-control", onblur = "CalcularPeso()" } })
+        </div>
+    </div>
+
+    <div class="row no-gutters">
+        <div class="form-group col-4 col-sm-4 col-md-4 pr-1">
+            @Html.LabelFor(model => model.Comprimento)
+            @Html.EditorFor(m => m.Comprimento, new { htmlAttributes = new { @class = "form-control", onblur = "FormatarComZeros(this)" } })
+        </div>
+        <div class="form-group col-4 col-sm-4 col-md-4 pr-1 pl-1">
+            @Html.LabelFor(model => model.Largura)
+            @Html.EditorFor(m => m.Largura, new { htmlAttributes = new { @class = "form-control", onblur = "FormatarComZeros(this)" } })
+        </div>
+        <div class="form-group col-4 col-sm-4 col-md-4 pl-1">
+            @Html.LabelFor(model => model.Altura)
+            @Html.EditorFor(m => m.Altura, new { htmlAttributes = new { @class = "form-control", onblur = "FormatarComZeros(this)", onchange = "FocoRemonte()" } })
+        </div>
+    </div>
+
+    <div class="row no-gutters">
+        <div class="form-group col-6 col-sm-6 col-md-6 pr-1">
+            @Html.LabelFor(model => model.Peso)
+            @Html.EditorFor(m => m.Peso, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+        </div>
+        <div class="form-group col-6 col-sm-6 col-md-6 pl-1">
+            @Html.LabelFor(model => model.Yard)
+            @Html.EditorFor(m => m.Yard, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+    </div>
+
+    <div class="row no-gutters">
+        <div class="form-group col-3 col-sm-3 col-md-3 pr-1 ">
+            @Html.LabelFor(model => model.IMO1)
+            @Html.EditorFor(m => m.IMO1, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+        <div class="form-group col-3 col-sm-3 col-md-3 pr-1 pl-1">
+            @Html.LabelFor(model => model.IMO2)
+            @Html.EditorFor(m => m.IMO2, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+        <div class="form-group col-3 col-sm-3 col-md-3 pr-1 pl-1">
+            @Html.LabelFor(model => model.IMO3)
+            @Html.EditorFor(m => m.IMO3, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+        <div class="form-group col-3 col-sm-3 col-md-3 pl-1">
+            @Html.LabelFor(model => model.IMO4)
+            @Html.EditorFor(m => m.IMO4, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+    </div>
+
+    <div class="row no-gutters">
+        <div class="form-group col-3 col-sm-3 col-md-3 pr-1">
+            @Html.LabelFor(model => model.UNO1)
+            @Html.EditorFor(m => m.UNO1, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+        <div class="form-group col-3 col-sm-3 col-md-3 pr-1 pl-1">
+            @Html.LabelFor(model => model.UNO2)
+            @Html.EditorFor(m => m.UNO2, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+        <div class="form-group col-3 col-sm-3 col-md-3 pr-1 pl-1">
+            @Html.LabelFor(model => model.UNO3)
+            @Html.EditorFor(m => m.UNO3, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+        <div class="form-group col-3 col-sm-3 col-md-3 pl-1">
+            @Html.LabelFor(model => model.UNO4)
+            @Html.EditorFor(m => m.UNO4, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+    </div>
+
+    <div class="row no-gutters">
+        <div class="form-group col-6 col-sm-6 col-md-6 pr-1">
+            @Html.LabelFor(model => model.Remonte)
+            @Html.EditorFor(m => m.Remonte, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+        <div class="form-group col-6 col-sm-6 col-md-6 pl-1">
+            @Html.LabelFor(model => model.Fumigacao)
+            @Html.EditorFor(m => m.Fumigacao, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+    </div>
+
+    <div class="row no-gutters mb-2">
+        <div class="form-group col-6 col-sm-6 col-md-2 text-center">
+            <div>
+                <div class="form-check form-check-inline">
+                    @Html.CheckBoxFor(model => model.Fragil, new { @class = "form-check-input" })&nbsp;
+                    @Html.LabelFor(model => model.Fragil, new { @class = "mt-1" })
+                </div>
+            </div>
+        </div>
+        <div class="form-group col-6 col-sm-6 col-md-2 text-center">
+            <div>
+                <div class="form-check form-check-inline">
+                    @Html.CheckBoxFor(model => model.Madeira, new { @class = "form-check-input" })&nbsp;
+                    @Html.LabelFor(model => model.Madeira, new { @class = "mt-1" })
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row no-gutters mb-2">
+        <div class="form-group col-6 col-sm-6 col-md-6 pr-1">
+            <button id="btnNovo" type="button" class="btn btn-secondary btn-block" onclick="Limpar()">Novo</button>
+        </div>
+        <div class="form-group col-6 col-sm-6 col-md-6 pl-1">
+            <button id="btnExcluir" type="button" class="btn btn-secondary btn-block" onclick="Excluir()">Excluir</button>
+        </div>
+    </div>
+
+    <div class="row no-gutters mb-2">
+        <div class="form-group col-6 col-sm-6 col-md-6 pr-1">
+            <button id="btnCancelar" type="button" class="btn btn-secondary btn-block" onclick="Limpar()">Cancelar</button>
+        </div>
+        <div class="form-group col-6 col-sm-6 col-md-6 pl-1">
+            <button id="btnGravar" type="submit" class="btn btn-secondary btn-block">Gravar</button>
+        </div>
+    </div>
+
+    <div class="row no-gutters">
+        <div class="form-group col-12 col-sm-12 col-md-12">
+            <a id="lnkVoltar" href="@Url.Action("Registro", "Descarga", new { @id = Model.TalieId })" class="btn btn-secondary btn-block">Voltar</a>
+        </div>
+    </div>
+
+}
+
+@Html.Partial("_ModalExclusao")
+@Html.Partial("_ModalCodigoDeBarras")
+
+@section Scripts{
+
+    <script>
+
+    $(document).ready(function () {
+        CarregarDadosNF();
+    });
+
+        function ObterItens() {
+
+            var id = $('#TalieId').val();
+
+            $.get(urlBase + 'Descarga/ObterItens?talieId=' + id, function (resultado) {
+
+                var select = $('#TalieItemId');
+
+                select
+                    .empty()
+                    .append('<option value="0"></option>');
+
+                $.each(resultado, function (key, value) {
+                    select.append('<option value=' + value.Id + '>' + value.Descricao + '</option>');
+                });
+            });
+    }
+    function CarregarNF() {
+        if (!isNumero(parseInt( $('#NFId').val()))) {
+                toastr.error('Selecione uma NF na lista', 'Coletor');
+                return;
+        }
+
+        CarregarDadosNF();
+    }
+
+    function CarregarDadosNF() {
+
+        debugger
+
+            var idNF = parseInt( $('#NFId').val());
+
+            $.get(urlBase + 'Descarga/ObterDadosNF'+ '?idNF=' + idNF, function (resultado) {
+
+                if (resultado) {
+
+                    var produtos = $('#ProdutoId');
+                    produtos.empty();
+                    $.each(resultado.produtos, function (key, value) {
+                        produtos.append('<option value=' + value.Id+ '>' + value.Descricao + '</option>');
+                    });
+
+                    var embalagens = $('#EmbalagemId');
+                    $.each(resultado.embalagens, function (key, value) {
+                        embalagens.append('<option value=' + value.Id+ '>' + value.Descricao + '</option>');
+                    });
+
+                    $('#Quantidade').empty().val(resultado.QuantidadeItens);
+
+                }
+            }).fail(function (data) {
+                toastr.error(data.statusText, 'Coletor');
+            });
+        }
+
+        function Excluir() {
+
+            event.preventDefault();
+
+            var talieItem = $('#TalieItemId option:selected');
+
+            var talieItemId = talieItem.val();
+            var talieItemDescricao = talieItem.text();
+
+            $('#modal-mensagem').text('Confirma a exclusão da ' + talieItemDescricao + '?');
+            $('#del-modal').data('id', talieItemId).modal('show');
+        }
+
+        function ConfirmarExclusao() {
+
+            var _url = '@Url.Action("ExcluirTalieItem")';
+
+            var _id = $('#del-modal').data('id');
+
+            $.post(_url, { id: _id })
+                .done(function (data, statusText, xhr) {
+                    toastr.success('Talie excluído com sucesso!', 'Coletor');
+                    ObterItens();
+                    Limpar();
+                }).fail(function () {
+                    toastr.error('O registro não pode ser excluído', 'Coletor');
+                }).always(function () {
+                    $('#del-modal').data('id', '0').modal('hide');
+                });
+        }
+
+        var MensagemSucesso = function (resultado) {
+
+            toastr.success('Informações atualizadas com sucesso!', 'Coletor');
+
+            if (resultado) {
+                $('#Descarga').val(resultado.Descarga);
+                $('#Quantidade').val('');
+            }
+
+            ObterItens();
+        };
+
+        var MensagemErro = function (xhr, status) {
+
+            if (xhr.responseText !== '') {
+
+                var resultado = JSON.parse(xhr.responseText);
+
+                var mensagens = resultado.erros.map(function (erro) {
+                    return '<li>' + erro.ErrorMessage + '</li>';
+                });
+
+                toastr.error(mensagens, 'Coletor');
+
+            } else {
+                if (xhr.statusText !== '') {
+                    toastr.error(xhr.statusText, 'Coletor');
+                } else {
+                    toastr.error('Erro desconhecido', 'Coletor');
+                }
+            }
+        };
+    function AbrirNF() {
+
+            var itemId = parseInt( $('#TalieItemId').val());
+
+            if (!isNumero(itemId)) {
+                toastr.error('Selecione uma NF na lista', 'Coletor');
+                return;
+            }
+
+            $.get(urlBase + 'Descarga/ObterItemPorId?id=' + itemId, function (resultado) {
+
+                if (resultado) {
+
+                    $('#RegistroCsId').empty().val(resultado.RegistroCsId);
+                    $('#NotaFiscalId').empty().val(resultado.NotaFiscalId);
+                    $('#NotaFiscal').empty().val(resultado.NotaFiscal);
+                    $('#Peso').empty().val(resultado.Peso);
+                    $('#Quantidade').empty().val(resultado.Quantidade);
+                    $('#Remonte').empty().val(resultado.Remonte);
+                    $('#Fumigacao').empty().val(resultado.Fumigacao);
+                    $('#Yard').empty().val(resultado.Yard);
+                    $('#EmbalagemId').empty().val(resultado.EmbalagemId);
+                    $('#CodigoEmbalagem').empty().val(resultado.EmbalagemSigla);
+                    $('#DescricaoEmbalagem').empty().val(resultado.Embalagem);
+                    $('#IMO1').empty().val(resultado.IMO1);
+                    $('#IMO2').empty().val(resultado.IMO2);
+                    $('#IMO3').empty().val(resultado.IMO3);
+                    $('#IMO4').empty().val(resultado.IMO4);
+                    $('#UNO1').empty().val(resultado.UNO1);
+                    $('#UNO2').empty().val(resultado.UNO2);
+                    $('#UNO3').empty().val(resultado.UNO3);
+                    $('#UNO4').empty().val(resultado.UNO4);
+                    $('#Comprimento').empty().val(resultado.Comprimento);
+                    $('#Largura').empty().val(resultado.Largura);
+                    $('#Altura').empty().val(resultado.Altura);
+                    $('#Descarga').empty().val(resultado.Descarga);
+
+                    $('#QuantidadeNF').empty().val(resultado.Quantidade);
+                    $('#QuantidadeDescarga').empty().val(resultado.QuantidadeDescarga);
+
+                    $('#Fragil').prop('checked', resultado.Fragil);
+                    $('#Madeira').prop('checked', resultado.Madeira);
+                    $('#Avariado').prop('checked', resultado.Avariado);
+
+                     var produtos = $('#ProdutoId');
+                    produtos.empty();
+                    $.each(resultado.produtos, function (key, value) {
+                        produtos.append('<option value=' + value.Id+ '>' + value.Descricao + '</option>');
+                    });
+
+                    var embalagens = $('#EmbalagemId');
+                    embalagens.empty();
+                    $.each(resultado.embalagens, function (key, value) {
+                        embalagens.append('<option value=' + value.Id+ '>' + value.Descricao + '</option>');
+                    });
+                }
+            }).fail(function (data) {
+                toastr.error(data.statusText, 'Coletor');
+            });
+        }
+
+    </script>
+}

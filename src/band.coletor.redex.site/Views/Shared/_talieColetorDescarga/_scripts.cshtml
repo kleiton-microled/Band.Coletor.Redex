@@ -1,0 +1,1622 @@
+﻿
+<script>
+    $(document).ready(function () {
+        $('#txtTalieNumero').attr('disabled', true);
+        //$('#btnTalieCancelar').attr('disabled', true);
+        $('#checkTalieFechado').attr('disabled', true);
+        $('#txtInicio').attr('disabled', true);
+        $('#txtTermino').attr('disabled', true);
+        $('#txtCliente').attr('disabled', true);
+        $('#txtPlaca').attr('disabled', true);
+        $('#txtReserva').attr('disabled', true);
+        $('#txtConteiner').mask('SSSS000000-0');
+        $('#divPeso').hide();
+        $('#txtRegistro').mask('000000000000');
+      
+        //carrega talies na aba talies
+        var talie = "";
+        var registro = "";
+        var descarga = "@ViewBag.TipoDescarga";
+
+        var cd = "@ViewBag.CD";
+        var dd = "@ViewBag.DD";
+      
+        if (dd > 0) {
+            $('#pnlCrossDocking').hide();
+            $('#divContainer').hide();
+            $('#checkCrossDocking').attr('checked', false);
+            $('#checkCrossDocking').attr('disabled', false);
+        }
+        else {
+            $('#pnlCrossDocking').show();
+            $('#divContainer').show();       
+            $('#checkCrossDocking').attr('checked', true);
+            $('#checkCrossDocking').attr('disabled', true);
+         
+        }
+        //alert(navigator.userAgent);
+        getAllDadosTalie(talie, registro, descarga);
+
+    });
+</script>
+<script>
+        var cd = "@ViewBag.CD";
+        var dd = "@ViewBag.DD";
+  
+        if (dd > 0) {
+            $('#txtRegistro').change(function () {
+                var id = $(this).val();
+           
+                getTalieById(id);
+            });        
+        }
+        else {
+            $('#txtRegistro').change(function () {
+                $('#txtConteiner').attr('disabled', false);
+                $('#txtConteiner').val("");
+
+
+            });
+       
+            $('#txtConteiner').change(function () {
+                
+                var conteiner = $(this).val();
+                var id = $('#txtRegistro').val();
+             
+            
+                if (conteiner.length > 11) {
+               
+                    getTalieByIdConteiner(id, conteiner)
+                }
+            })
+
+        }
+
+    
+</script>
+<script>
+    function getTalieByIdConteiner(id, conteiner) {
+       
+        $.ajax({
+            url: '@Url.Content("~/TalieColetorDescarga/ObterTaliePorIdConteiner")',
+            type: 'GET',
+            data: {
+                id: id,
+                conteiner: conteiner,
+            },
+
+            beforeSend: function () {
+                $('#preloader').show();
+            },
+            success: function (Dados) {
+                var browser = navigator.appName;
+
+                if (conteiner == "") {
+                    if (browser == "Microsoft Internet Explorer") {
+                        alert("Preencha o número do conteiner ");
+                    }
+                    else {
+                        toastr.error("Preencha o número do conteiner", 'Coletor');    
+                    }                    
+                }
+                else {
+                    $('#preloader').hide();
+                    var mensagem = Dados.Mensagem;
+                    var possuiDados = Dados.possuiDados;
+                    if (possuiDados) {
+                        var ID = Dados.objetoRetorno.Id;
+                        var registroId = 0;
+
+                        if (Dados.objetoRetorno.RegistroId > 0) {
+                          registroId = Dados.objetoRetorno.RegistroId;
+                        } else {
+                            registroId = Dados.objetoRetorno.Id;
+                        }
+                        var inicio = moment(Dados.objetoRetorno.Inicio).format('DD/MM/YYYY HH:mm');
+                        var termino = moment(Dados.objetoRetorno.Termino).format('DD/MM/YYYY HH:mm');
+                        var crossDocking = Dados.objetoRetorno.CrossDocking;
+                        var conferenteId = Dados.objetoRetorno.ConferenteId;
+                        var equipeId = Dados.objetoRetorno.EquipeId;
+                        var bookingId = Dados.objetoRetorno.BookingId;
+                        var operacaoId = Dados.objetoRetorno.OperacaoId;
+                        var placa = Dados.objetoRetorno.Placa;
+                        var reference = Dados.objetoRetorno.Reference;
+                        var fechado = Dados.objetoRetorno.Fechado;
+                        var gateId = Dados.objetoRetorno.GateId;
+                        var observacoes = Dados.objetoRetorno.OBSERVACOES;
+                        var cliente = Dados.objetoRetorno.fantasia;
+                        var patio = Dados.objetoRetorno.Patio;
+                        var patioId = Dados.objetoRetorno.PatioId;
+                        var conteiner = Dados.objetoRetorno.ConteinerId;
+                    
+                        var clienteId = Dados.objetoRetorno.ClienteId;
+                        var estufagem = Dados.objetoRetorno.Estufagem;
+                        var autoNumTalie = Dados.objetoRetorno.talieId;
+                        
+                        var txtConteiner = Dados.objetoRetorno.idContainer;
+                        
+                        $('#pnlEdicaoItem').hide();
+                        $('#txtProduto').val('');
+                        $('#txtEmbalagem').val('');
+                        $('#txtQuantidadeDescarga').val('');
+                        $('#txtQuantidadeNF').val('');
+                        $('#txtComprimento').val('');
+                        $('#txtAltura').val('');
+                        $('#txtLargura').val('');
+                        $('#txtPeso').val('');
+                        $('#txtLocal').val('');
+                        $('#cbNF').empty();
+
+                        $('#btnConfirmarFechamento').attr('data-id', ID);
+                        $('#hddnGateId').val(gateId);
+                        $('#hddnReserva').val(bookingId);
+                        $('#hddnReservaId').val(bookingId);
+                        $('#hddnConteinerId').val(conteiner);
+                        $('#hddnClienteId').val(clienteId);
+                        $('#txtRegistro').val(registroId);
+                        $('#txtConteiner').val(conteiner);
+
+                        $('#txtTalieNumero').val(ID);
+                        $('#hddnConteinerId').val(patioId);
+
+
+                        //$('#txtConteiner').attr('disabled', true);
+                        
+                        $('#txtRegistro').attr('disabled', true);        
+                     
+                     
+                        if (fechado == 1) {
+                            $('#checkTalieFechado').attr('disabled', true);
+                            $('#checkTalieFechado').attr('checked', true);
+                            $('#btnTalieGravar').hide();
+                            $('#btnTalieFinalizar').hide();
+                      
+                          
+                        }
+                        else {
+                            $('#checkTalieFechado').attr('checked', false);
+                            $('#btnTalieGravar').show();
+                            $('#btnTalieFinalizar').show();
+                         
+                        }
+
+                        if (estufagem == 1) {
+                            $('#estufagemCompleta').attr('checked', true);
+                        }
+                        else {
+                            $('#estufagemCompleta').attr('checked', false);
+                        }
+
+                      
+                        if (ID == 0) {
+                            $('#btnTalieFinalizar').hide();
+                            $('#txtTalieNumero').val();
+                        }
+
+                        $('#txtInicio').val(inicio);
+                        $('#txtTermino').val(termino);
+                        $('#txtCliente').val(cliente);
+                        $('#txtPlaca').val(placa);
+                        $('#txtReserva').val(reference);
+
+                        $('#cbConferente option').each(function () {
+                            var idConferente = $(this).val();
+
+                            if (idConferente == conferenteId) {
+                                $(this).attr('selected', true);
+                            }
+                        });
+
+                        $('#cbEquipe option').each(function () {
+                            var idEquipe = $(this).val();
+
+                          /*  if (idEquipe == equipeId) {*/
+                                $(this).attr('selected', true);
+                         /*   }*/
+                        });
+
+                        $('#cbModo option').each(function () {
+                            var idOperacao = $(this).val();
+
+                            if (idOperacao == operacaoId) {
+                                $(this).attr('selected', true)
+                            }
+                        });
+
+                      
+                       // $('#txtConteiner').val(conteiner);
+                       // $('#txtConteiner').val(conteiner);
+                        //alert("teste");
+                        //if ($('#txtTalieNumero').val() != "") {
+                        //    if (ID == 0) {
+                        //        ID = $('#txtTalieNumero').val();
+                        //    }
+                        //}
+                        if ($('#txtTalieNumero').val() == 0) {
+                            getAllDadosTalieItens(ID);
+                        } else {
+                            getAllDadosTalieItens($('#txtTalieNumero').val())
+                        }
+                    }
+                    else {
+                        toastr.info(mensagem, 'Resultado da busca');
+                        $('#hddnGateId').val("");
+                        $('#hddnReserva').val("");
+                        $('#hddnReservaId').val("");
+                        $('#hddnConteinerId').val("");
+                        $('#hddnClienteId').val("");
+                        $('#hddnConteinerId')
+                        $('#txtRegistro').val("");
+                        $('#txtTalieNumero').val("");
+                        $('#txtInicio').val("");
+                        $('#txtTermino').val("");
+                        $('#txtCliente').val("");
+                        $('#txtPlaca').val("");
+                        $('#txtReserva').val("");
+                        $('#cbConferente').val(0);
+                        $('#cbEquipe').val(0);
+                        $('#cbModo').val(0);
+                        $('#checkTalieFechado').attr('checked', false);
+                        $('#estufagemCompleta').attr('checked', false);
+                        $('#pnlEdicaoItem').hide();
+                        $('#grdItens').DataTable().destroy();
+                        $('#grdItens').hide();
+                        $('#grdItens').empty();
+                    }
+
+                }
+            },
+            error: function () {
+
+                $('#preloader').hide();
+
+                toastr.error("Os dados não foram carregados", 'Erro');
+            }
+        });
+    }
+
+</script>
+<script>
+    function getTalieById(id) {        
+        $.ajax({
+            url: '@Url.Content("~/TalieColetorDescarga/ObterTaliePorId")',
+            type: 'GET',
+            data: { id: id },
+
+            beforeSend: function () {
+               
+                $('#preloader').show();
+               
+            },
+            success: function (Dados) {
+                $('#preloader').hide();
+               
+                var mensagem = Dados.Mensagem;
+                
+                var possuiDados = Dados.possuiDados;
+              
+                if (possuiDados) {
+                    var ID = Dados.objetoRetorno.Id;
+                    var registroId = Dados.objetoRetorno.RegistroId;
+                    var inicio = moment(Dados.objetoRetorno.Inicio).format('DD/MM/YYYY HH:mm');                                        
+                    var termino = moment(Dados.objetoRetorno.Termino).format('DD/MM/YYYY HH:mm');
+                    var crossDocking = Dados.objetoRetorno.CrossDocking;
+                    var conferenteId = Dados.objetoRetorno.ConferenteId;
+                    var equipeId = Dados.objetoRetorno.EquipeId;
+                    var bookingId = Dados.objetoRetorno.BookingId;
+                    var operacaoId = Dados.objetoRetorno.OperacaoId;
+                    var placa = Dados.objetoRetorno.Placa;
+                    var reference = Dados.objetoRetorno.Reference;
+                    var fechado = Dados.objetoRetorno.Fechado;
+                    var gateId = Dados.objetoRetorno.GateId;
+                    var observacoes = Dados.objetoRetorno.OBSERVACOES;
+                    var cliente = Dados.objetoRetorno.fantasia;
+                    var patio = Dados.objetoRetorno.Patio;
+                    var patioId = Dados.objetoRetorno.PatioId;
+                    var conteiner = Dados.objetoRetorno.ConteinerId;
+                    var clienteId = Dados.objetoRetorno.ClienteId;
+                    var estufagem = Dados.objetoRetorno.Estufagem;
+                    var autoNumTalie = Dados.objetoRetorno.talieId;  
+                    
+                    $('#pnlEdicaoItem').hide();
+                    $('#txtProduto').val('');
+                    $('#txtEmbalagem').val('');
+                    $('#txtQuantidadeDescarga').val('');
+                    $('#txtQuantidadeNF').val('');
+                    $('#txtComprimento').val('');
+                    $('#txtAltura').val('');
+                    $('#txtLargura').val('');
+                    $('#txtPeso').val('');
+                    $('#txtLocal').val('');
+                    $('#cbNF').empty();
+
+                    $('#btnConfirmarFechamento').attr('data-id', ID);
+                    $('#hddnGateId').val(gateId);
+                    $('#hddnReserva').val(bookingId);
+                    $('#hddnReservaId').val(bookingId);
+                    $('#hddnConteinerId').val(conteiner);
+                    $('#hddnClienteId').val(clienteId);
+                    $('#txtRegistro').val(registroId);
+                    $('#txtTalieNumero').val(ID);
+                    $('#hddnConteinerId').val(patioId);
+
+
+                   
+                    //if (crossDocking == 1) {
+                    //    $('#checkCrossDocking').attr('checked', true);
+                    //}
+                    //else {
+                    //    $('#checkCrossDocking').attr('checked', false);
+                    //}
+                   
+                    if (fechado == 1) {
+                        $('#checkTalieFechado').attr('disabled', true);
+                        $('#checkTalieFechado').attr('checked', true);
+                        $('#btnTalieGravar').hide();
+                        $('#btnTalieFinalizar').hide();
+                    }
+                    else {
+                        $('#checkTalieFechado').attr('checked', false);
+                        $('#btnTalieGravar').show();
+                        $('#btnTalieFinalizar').show();
+                     
+                    }
+                   
+                    if (estufagem == 1) {
+                        $('#estufagemCompleta').attr('checked', true);
+                    }
+                    else {
+                        $('#estufagemCompleta').attr('checked', false);
+                    }
+                
+                    if (ID == 0) {
+                        $('#btnTalieFinalizar').hide();
+                        $('#txtTalieNumero').val("");
+                    }                    
+
+                    $('#txtInicio').val(inicio);
+                    $('#txtTermino').val(termino);
+                    $('#txtCliente').val(cliente);
+                    $('#txtPlaca').val(placa);
+                    $('#txtReserva').val(reference);
+                  
+                    $('#cbConferente option').each(function () {
+                        var idConferente = $(this).val();
+
+                    if (idConferente == conferenteId) {
+                            $(this).attr('selected', true);
+                        }
+                    });
+
+                    $('#cbEquipe option').each(function () {
+                        var idEquipe = $(this).val();
+
+                        if (idEquipe == equipeId) {
+                            $(this).attr('selected', true);
+                        }
+                    });
+                  
+                    $('#cbModo option').each(function () {
+                        var idOperacao = $(this).val();
+
+                        if (idOperacao == operacaoId) {
+                            $(this).attr('selected', true)
+                        }
+                    });
+
+                    $('#txtConteiner').val(conteiner);
+             
+                    
+                    getAllDadosTalieItens(ID);
+                }
+                else {
+                    toastr.info(mensagem, 'Resultado da busca');
+                    $('#hddnGateId').val("");
+                    $('#hddnReserva').val("");
+                    $('#hddnReservaId').val("");
+                    $('#hddnConteinerId').val("");
+                    $('#hddnClienteId').val("");
+                    $('#hddnConteinerId')
+                    $('#txtRegistro').val("");
+                    $('#txtTalieNumero').val("");
+                    $('#txtInicio').val("");
+                    $('#txtTermino').val("");
+                    $('#txtCliente').val("");
+                    $('#txtPlaca').val("");
+                    $('#txtReserva').val("");
+                    $('#cbConferente').val(0);
+                    $('#cbEquipe').val(0);
+                    $('#cbModo').val(0);
+                    $('#checkTalieFechado').attr('checked', false);
+                    $('#estufagemCompleta').attr('checked', false);
+                    $('#pnlEdicaoItem').hide();
+                    $('#grdItens').DataTable().destroy();
+                    $('#grdItens').hide();
+                    $('#grdItens').empty();
+                  
+                }
+
+            },
+            error: function () {
+
+               $('#preloader').hide();
+
+                toastr.error("Os dados não foram carregados 1", 'Erro');
+            }
+        });
+    }
+
+</script>
+<script>
+    //eventos para cancelar e gravar talie
+    $('#btnTalieCancelar').click(function () {
+        $('#txtTalieNumero').val("");        
+        $('#checkTalieFechado').attr('checked', false);
+        $('#txtInicio').val("");
+        $('#txtTermimo').val("");
+        $('#txtCliente').val("");
+        $('#txtPlaca').val("");
+        $('#txtReserva').val("");
+       // $('#cbConferente').val("0");
+        $('#estufagemCompleta').attr('checked', false);
+        $('#cbEquipe').val("0");
+        $('#cbModo').val("0");
+        $('#txtConteiner').val("");
+        $('#txtRegistro').val("");
+        $('#txtTermino').val("");
+        $('#grdItens').DataTable().destroy();
+        $('#grdItens').hide();
+        $('#grdItens').empty();
+        $('#txtRegistro').attr('disabled', false);
+        $('#txtConteiner').attr('disabled', false);
+        $('#txtRegistro').val("");
+        $('#txtConteiner').val("");
+
+
+
+        $('#pnlEdicaoItem').hide();
+        $('#cbNF').empty();
+        $('#txtEmbalagem').val("");
+        $('#txtProduto').val("");
+        $('#txtQuantidadeNF').val("");
+        $('#txtQuantidadeDescarga').val("");
+        $('#txtComprimento').val("");
+        $('#txtAltura').val("");
+        $('#txtLargura').val("");
+        $('#txtPeso').val("");
+        $('#txtLocal').val("");
+        $('#checkRemonte').attr('checked', false);
+        $('#checkFragil').attr('checked', false);
+        $('#checkCarimbo').attr('checked', false);
+        $('#checkAvaria').attr('checked', false);
+        $('#txtImo').val("");
+        $('#txtImo2').val("");
+        $('#txtImo3').val("");
+        $('#txtImo4').val("");
+        $('#txtUno').val("");
+        $('#txtUno2').val("");
+        $('#txtUno3').val("");
+        $('#txtUno4').val("");
+    });
+</script>
+<script>
+    //gravar talie
+    $('#btnTalieGravar').click(function () {
+        var id = $('#txtTalieNumero').val();
+        var crossDocking = $('#checkCrossDocking').is(':checked') ? true : false;
+        var talieFechado = $('#checkTalieFechado').is(':checked') ? 1 : 0;
+        var inicio = $('#txtInicio').val();
+        var termino = $('#txtTermimo').val();
+        var cliente = $('#txtCliente').val();
+        var placa = $('#txtPlaca').val();
+        var reserva = $('#txtReserva').val();
+        var conferente = $('#cbConferente').val();
+        var equipe = $('#cbEquipe').val();
+        var operacao = $('#cbModo').val();
+        var conteiner = $('#txtConteiner').val();
+        var tipoDescarga = $('#hddnTipoDescarga').val();
+        var tipoDescargaCD = "@Band.Coletor.Redex.Business.Enums.OpcoesDescarga.CD";
+        var autonumBOO = $('#hddnReserva').val();
+        var gateId = $('#hddnGateId').val();
+        var autonumREG = $('#txtRegistro').val();
+        var obs = "";
+        var flagEstufagem = 0;
+        var browser = navigator.appName;;
+  
+        if (autonumREG == "") {
+            autonumREG = 0;
+        }
+
+        var cd = "@ViewBag.CD";
+        var dd = "@ViewBag.DD";
+
+        if (dd > 0) {
+            flagEstufagem = 0;
+        }
+        else {
+            flagEstufagem = 1;
+
+        }
+
+        if (inicio == "") {
+            
+
+            if (browser == "Microsoft Internet Explorer") {
+                alert("Preencha a data de início ");
+            }
+            else {
+                toastr.error("Preencha a data de início", 'Campo obrigatório');
+            }
+            
+        }
+        else if (conferente == 0) {
+
+            if (browser == "Microsoft Internet Explorer") {
+                alert("Selecione um conferente ");
+            }
+            else {
+                toastr.error("Selecione um conferente", 'Campo obrigatório');
+            }
+            
+        }
+        else if (equipe == 0) {
+            if (browser == "Microsoft Internet Explorer") {
+                alert("Selecione uma equipe ");
+            }
+            else {
+                toastr.error("Selecione uma equipe", 'Campo obrigatório');
+            }            
+        }
+        else if (operacao == 0) {
+            if (browser == "Microsoft Internet Explorer") {
+                alert("Selecione o modo da operação ");
+            }
+            else {
+                toastr.error("Selecione o modo da operação", 'Campo obrigatório');
+            }
+            
+        }
+        else if ((tipoDescarga == tipoDescargaCD) && registroBusca == 0) {
+
+            if (browser == "Microsoft Internet Explorer") {
+                alert("Informe um contêiner válido ");
+            }
+            else {
+                toastr.error("Informe um contêiner válido", 'Campo obrigatório');
+            }
+
+            
+        }
+        else if (placa == "") {
+
+            if (browser == "Microsoft Internet Explorer") {
+                alert("Informe a placa do veículo descarregado ");
+            }
+            else {
+                toastr.error("Informe a placa do veículo descarregado", 'Campo obrigatório');
+            }
+            
+        }
+        else if (talieFechado == 1) {
+            if (browser == "Microsoft Internet Explorer") {
+                alert("Talie fechado, alteração não permitida ");
+            }
+            else {
+                toastr.error("Talie fechado, alteração não permitida", 'Erro');
+            }
+            
+        }
+        else {
+            
+            var inserirTalie = {
+                "AUTONUM_TALIE": id,
+                "DtInicio": inicio,
+                "CrossDocking": crossDocking,
+                "ConferenteId": conferente,
+                "EquipeId": equipe,
+                "BookingId": autonumBOO,
+                "OperacaoId": operacao,
+                "ConteinerId": conteiner,
+                "PLACA": placa,
+                "GateId": gateId,
+                "AUTONUM_REG": autonumREG,
+                "Observacoes": obs,
+                "FLAG_ESTUFAGEM": flagEstufagem,
+            }
+      
+            $.ajax({
+                url: '@Url.Content("~/TalieColetorDescarga/CadastrarTalie")',
+                type: 'GET',
+                data: inserirTalie,
+
+                beforeSend: function () {
+                    $('#preloader').show();
+                },
+                success: function (Dados) {
+                    $('#preloader').hide();
+                    var mensagem = Dados.Mensagem;
+                    var status = Dados.statusRetorno;
+                    
+                 
+                    $('#txtTalieNumero').val(Dados.objetoRetorno.AUTONUM_TALIE);
+                    if (status == "200") {
+                        if (browser == 'Microsoft Internet Explorer') {
+                            alert(mensagem);
+                        }
+                        else {
+                            toastr.success(mensagem, 'Sucesso');
+                        }
+                    }
+                    else {
+                        if (browser == 'Microsoft Internet Explorer') {
+                            alert(mensagem);
+                        }
+                        else {
+                            toastr.error(mensagem, 'Erro');
+                        }                       
+                    }
+
+                    var reg = $('#txtRegistro').val();
+
+                    //Linhas Com a validacao do CD x Da 
+                    var cd = "@ViewBag.CD";
+                    var dd = "@ViewBag.DD";
+                
+                    if (dd > 0) {
+                  
+                        getTalieById($('#txtRegistro').val());                        
+                    }
+                    else {
+                     getTalieByIdConteiner($('#txtRegistro').val(), $('#txtConteiner').val());
+                    }
+                    //Linhas Com a validacao do CD x Da 
+
+                   
+
+                },
+                error: function () {
+                    $('#preloader').hide();
+                    toastr.error(" Os dados não foram inseridos ");
+
+                },
+                complete: function () {
+                    var talie = $('#txtTalieNumero').val();
+           
+                    getAllDadosTalieItens(talie);
+                }
+            });
+        }
+
+    });
+</script>
+<script>
+    //Finalizar Talie
+    $('#btnTalieFinalizar').click(function () {
+        var talie = $('#txtTalieNumero').val();
+        var browser = navigator.appName;
+        if (talie == '') {
+            if (browser == 'Microsoft Internet Explorer') {
+                alert('Finalize somente após o lançamento do talie');
+            }
+            else {
+                toastr.error('Finalize somente após o lançamento do talie', 'Coletor');
+            }
+            
+            return;
+        }
+        $.get('@Url.Content("~/TalieColetorDescarga/ObterTotalItensPorTalie")', { id: talie }, function (Dados) {
+            var totalItensTalie = Dados.objetoRetorno;
+            if (totalItensTalie == 0) {               
+                if (browser == 'Microsoft Internet Explorer') {
+                    alert('Não foi encontrado lancamento de carga para o talie selecionado');
+                }
+                else {
+                    toastr.error('Não foi encontrado lancamento de carga para o talie selecionado');
+                }
+                
+                return;
+            }
+        });
+
+
+        $('#modal-fechamento').data('id', talie);
+        $('#modal-fechamento').modal('show');
+    });
+
+    $('#btnConfirmarFechamento').click(function () {
+
+        var talie = $(this).attr('data-id');
+        var conteinerId = "";
+        var descarga = "@ViewBag.TipoDescarga";
+        
+        btnTalieFinalizar(talie, descarga, conteinerId);
+    });
+</script>
+
+<script>
+    $('#btnItemCancelar').click(function () {
+        $('#cbNF').empty();
+        $('#txtEmbalagem').val("");
+        $('#txtProduto').val("");
+        $('#txtQuantidadeNF').val("");
+        $('#txtQuantidadeDescarga').val("");
+        $('#txtComprimento').val("");
+        $('#txtAltura').val("");
+        $('#txtLargura').val("");
+        $('#txtPeso').val("");
+        $('#txtLocal').val("");
+        $('#checkRemonte').attr('checked', false);
+        $('#checkFragil').attr('checked', false);
+        $('#checkCarimbo').attr('checked', false);
+        $('#checkAvaria').attr('checked', false);
+        $('#txtImo').val("");
+        $('#txtImo2').val("");
+        $('#txtImo3').val("");
+        $('#txtImo4').val("");
+        $('#txtUno').val("");
+        $('#txtUno2').val("");
+        $('#txtUno3').val("");
+        $('#txtUno4').val("");
+
+    });
+</script>
+<script>
+
+
+    $('#txtQuantidadeDescarga').change(function () {
+      
+        var quantidadeDescarga = $('#txtQuantidadeDescarga').val();
+
+        if (quantidadeDescarga < 0) {
+            toastr.error('Valor não pode ser negativo', 'Erro');
+            $('#txtQuantidadeDescarga').val(0);
+            $('#txtQuantidadeDescarga').focus();
+        }
+
+    });
+
+
+    //gravar item talie
+    $('#btnItemSalvar').click(function () {
+        var talieItem = $('#btnItemSalvar').attr('data-id');
+        var talieId = $('#btnItemSalvar').attr('data-talie-id');
+        var nf = $('#cbNF').val();
+        //var embalagem = $('#txtEmbalagem').val();
+        var embalagem = $('#cbEmbalagens').val();
+        var produto = $('#txtProduto').val();
+        var quantidadeNF = $('#txtQuantidadeNF').val();
+        var quantidadeDescarga = $('#txtQuantidadeDescarga').val();
+        var comprimento = $('#txtComprimento').val().replace(".", ",");;
+        var largura = $('#txtLargura').val().replace(".", ",");
+        var altura = $('#txtAltura').val().replace(".", ",");
+        var peso = $('#txtPeso').val();
+        var local = $('#txtLocal').val();
+        var remonte = $('#checkRemonte').is(':checked') ? 1 : 0;
+        var fragil = $('#checkFragil').is(':checked') ? 1 : 0;
+        var numerada = $('#checkNumerada').is(':checked') ? 1 : 0;
+        var carimbo = $('#checkCarimbo').is(':checked') ? 1 : 0;
+        var avaria = $('#checkAvaria').is(':checked') ? 1 : 0;
+        var imo1 = $('#txtImo').val();
+        var imo2 = $('#txtImo2').val();
+        var imo3 = $('#txtImo3').val();
+        var imo4 = $('#txtImo4').val();
+        var uno = $('#txtUno').val();
+        var uno2 = $('#txtUno2').val();
+        var uno3 = $('#txtUno3').val();
+        var uno4 = $('#txtUno4').val();
+        var marcacao = $('#txtMarcacao').val();
+        var observacao = $('#txtObservacao').val();
+     
+
+      //  alert(numerada + "  " + observacao);
+        var browser = navigator.appName;
+       
+        var inserir = {
+            "AUTONUM_TI": talieItem,
+            "AUTONUM_TALIE": talieId,
+            "QTDE_DESCARGA": quantidadeNF,
+            "AUTONUM_NF": nf, 
+            "LARGURA": largura,
+            "ALTURA": altura,
+            "COMPRIMENTO": comprimento,
+            "Peso": peso,
+            "Yard": local,
+            "REMONTE": remonte,
+            "Carimbo": carimbo,
+            "FLAG_FRAGIL": fragil,
+            "FLAG_AVARIA": avaria,
+            "IMO": imo1,
+            "IMO2": imo2,
+            "IMO3": imo3,
+            "IMO4": imo4,
+            "UNO": uno,
+            "UNO2": uno2,
+            "UNO3": uno3,
+            "UNO4": uno4,
+            "Quantidade": quantidadeDescarga,
+            "MARCACAO": marcacao,
+            "OBSERVACAO": observacao,
+            "FLAG_NUMERADA": numerada,
+            "AUTONUM_EMB": embalagem,
+        };
+       
+      
+        if (quantidadeDescarga == 0) {
+            if (browser == 'Microsoft Internet Explorer') {
+                alert('A quantidade não pode ser zero');
+            }
+            else {
+                toastr.error("A quantidade não pode ser zero", "Erro");
+            }
+            
+        }
+        else {
+            $.ajax({
+            url: '@Url.Content("~/TalieColetorDescarga/CadastrarTalieItem")',
+            type: 'GET',
+            data: inserir,
+
+            beforeSend: function () {
+                $('#preloader').show();
+            },
+
+            success: function (Dados) {
+                $('#preloader').hide();
+                var mensagem = Dados.Mensagem;
+                var status = Dados.statusRetorno;
+
+                if (status == "200") {
+                    
+                    if (browser == 'Microsoft Internet Explorer') {
+                        alert(mensagem);
+                    }
+                    else {
+                        toastr.success(mensagem, 'Sucesso');
+                    }                    
+                    
+                     //Linhas que validam CD X DA
+
+                    var cd = "@ViewBag.CD";
+                    var dd = "@ViewBag.DD";
+
+                    if (dd > 0) {
+                        getTalieById($('#txtRegistro').val());
+                    }
+                    else {
+                        getTalieByIdConteiner($('#txtRegistro').val(), $('#txtConteiner').val());
+                    }
+
+                    //Linhas que validam CD X DA 
+              
+                    getAllDadosTalieItens(talieId);
+                }
+
+                else {
+                    if (browser == 'Microsoft Internet Explorer') {
+                        alert(mensagem);
+                    }
+                    else {
+                        toastr.error(mensagem, 'Erro');
+                    }                      
+                }
+            },
+            error: function () {
+                $('#preloader').show();
+                $.toastr.error("Item não cadastrado", 'Erro');
+            }
+        });
+        }
+    });
+</script>
+<script>
+    $('#btnCancelarItem').click(function () {
+        
+    });
+</script>
+<script>
+    //Carrega Scripts Aba talie
+    function getAllDadosTalie(talie, registro, tipoDescarga) {
+      
+        $.ajax({
+            url: '@Url.Content("~/TalieColetorDescarga/GetAllDadosTalie")',
+            type: 'GET',
+            data: { talie: talie, registro: registro, tipoDescarga: tipoDescarga },
+
+            before: function() {
+                $('#preloader').show();
+            },
+            success: function (Dados) {
+                $('#preloader').hide();
+
+                $('#grdViewTable').empty();
+                $('#grdViewTable').show();
+                $('#grdViewTable').append("<thead>"
+                    + '<th>Lote</th>'
+                    + '<th>Talie</th>'
+                    + '<th>Início</th>'
+                    //+ '<th>Término</th>'
+                    + '<th>Placa</th>'
+                    + '<th>Conteiner</th>'
+                    + '<th>Reserva</th>'
+                    + '<th>Instrução</th>'
+                    + '<th>Fantasia</th>'
+                    + '<th></th>'
+                    + '</thead>'
+                    + '<tbody>'
+                );
+                $.each(Dados.objetoRetorno, function (i, item) {
+                    var autonum_reg = item.autonum_reg;
+                    var Id = item.Id;
+              
+                    var Inicio = moment(item.Inicio).format('DD/MM/YYYY HH:mm');
+                    var termino = moment(item.Termino).format('DD/MM/YYYY');
+                    var idConteiner = item.id_conteiner;
+                    var reference = item.reference;
+                    var instrucao = item.instrucao;
+                    var fantasia = item.fantasia;
+                    var placaCv = item.Placa;
+                  
+                    $('#grdViewTable').append('<tr>'
+                        + '<td>' + autonum_reg + '</td>'
+                        + '<td>' + Id + '</td>'
+                        + '<td>' + Inicio + '</td>'
+                        //+ '<td>' + termino + '</td>'
+                        + '<td>' + placaCv + '</td>'
+                        + '<td>' + idConteiner + '</td>'
+                        + '<td>' + reference + '</td>'
+                        + '<td>' + instrucao + '</td>'
+                        + '<td>' + fantasia + '</td>'                      
+                          +  '<td>'
+                            + '<a href="#"  class="btn btn-info btnEditTalie"data-cntr="' + idConteiner + '" data-talie="' + Id + '" data-id="' + autonum_reg + '" data-toggle="modal" role="button" data-target="#modal-alteracao" title="Alterar"><i class="fa fa-edit"></i></a>'
+                            + '<a href="#"  class="btn btn-danger btnDeleteTalie" data-talie="' + Id + '" data-id="' + autonum_reg + '" data-toggle="modal" role="button" data-target="#modal-exclusao" title="Excluir"><i class="fa fa-trash"></i></a>'                        
+                            + '</td>'
+                        + '</tr>'
+                    );
+                });
+
+              
+
+
+                $('.btnEditTalie').click(function () {
+               
+                   
+                    var talieId = $(this).attr('data-talie');
+                    
+                    var idcntr = $(this).attr('data-cntr');
+                    var reg = $(this).attr('data-id');
+                  
+                    $('#tabDescarga').addClass('active');
+                 
+                    $('#tabDescarga').addClass('show');
+                 
+                    $('#tabTalies').removeClass('active');
+                
+                    $('#tabTalies').removeClass('show');
+                  
+                    $('#descarga').addClass('fade');
+                  
+                    $('#talie').removeClass('fade');
+                   
+                    $('#descarga').addClass('active');
+                  
+                    $('#descarga').addClass('show');
+                  
+                    $('#talies').removeClass('active');
+                   
+                    $('#talies').removeClass('show');
+                  
+
+                    //Linhas Com a validacao do CD x Da
+                    var cd = "@ViewBag.CD";
+                    var dd = "@ViewBag.DD";
+                   
+                    if (dd > 0) {
+                   // getTalieById($('#txtRegistro').val());
+                       getTalieById(reg)
+                     
+                    }
+                    else {
+                     // getTalieByIdConteiner($('#txtRegistro').val(), $('#txtConteiner').val());
+                   
+                        getTalieByIdConteiner(talieId, idcntr)
+                      
+                    }
+                    //Linhas Com a validacao do CD x Da
+               
+                    getAllDadosTalieItens(talieId);
+                });
+
+                $('#grdViewTable').append('</tbody></table>');
+
+                $('#grdViewTable').DataTable().destroy();
+                $('#grdViewTable').DataTable({
+                    "language": {
+                        "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Portuguese-Brasil.json"
+                    }
+                });
+
+                $('.btnDeleteTalie').click(function () {
+                    var id = $(this).attr('data-talie');
+                    var quantidade = $(this).attr('data-quantidade');
+                    $('#origem').empty();
+                    $('#btnConfirmaExclusao').attr('data-id', 0);
+                    $('#btnConfirmaExclusao').attr('data-id', id)
+                    $('#btnConfirmaExclusao').attr('data-quantidade', quantidade);
+
+                    $('#modal-exclusao').attr('data-origem', 'talie');
+                    $('#hddnOrigem').val('talie');
+                    $('#origem').append('talie');
+                });
+            },
+            error: function () {
+                $('#preloader').hide();
+                toastr.error("Os dados não foram carregados");
+            }
+        });
+    }
+</script>
+<script>
+    //carrega itens talie
+    function getAllDadosTalieItens(id) {
+     
+        $.ajax({
+            url: '@Url.Content("~/TalieColetorDescarga/GetAllDadosTalieItens/")',
+            type: 'GET',
+            data: { id: id },
+
+            beforeSend: function () {
+                $('#preloader').show();
+            },
+            success: function (Dados) {
+                $('#preloader').hide();
+                $('#grdItens').show();
+                $('#grdItens').empty();
+
+                $('#grdItens').append('<thead>'
+                    + '<tr>'
+                    + '<th></th>'
+                    + '<th></th>'
+                    + '<th>NF</th>'
+                    + '<th>Série</th>'
+                    + '<th>Item</th>'
+                    + '<th>Embalagem</th>'
+                    + '<th>Produto</th>'
+                    + '<th>Qtde NF. </th>'
+                    + '<th>Qtde Descarga</th>'
+                    + '<th>Comprimento</th>'
+                    + '<th>Largura</th>'
+                    + '<th>Altura</th>'     
+                    + '<th>Peso</th>'
+                    + '<th>Armazém</th>'
+                    + '<th>YARD</th>'
+                    + '</tr>'
+                    + '</thead>'
+                    + '<tbody>'
+                );
+
+
+                $.each(Dados.objetoRetorno, function (i, item) {
+                    var autonum_talie = item.AUTONUM_TALIE;
+                  
+                    var autonum_ti = item.AUTONUM_TI;
+                    
+                    var num_nf = item.num_nf;
+                    var serie_nf = item.serie_nf;
+                    var talieItem = item.ItemTalie;
+                    var embalagem = item.descricao_emb;
+                    var produto = item.desc_produto;
+                    var quantidade = item.qtde;
+                    var quantidadeDescarga = item.QTDE_DESCARGA;
+                    var altura = item.ALTURA;
+                    var largura = item.LARGURA;
+                    var comprimento = item.COMPRIMENTO;
+                    var peso = item.Peso;
+                    var armazem = item.ARMAZEM;
+                    var yard = item.YARD;
+                    var marcacao = item.marcacao;
+                    var observacao = item.observacao;
+
+                    $('#grdItens').append('<tr>'
+                        + '<td>'
+                        + '<a href="#" class="btn btn-info btnEditTalieItem" data-quantidade = "' + quantidadeDescarga + '" data-talie="' + autonum_talie + '"  data-id="' + autonum_ti + '" data-toggle="modal" role="button" data-target="#modal-alteracao" title="Alterar"><i class="fa fa-edit"></i></a>'
+                        + '</td>'
+                        + '<td>'
+                        + '<a href="#" class="btn btn-danger btnDeleteTalieItem" data-quantidade = "' + quantidadeDescarga + '" data-talie="' + autonum_talie + '" data-id="' + autonum_ti + '" data-toggle="modal" role="button" data-target="#modal-exclusao" title="Excluir"><i class="fa fa-trash"></i></a>'
+                        + '</td>'
+                        + '<td>' + num_nf + '</td>'
+                        + '<td>' + serie_nf + '</td>'
+                        + '<td>' + talieItem + '</td>'
+                        + '<td>' + embalagem + '</td>'
+                        + '<td class="desc_produto" data-produto = "' + produto + '" >' + produto + '</td>'
+                        + '<td>' + quantidade + '</td>'
+                        + '<td>' + quantidadeDescarga + '</td>'
+
+                        + '<td>' + comprimento + '</td>'
+                        + '<td>' + largura + '</td>'
+                        + '<td>' + altura + '</td>'
+                  
+                        + '<td>' + peso + '</td>'
+                        + '<td>' + armazem + '</td>'
+                        + '<td>' + yard + '</td>'
+
+                        + '</tr>'
+                    );
+
+                });
+
+                var fechado = $("#checkTalieFechado").is(':checked');
+              
+               
+            
+                if (fechado == "true") {
+               
+                    $('.btnEditTalieItem').hide();
+                    $('.btnDeleteTalieItem').hide();
+                } 
+                $('#grdItens').append('</tbody>');
+                $('#grdItens').DataTable().destroy();
+                $('#grdItens').DataTable({
+                    "language": {
+                        "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Portuguese-Brasil.json"
+                    }
+                });
+
+                //var fechado = document.getElementById('checkTalieFechado').checked;
+                //alert(fechado);
+                //if (fechado = "True") {                
+                //    $('.btnEditTalieItem').hide();
+                //    $('.btnDeleteTalieItem').hide();
+                //}
+
+           
+             
+
+                $('.btnEditTalieItem').click(function () {
+
+                   
+                    $('#pnlEdicaoItem').show();
+                    var itemId = $(this).attr('data-id');
+                  
+                    var desc_produto = $('.desc_produto').attr('data-produto');
+
+                    CarregarDadosItemTalie(itemId, desc_produto);
+
+                });
+                $('.btnDeleteTalieItem').click(function () {
+                    $('#origem').empty();
+                    var talieId = $(this).attr('data-talie');
+                    var ID = $(this).attr('data-id');
+                    var quantidade = $(this).attr('data-quantidade');
+
+                    $('#btnConfirmaExclusao').attr('data-id', 0);
+                    $('#btnConfirmaExclusao').attr('data-talie-id', talieId)
+                    $('#btnConfirmaExclusao').attr('data-id', ID);
+                    $('#btnConfirmaExclusao').attr('data-quantidade', quantidade);
+                    $('#modal-exclusao').attr('data-origem', 'item');
+                    $('#hddnOrigem').val('item');
+                    $('#origem').text('item');
+                });
+            },
+            error: function () {
+                $('#preloader').hide();
+
+                ///toastr.info("Os dados não foram carregados");
+            }
+        });
+    }
+</script>
+<script>
+    function CarregarDadosItemTalie(id, produto){
+        $.ajax({
+            type: "GET",
+            url: '@Url.Content("~/TalieColetorDescarga/GetDadosTalieItemByID")',
+            data: { id: id },
+
+            beforeSend: function () {
+                $('#preloader').show();
+            },
+            success: function (Dados) {
+                var id = Dados.objetoRetorno.AUTONUM_TI;
+                var talieId = Dados.objetoRetorno.TalieId;
+                var NotaFiscalId = Dados.objetoRetorno.NotaFiscalId;
+                var QuantidadeDescarga = Dados.objetoRetorno.QuantidadeDescarga;
+                var Quantidade = Dados.objetoRetorno.Quantidade;
+                var REMONTE = Dados.objetoRetorno.REMONTE;
+                var FUMIGACAO = Dados.objetoRetorno.FUMIGACAO;
+                var IMO1 = Dados.objetoRetorno.IMO1;
+                var UNO1 = Dados.objetoRetorno.UNO1;
+                var IMO2 = Dados.objetoRetorno.IMO2;
+                var UNO2 = Dados.objetoRetorno.UNO2;
+                var IMO3 = Dados.objetoRetorno.IMO3;
+                var UNO3 = Dados.objetoRetorno.UNO3;
+                var IMO4 = Dados.objetoRetorno.IMO4;
+                var UNO4 = Dados.objetoRetorno.UNO4;
+                var Madeira = Dados.objetoRetorno.Madeira;
+                var Fragil = Dados.objetoRetorno.Fragil;
+                var RegistroCsId = Dados.objetoRetorno.RegistroCsId;
+                var COMPRIMENTO = Dados.objetoRetorno.COMPRIMENTO;
+                var LARGURA = Dados.objetoRetorno.LARGURA;
+                var ALTURA = Dados.objetoRetorno.ALTURA;
+                var PESO = Dados.objetoRetorno.Peso;
+                var SIGLA = Dados.objetoRetorno.SIGLA;
+                var EmbalagemSigla = Dados.objetoRetorno.EmbalagemSigla;
+                var EmbalagemId = Dados.objetoRetorno.EmbalagemId;
+                var Embalagem = Dados.objetoRetorno.Embalagem;
+                var YARD = Dados.objetoRetorno.YARD;
+                var carimbo = Dados.objetoRetorno.Carimbo;
+                var autonum_reg = $('#txtRegistro').val();
+                var avaria = Dados.objetoRetorno.Avaria;
+                var armazem = Dados.objetoRetorno.ARMAZEM;
+                var marcacao = Dados.objetoRetorno.marcacao;
+                var observacao = Dados.objetoRetorno.observacao; 
+
+
+                $('#cbNF').empty();
+                $.get('/TalieColetorDescarga/GetDadosNF', { id: autonum_reg }, function (DadosNF) {                    
+                    $.each(DadosNF.objetoRetorno, function (i, item) {
+                        var display = item.DISPLAY;
+                        var autonum = item.AUTONUM;
+                        $('#cbNF').append('<option value = "' + autonum + '">' + display + '</option> ');
+                    });
+                });               
+
+                carregaEmbalagens(EmbalagemId)
+                $('#btnItemSalvar').attr('data-id', id);
+                $('#btnItemSalvar').attr('data-talie-id', talieId);
+                $('#txtProduto').val(produto);
+                $('#txtEmbalagem').val(Embalagem);
+                $('#txtQuantidadeDescarga').val(QuantidadeDescarga);
+                $('#txtQuantidadeNF').val(Quantidade);
+                $('#txtComprimento').val(COMPRIMENTO);
+                $('#txtAltura').val(ALTURA);
+                $('#txtLargura').val(LARGURA);
+                $('#txtPeso').val(PESO);
+                $('#txtLocal').val(YARD);
+                $('#txtImo').val(IMO1);
+                $('#txtImo2').val(IMO2);
+                $('#txtImo3').val(IMO3);
+                $('#txtImo4').val(IMO4);
+                $('#txtUno').val(UNO1);
+                $('#txtUno2').val(UNO2);
+                $('#txtUno3').val(UNO3);
+                $('#txtUno4').val(UNO4);
+                $('#txtMarcacao').val();
+
+                if (carimbo == 1) {
+                    $('#checkCarimbo').prop('checked', true);
+                }
+                else {
+                    $('#checkCarimbo').prop('checked', false);
+                }
+
+                if (Fragil == 1) {
+                    $('#checkFragil').prop('checked', true);
+                }
+                else {
+                    $('#checkFragil').prop('checked', false);
+                }
+                if (Madeira == 1) {
+                    $('#checkMadeira').prop('checked', true);
+                }
+                else {
+                    $('#checkMadeira').prop('checked', false);
+                }
+
+                if (REMONTE == 1) {
+                    $('#checkRemonte').prop('checked', true);
+                }
+                else {
+                    $('#checkRemonte').prop('checked', false);
+                }
+
+                if (avaria == 1) {
+                    $('#checkAvaria').prop('checked', true);
+                }
+                else {
+                    $('#checkAvaria').prop('checked', false);
+                }
+                $('#preloader').hide();
+            },
+            error: function (response) {
+                $('#preloader').hide();
+                toastr.error('Erro ao obter dados dos itens do talie ' + id + ' ' + response.d, 'Coletor');
+            }
+        });
+    }
+</script> 
+<script>
+    $('#btnConfirmaExclusao').click(function () {
+        var origem = $('#hddnOrigem').val();
+        var id = $(this).attr('data-id');
+       
+        var talieId = $(this).attr('data-talie-id');
+       
+        var quantidade = $(this).attr('data-quantidade');
+        var url = '';
+        var browser = navigator.appName;
+
+        if (origem == 'item') {
+            url = '@Url.Content("~/TalieColetorDescarga/GetExcluirTalieItem")';
+
+        }
+        else {
+            url = '@Url.Content("~/TalieColetorDescarga/GetExcluirTalie")';
+        }
+
+
+
+        $.ajax({
+            url: url,
+            type: 'GET',
+            data: { id: id, talieId: talieId, quantidade: quantidade },
+
+            beforeSend: function () {
+                $('#preloader').show();
+            },
+            success: function (Dados) {
+                $('#preloader').hide();
+                var mensagem = Dados.Mensagem;
+                var status = Dados.statusRetorno;
+
+                if (status == '200') {
+                    if (browser == 'Microsoft Internet Explorer') {
+                        alert(mensagem);
+                    }
+                    else {
+                        toastr.success(mensagem, 'Sucesso');
+                    }                    
+
+                    if (origem == 'item') {
+                        $('#modal-exclusao').modal('toggle');
+                        
+                        //Linhas que validam CD X DA
+
+                        var cd = "@ViewBag.CD";
+                        var dd = "@ViewBag.DD";
+
+                        if (dd > 0) {
+                            getTalieById($('#txtRegistro').val());
+                        }
+                        else {
+                            getTalieByIdConteiner($('#txtRegistro').val(), $('#txtConteiner').val());
+                        }
+
+                        //Linhas que validam CD X DA
+                    
+                        getAllDadosTalieItens(talieId);
+                    }
+                    else {
+                        location.reload();
+                    }
+                }
+                else {                    
+                    if (browser == 'Microsoft Internet Explorer') {
+                        alert(mensagem);
+                    }
+                    else {
+                        toastr.error(mensagem, 'Erro');
+                    }
+                    
+                }
+            },
+            error: function () {
+                $('#preloader').hide();
+                toastr.error('Os dados não foram excluídos', 'Erro');
+            }
+
+        });
+
+    });
+</script>
+<script>
+    function btnTalieFinalizar(talieId, tipoDescarga, conteinerId)  {
+        $.ajax({
+            url: "@Url.Content("~/TalieColetorDescarga/GetValidarFecharTalie")",
+            type: 'GET',
+            data: { talieId: talieId, tipoDescarga: tipoDescarga, conteinerId: conteinerId }, 
+
+            success: function (Dados) {
+                var etiquetas = Dados.objetoRetorno.etiquetas;
+                var pendencias = Dados.objetoRetorno.pendencias;
+                var totalItens = Dados.objetoRetorno.totalItens;
+                var atualizarAlertaEtiqueta1 = 0;
+                var atualizarAlertaEtiqueta2 = 0;
+
+                $('#btnVerificaPendenciaEmisssoEtiquetas').attr('data-etiqueta', etiquetas);
+                $('#btnVerificaPendenciaEmisssoEtiquetas').attr('data-pendencias', pendencias);
+                $('#btnVerificaPendenciaEmisssoEtiquetas').attr('data-totalItens', totalItens);
+                $('#btnAtualizarAlertaEtiqueta1').attr('data-etiqueta', etiquetas);
+                $('#btnAtualizarAlertaEtiqueta1').attr('data-pendencias', pendencias);
+                $('#btnAtualizarAlertaEtiqueta1').attr('data-totalItens', totalItens);
+                var dd = @ViewBag.DD;
+                var cd = @ViewBag.CD;
+                
+                if (dd == 1) {
+
+                    if (etiquetas == 0) {
+                        $('#modal-fechamento').modal('hide');
+                        $('#modal-verifica-etiquetas').modal('show');
+                    } else if (pendencias != 0) {
+                        $('#modal-fechamento').modal('hide');
+                        $('#modal-verifica-pendencias').modal('show');
+                    } else {
+                        getFinalizarTalie(etiquetas, pendencias, totalItens, atualizarAlertaEtiqueta1, atualizarAlertaEtiqueta2);
+                    }
+                }
+                else {
+                    getFinalizarTalie(etiquetas, pendencias, totalItens, atualizarAlertaEtiqueta1, atualizarAlertaEtiqueta2);
+                }
+            },
+            error: function () {
+                toastr.error("Ococrreu algum erro ao validar o fechamento desta talie")
+            }
+
+        });
+    }
+</script>
+<script>
+    function getFinalizarTalie(etiquetas, pendencias, totalItens, atualizarAlertaEtiqueta1, atualizarAlertaEtiqueta2) {
+        var id = $('#btnConfirmarFechamento').attr('data-id');
+        var inicio = $('#txtInicio').val();
+        var estufagemCompleta = $('#estufagemCompleta').is(':checked') ? 1 : 0;
+        var conteiner = $('#hddnConteinerId').val();
+        var param = "@ViewBag.CD";
+        var idContainer = $('#txtConteiner').val();
+        var browser = navigator.appName;
+
+        if (param == 1) {
+            var tipoDescarga = "@Band.Coletor.Redex.Business.Enums.OpcoesDescarga.CD";
+        }
+        else {
+            var tipoDescarga = "@Band.Coletor.Redex.Business.Enums.OpcoesDescarga.DA";
+        }
+        //data: '{ idTalie: "' + _id + '", inicio: "' + $('#txtInicio').val() + '", estufagemCompleta: "' + estufagemCompleta + '", tipoDescarga: "' + $('#hddnTipoDescarga').val() + '", conteinerId: "' + $('#hddnConteinerId').val() + '", conteiner: "' + $('#txtConteiner').val() + '", usuarioId:"' + _usuarioId + '", atualizarAlertaEtiqueta1:' + atualizarAlertaEtiqueta1 + ', atualizarAlertaEtiqueta2:' + atualizarAlertaEtiqueta2 + ', etiquetas: ' + etiquetas + ', pendencias: ' + pendencias + ', totalItens: ' + totalItens+' }',
+
+        $.ajax({
+            url: '@Url.Content("~/TalieColetorDescarga/GetFinalizarTalie/")',
+            type: 'GET',
+            data: {
+                id: id,
+                inicio: inicio,
+                tipoDescarga: tipoDescarga,
+                estufagemCompleta: estufagemCompleta,
+                conteiner: conteiner,
+                atualizarAlertaEtiqueta1: atualizarAlertaEtiqueta1,
+                atualizarAlertaEtiqueta2: atualizarAlertaEtiqueta2, 
+                //usuario: usuario,
+                etiquetas: etiquetas,
+                pendencias: pendencias,
+                totalItens: totalItens,
+                idContainer: idContainer
+            },
+
+            beforeSend: function () {
+                $('#preloader').show();
+            },
+
+            success: function (Dados) {
+                $('#preloader').hide();
+                var mensagem = Dados.Mensagem;
+                var status = Dados.statusRetorno;
+
+                if (status == "200") {
+                    if (browser == 'Microsoft Intenet Explorer') {
+                        alert(mensagem);
+                    }
+                    else {
+                        toastr.success(mensagem, 'Sucesso');
+                    }
+
+                    
+
+                    setTimeout(function () {
+                        location.reload();
+                    }, 2000);
+                }
+                else {
+                    $('#modal-fechamento').modal('hide');
+                    if (browser == 'Microsoft Intenet Explorer') {
+                        alert(mensagem);
+                    }
+                    else {
+                        toastr.error(mensagem, 'Erro');
+                    }                    
+                }
+            },
+            error: function () {
+                $('#preloader').show();
+                toastr.error("Não foi possivel finalizar a Talie", 'Erro');
+            }
+        });
+    }
+
+</script>
+<script>
+    var atualizarAlertaEtiqueta1 = 0;
+    var atualizarAlertaEtiqueta2 = 0;
+
+    function AtualizarAlertaEtiqueta1() {
+        atualizarAlertaEtiqueta1 = 1;
+        atualizarAlertaEtiqueta2 = 0;
+
+        var etiquetas =  $('#btnAtualizarAlertaEtiqueta1').attr('data-etiqueta');
+        var pendencias = $('#btnAtualizarAlertaEtiqueta1').attr('data-pendencias');
+        var totalItens = $('#btnAtualizarAlertaEtiqueta1').attr('data-totalItens');
+
+        $('#btnAtualizarAlertaEtiqueta1')
+            .html('<i class="fa fa-spinner fa-spin"></i>')
+            .addClass('disabled');
+
+        if (pendencias !== 0) {
+            $('#modal-verifica-pendencias').modal('show');
+        } else {
+            getFinalizarTalie(etiquetas, pendencias, totalItens, atualizarAlertaEtiqueta1, atualizarAlertaEtiqueta2);
+        }
+    }
+    function VerificaPendenciaEmisssoEtiquetas() {
+        
+        $('#btnVerificaPendenciaEmisssoEtiquetas')
+            .html('<i class="fa fa-spinner fa-spin"></i>')
+            .addClass('disabled');
+        atualizarAlertaEtiqueta1 = 0
+        atualizarAlertaEtiqueta2 = 1;
+
+        var etiquetas = $('#btnVerificaPendenciaEmisssoEtiquetas').attr('data-etiqueta');
+        var pendencias = $('#btnVerificaPendenciaEmisssoEtiquetas').attr('data-pendencias');
+        var totalItens = $('#btnVerificaPendenciaEmisssoEtiquetas').attr('data-totalItens');
+
+        getFinalizarTalie(etiquetas, pendencias, totalItens, atualizarAlertaEtiqueta1, atualizarAlertaEtiqueta2);
+    }
+</script>
+<script>
+    function carregaEmbalagens(idEmb) {
+        var browser = navigator.appName;
+
+        $.ajax({
+            url: "@Url.Content("~/TalieColetorDescarga/GetComboEmbalagens")", 
+            type: 'GET', 
+
+            beforeSend: function () {
+                $('#cbEmbalagens').empty();
+                $('#cbEmbalagens').append('<option value="0">Aguarde</option>'); 
+            },
+            success: function (Dados) {
+                $('#cbEmbalagens').empty();
+                $('#cbEmbalagens').append('<option value="0">Selecione</option>');
+                var possuiDados = Dados.possuiDados;
+
+                if (possuiDados) {
+                    $.each(Dados.objetoRetorno, function (i, item) {
+                        var id = item.AUTONUM_EMB; 
+                        var descricao = item.DESCRICAO_EMB;
+                        var selected = "";
+
+                        if (idEmb == id) {
+                            selected = "selected";
+                        }
+
+                        $('#cbEmbalagens').append('<option ' + selected + ' value="' + id + '">' + descricao + '</option>');
+                    });
+                }
+                else {
+                    if (browser == "Microsoft Internet Explorer") {
+                        alert('Não foram encontradas embalagens')
+                    }
+                    else {
+                        toastr.info('Não foram encontradas embalagens', 'Coletor');
+                    }
+                }
+            },
+            error: function () {
+                toastr.error('Os dados de embalagem não foram carregados', 'Coletor');
+            }
+        });
+    }
+</script>
+@*<script>
+    var browser = navigator.appName;;
+    
+    if (browser == "Microsoft Internet Explorer") {
+        alert("Alert de teste de versão no IE ");
+    }    
+</script>*@

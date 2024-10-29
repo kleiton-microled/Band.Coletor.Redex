@@ -1,0 +1,27 @@
+﻿@model IEnumerable<Band.Coletor.Redex.Business.Models.Marcante>
+
+<br />
+
+<div class="table-responsive">
+    <table id="tbMarcantes" class="table table-striped" cellspacing="0">
+        <thead class="table-success">
+            <tr>
+                <th scope="col">Marcante</th>
+                <th scope="col">Quantidade</th>
+                <th scope="col">Local</th>
+                <th scope="col">&nbsp;</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.CodigoMarcante</td>
+                    <td>@item.Quantidade</td>
+                    <td>@item.Quadra</td>
+                    <td class="float-right mr-2"><a href="#" onclick="ExcluirMarcante(@item.CodigoMarcante)" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i>&nbsp;Excluir</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

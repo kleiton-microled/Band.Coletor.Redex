@@ -1,0 +1,126 @@
+﻿@model  Band.Coletor.Redex.Site.Models.TalieBalancoViewModel
+
+@{
+    ViewBag.Title = "Descarga";
+}
+
+<div class="row">
+    <div class="col-md-12">
+
+        <div id="cardRegistro" class="card">
+            <div class="card-header">
+                <i class="fa fa-edit fa-lg"></i>
+                Descarga - Balanço
+                <div class="float-right">
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+                        <i class="fa fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+
+                <div class="row">
+                    <div class="form-group col-md-12">
+                        <div class="table-responsive">
+                            <table id="tbBalanco" class="table mt-4" cellspacing="0">
+                                <thead class="table-success">
+                                    <tr>
+                                        <th scope="col">Qtde NF</th>
+                                        <th scope="col">Descarregados</th>
+                                        <th scope="col">Mercadoria</th>
+                                        <th scope="col">Embalagem</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>@Model.QuantidadeNF</td>
+                                        <td>@Model.Descarregados</td>
+                                        <td>@Model.Mercadoria</td>
+                                        <td>@Model.Embalagem</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-md-12">
+                        <ul class="nav nav-tabs" id="abasVolumes" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="nao-descarregados-tab" data-toggle="tab" href="#nao-descarregados" role="tab" aria-controls="home" aria-selected="true">Volumes Não Descarregados</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="descarregados-tab" data-toggle="tab" href="#descarregados" role="tab" aria-controls="profile" aria-selected="false">Volumes Descarregados</a>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="nao-descarregados" role="tabpanel" aria-labelledby="anexos-tab">
+                                <div class="table-responsive">
+                                    <table id="tbNaoDescarregados" class="table table-striped mt-4" cellspacing="0">
+                                        <thead class="table-success">
+                                            <tr>
+                                                <th scope="col">NF</th>
+                                                <th scope="col">Mercadoria</th>
+                                                <th scope="col">Embalagem</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in Model.VolumesNaoDescarregados)
+                                            {
+                                                <tr>
+                                                    <td>@item.NumeroNF</td>
+                                                    <td>@item.Mercadoria</td>
+                                                    <td>@item.Embalagem</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="descarregados" role="tabpanel" aria-labelledby="notas-tab">
+                                <div class="table-responsive">
+                                    <table id="tbDescarregados" class="table table-striped mt-4" cellspacing="0">
+                                        <thead class="table-success">
+                                            <tr>
+                                                <th scope="col">NF</th>
+                                                <th scope="col">Mercadoria</th>
+                                                <th scope="col">Embalagem</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in Model.VolumesDescarregados)
+                                            {
+                                                <tr>
+                                                    <td>@item.NumeroNF</td>
+                                                    <td>@item.Mercadoria</td>
+                                                    <td>@item.Embalagem</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-footer">
+
+                <div class="row no-gutters">
+                    <div class="form-group col-md-2">
+                        <a id="lnkVoltar" href="/Descarga/Registro/@Model.TalieId" class="btn btn-secondary btn-block">Voltar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+
+    <script>
+    </script>
+}

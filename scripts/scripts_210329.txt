@@ -1,0 +1,3 @@
+alter table REDEX..TB_PRE_REGISTRO Add SISTEMA varchar(10)
+go 
+alter table REDEX..TB_PRE_REGISTRO  ADD PATIO_DESTINO int 

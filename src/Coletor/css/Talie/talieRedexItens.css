@@ -1,0 +1,39 @@
+﻿* {
+    margin: 0 0 0px 0;
+    padding: 0;
+}
+
+body {
+    overflow: hidden;
+}
+
+.titulo {
+    text-align: center;
+    font-family: Tahoma;
+    font-size: medium;
+    font-weight: bold;
+    color: #006699;
+    background-color: #FFFFFF;
+}
+
+.uppercase {
+    text-transform: uppercase;
+}
+
+.texto-focus {
+    background-color: yellow;
+    border: 4px solid red;
+}
+
+.texto-blur {
+    background-color: white;
+    border: 1px solid black;
+}
+
+.botao-focus {
+    border: 4px solid yellow;
+}
+
+.botao-blur {
+    border: 1px solid black;
+}

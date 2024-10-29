@@ -1,0 +1,30 @@
+﻿<div data-id="0" class="modal" tabindex="-1" role="dialog" id="barcode-modal">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Ler Código de Barras</h5>
+                <button type="button" class="close" data-dismiss="modal" onclick="fecharModalBarCode()" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <div class="controls">
+                    <fieldset class="reader-config-group">
+                        <label>
+                            <span>Camera</span>
+                            <select name="input-stream_constraints" id="deviceSelection"></select>
+                        </label>
+                    </fieldset>
+                </div>
+                <center>
+                    <div id="result_strip">
+                        <ul class="thumbnails"></ul>
+                        <ul class="collector"></ul>
+                    </div>
+                    <div id="interactive" class="viewport"></div>
+                </center>
+            </div>
+        </div>
+    </div>
+</div>

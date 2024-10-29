@@ -1,0 +1,79 @@
+﻿@using Band.Coletor.Redex.Site.Extensions;
+@using System.Configuration;
+
+@{
+    ViewBag.Title = "Band :: Coletor";
+    var coletorPath = ConfigurationManager.AppSettings["ColetorConsultasPath"];
+    var pathMovimentacaoConteiner = coletorPath + "?EXTERNO=InventarioCNTR.aspx&CONTENT=" + User.ObterIdEncriptado();
+    var pathMovimentacaoCargaSolta = coletorPath + "?EXTERNO=InventarioCS.aspx&CONTENT=" + User.ObterIdEncriptado();
+    var pathEstufagem = coletorPath + "?EXTERNO=Estufagem.aspx&CONTENT=" + User.ObterIdEncriptado();
+    var pathDescarga = coletorPath + "?EXTERNO=Talie_Descarga_Registro.aspx&CONTENT=" + User.ObterIdEncriptado();
+    var pathDescargaArmazem = coletorPath + "?EXTERNO=TalieColetorDescarga.aspx?dd=1;cd=0&CONTENT=" + User.ObterIdEncriptado();
+    var pathDescargaCD = coletorPath + "?EXTERNO=TalieColetorDescarga.aspx?dd=0;cd=1&CONTENT=" + User.ObterIdEncriptado();
+
+}
+<div class="row">
+    <div class="col-12">
+
+        <div class="card ml-0 mr-0 pl-0 pr-0">
+            <div class="card-header">
+                <i class="fa fa-list fa-lg"></i>
+                Menu
+                <div class="float-right top">
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+                        <i class="fa fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <a href="@Url.Action("Cadastrar", "PreRegistro")" class="btn btn-light btn-grey btn-lg btn-block text-left mb-3 font-home pre-line" style="text-align:left">
+                            <img src="~/Content/img/caminhao-entrada.png" />Pré-Registro
+                        </a>
+                        <a href="@Url.Action("Index", "SaidaCaminhao")" class="btn btn-light btn-grey btn-lg btn-block text-left mb-3 font-home pre-line">
+                            <img src="~/Content/img/caminhao-saida32.png" />Registrar Saída do Caminhão
+                        </a>
+                        <a href="@Url.Content("~/TalieColetorDescarga/index/dd")" class="btn btn-light btn-grey btn-lg btn-block text-left mb-3 font-home pre-line">
+                            <img src="~/Content/img/descarga.png" />Descarga Armazém
+                        </a>
+                        <a href="@Url.Content("~/TalieColetorDescarga/index/cd")" class="btn btn-light btn-grey btn-lg btn-block text-left mb-3 font-home pre-line">
+                            <img src="~/Content/img/descarga.png" />Descarga CD
+                        </a>
+                        <a href="@Url.Content("~/Estufagem")" class="btn btn-light btn-grey btn-lg btn-block text-left mb-3 font-home pre-line">
+                            <img src="~/Content/img/estufagem.png" />Estufagem
+                        </a>
+
+                        <!-- Telas adicionais -->
+                        <a href="#" class="btn btn-light btn-grey btn-lg btn-block text-left mb-3 font-home pre-line">
+                            <img src="~/Content/img/caminhao-entrada.png" />Carregamento Carga Solta
+                        </a>
+                        <a href="#" class="btn btn-light btn-grey btn-lg btn-block text-left mb-3 font-home pre-line">
+                            <img src="~/Content/img/caminhao-entrada.png" />Descarga Exportação
+                        </a>
+                        <a href="#" class="btn btn-light btn-grey btn-lg btn-block text-left mb-3 font-home pre-line">
+                            <img src="~/Content/img/caminhao-entrada.png" />Estufagem Container
+                        </a>
+                        <a href="#" class="btn btn-light btn-grey btn-lg btn-block text-left mb-3 font-home pre-line">
+                            <img src="~/Content/img/caminhao-entrada.png" />Identificação do Lote
+                        </a>
+                        <a href="#" class="btn btn-light btn-grey btn-lg btn-block text-left mb-3 font-home pre-line">
+                            <img src="~/Content/img/caminhao-entrada.png" />Inventário de Carga Solta
+                        </a>
+                        <a href="#" class="btn btn-light btn-grey btn-lg btn-block text-left mb-3 font-home pre-line">
+                            <img src="~/Content/img/caminhao-entrada.png" />Marcantes Carga Solta
+                        </a>
+                        <a href="#" class="btn btn-light btn-grey btn-lg btn-block text-left mb-3 font-home pre-line">
+                            <img src="~/Content/img/caminhao-entrada.png" />Movimentação Carga Solta
+                        </a>
+                        <a href="#" class="btn btn-light btn-grey btn-lg btn-block text-left mb-3 font-home pre-line">
+                            <img src="~/Content/img/caminhao-entrada.png" />Movimentação Container
+                        </a>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>

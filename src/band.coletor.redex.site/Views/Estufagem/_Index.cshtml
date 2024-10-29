@@ -1,0 +1,247 @@
+﻿@model  Band.Coletor.Redex.Site.Models.EstufagemViewModel
+
+@{
+    ViewBag.Title = "Estufagem";
+}
+
+@using (Ajax.BeginForm("Gravar", "Estufagem", new AjaxOptions
+{
+    OnSuccess = "MensagemSucesso",
+    OnFailure = "MensagemErro",
+    HttpMethod = "POST"
+}, new { id = "frmEstufagem" }))
+{
+    @Html.HiddenFor(model => model.CargaSuzano)
+    @Html.HiddenFor(model => model.TalieId)
+    @Html.HiddenFor(model => model.CrossDocking)
+    @Html.HiddenFor(model => model.BookingId)
+<div>
+
+    @*<div class="framed-application">
+            <iframe src="http://localhost/legacyApp/${page}" frameborder="0"></iframe>
+        </div>*@
+
+    <div class="row padding-bottom">
+        <div class="col-md-3">
+            <h4>
+                <i class="fas fa-truck fa-lg"></i>
+                Estufagem
+            </h4>
+        </div>
+        <div class="col-md-7"></div>
+        <div class="col-md-2">  
+            <a id="lnkHome" href="/Home" class="btn btn-warning btn-block"><span aria-hidden="true" class="fa fa-home"></span>&nbsp;&nbsp;Inicio</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-group col-sm-3 ">
+            @Html.LabelFor(model => model.Conteiner)
+            @Html.EditorFor(m => m.Conteiner, new { htmlAttributes = new { @class = "form-control", autofocus = "autofocus" } })
+        </div>
+        <div class="form-group col-sm-3 ">
+            @Html.LabelFor(model => model.Reserva)
+            @Html.EditorFor(m => m.Reserva, new { htmlAttributes = new { @class = "form-control", autofocus = "autofocus" } })
+        </div>
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.ClienteId)
+            @Html.DropDownListFor(c => c.ClienteId, new MultiSelectList(Model.Clientes, "Id", "Descricao"), string.Empty, new { @class = "form-control" })
+        </div>
+        @*<div class="form-group col-md-2">
+                @Html.LabelFor(model => model.ConteinerId)
+                @Html.HiddenFor(model => model.Conteiner)
+                @Html.DropDownListFor(c => c.ConteinerId, new  ultiSelectList(Model.Conteineres, "Id", "Descricao"), string.Empty, new { @class = "form-control" })
+            </div>
+
+            <div class="form-group col-md-2">
+                @Html.LabelFor(model => model.ClienteId)
+                @Html.DropDownListFor(c => c.ClienteId, new MultiSelectList(Model.Clientes, "Id", "Descricao"), string.Empty, new { @class = "form-control" })
+            </div>*@
+        <div class="form-group col-sm-2">
+            @Html.LabelFor(model => model.Inicio)
+            @Html.EditorFor(m => m.Inicio, new { htmlAttributes = new { @class = "form-control data-hora", @readonly = "@readonly" } })
+        </div>
+        <div class="form-group col-sm-2">
+            @Html.LabelFor(model => model.Termino)
+            @Html.EditorFor(m => m.Termino, new { htmlAttributes = new { @class = "form-control", @readonly = "@readonly" } })
+        </div>
+    </div>
+    <div class="row padding-top">
+        <div class="form-group col-sm-4">
+            @Html.LabelFor(model => model.ConferenteId)
+            @Html.DropDownListFor(c => c.ConferenteId, new MultiSelectList(Model.Conferentes, "Id", "Descricao"), string.Empty, new { @class = "form-control" })
+        </div>
+        <div class="form-group col-sm-4">
+            @Html.LabelFor(model => model.EquipeId)
+            @Html.DropDownListFor(c => c.EquipeId, new MultiSelectList(Model.Equipes, "Id", "Descricao"), string.Empty, new { @class = "form-control" })
+        </div>
+        <div class="form-group col-sm-4">
+            @Html.LabelFor(model => model.OperacaoId)
+            @Html.DropDownListFor(c => c.OperacaoId, new MultiSelectList(Model.Operacoes, "Sigla", "Descricao"), string.Empty, new { @class = "form-control" })
+        </div>
+    </div>
+</div>
+<div class="row padding-bottom ">
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+        <button id="btnFinalizar" type="button" class="btn btn btn-block" onclick="FinalizarTalie()" @(Model.ClienteId == null ? "disabled" : "")><i class="fa fa-flag-checkered"></i> Finalizar Talie</button>
+    </div>
+    <div class="form-group col-sm-4 ">
+        <button type="submit" class="btn btn-primary btn-block dados-agendamento"><i class="fa fa-save"></i> Gravar</button>
+    </div>
+
+</div>      
+
+<div class="row padding-top padding-bottom">
+    <div class="form-group col-sm-3">
+        @Html.LabelFor(model => model.NF)
+        @Html.EditorFor(m => m.NF, new { htmlAttributes = new { @class = "form-control", @readonly = "@readonly" } })
+    </div>
+    @*<div class="form-group col-sm-3">
+        @Html.LabelFor(model => model.Marcante)
+        @Html.EditorFor(m => m.Marcante, new { htmlAttributes = new { @class = "form-control", @readonly = "@readonly" } })
+    </div>*@
+    @*<div class="form-group col-sm-3">
+            @Html.LabelFor(model => model.Lote)
+            @Html.EditorFor(m => m.Lote, new { htmlAttributes = new { @class = "form-control", @readonly = "@readonly" } })
+        </div>*@
+    <div class="form-group col-md-3">
+        @Html.LabelFor(model => model.itemNF)
+        @Html.DropDownListFor(c => c.itemNF, new MultiSelectList(Model.Clientes, "Id", "Descricao"), string.Empty, new { @class = "form-control" })
+    </div>
+    <div class="form-group col-sm-3">
+        @Html.LabelFor(model => model.Quantidade)
+        @Html.EditorFor(m => m.Quantidade, new { htmlAttributes = new { @class = "form-control", @readonly = "@readonly" } })
+    </div>
+    <div class="form-group col-sm-3">
+        @Html.LabelFor(model => model.Reserva)
+        @Html.EditorFor(m => m.Reserva, new { htmlAttributes = new { @class = "form-control", @readonly = "@readonly" } })
+    </div>
+
+    <div class="form-group col-12 col-sm-12 col-md-12 ">
+        
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-9"></div>
+    <div class="col-md-3">
+        <button id="btnGravarEstufagem" type="button" class="btn btn-primary btn-block" onclick="GravarEstufagem()" @(Model.ClienteId == null ? "disabled" : "")><i class="fa fa-save"></i> Gravar Estufagem</button>
+    </div>
+</div>
+<div class="row" style="display: none">
+    <div class="form-group col-md-12">
+        @Html.Partial("_ConsultaEstufagem", Model.Estufagens)
+    </div>
+</div>
+
+
+    
+
+}
+@section Css{
+    @Styles.Render("~/bundles/datatablesCSS")
+}
+
+@section Scripts{
+
+    @Scripts.Render("~/bundles/datatables")
+
+    <script>
+
+        $(function () {
+            $('#Reserva').blur(function () {
+
+                var reserva = $('#Reserva').val();
+                if (reserva !== '') {
+
+
+
+                $.get("@Url.Action("ObterClientesPorReserva","Estufagem")?reserva=" + reserva, function (resultado) {
+
+                    if (resultado) {
+
+                        if (resultado.clientes != null) {
+                            var clientes = $('#ClienteId');
+                            clientes.empty();
+                            $.each(resultado.clientes, function (key, value) {
+                                clientes.append('<option value=' + value.Id + '>' + value.NomeFantasia + '</option>');
+                            });
+                        }
+                    }
+                }).fail(function (data) {
+                    toastr.error(data.responseText, 'Coletor');
+                });
+            } else {
+                toastr.error('Reserva não informada', 'Coletor');
+            }
+
+            });
+        });
+
+        @*$(document).ready(function () {
+            $('#datatables').DataTable({
+                "bServerSide": true,
+                "sAjaxSource": "#",
+                "bProcessing": true,
+                "pagingType": "full_numbers",
+                "searchDelay": 1000,
+                "pageLength": 50,
+                "createdRow": function (row, data, dataIndex) {
+                    $(row).attr('id', 'item-' + data.Id);
+                },
+                "aoColumns":
+                    [
+                        {
+                            "sName": "Id",
+                            "mData": "Id"
+                        },
+                        {
+                            "sName": "Nome",
+                            "mData": "Nome"
+                        },
+                        {
+                            "sName": "Sobrenome",
+                            "mData": "Sobrenome"
+                        },
+                        {
+                            "sName": "Email",
+                            "mData": "Email"
+                        },
+                        {
+                            "sName": "Departamento",
+                            "mData": "Departamento"
+                        },
+                        {
+                            "sName": "Status",
+                            "render": function (data, type, row) {
+                                return row.Status === 1 ? '<span class="badge badge-success">Ativo</span>' : '<span class="badge badge-danger">Inativo</span>';
+                            }
+                        },
+                        {
+                            sortable: false,
+                            "render": function (data, type, row) {
+                                return '<a href="#' + row.Id + '" class="btn btn-info btn-sm btn-acao"><i class="fa fa-edit"></i></a>';
+                            }
+                        },
+                        {
+                            sortable: false,
+                            "render": function (data, type, row) {
+                                return '<a href="#" onclick="excluir(' + row.Id + ')" class="btn btn-danger btn-sm btn-acao"><i class="fa fa-trash"></i></a>';
+                            }
+                        }
+                    ],
+                "language": {
+                    "url": "@Url.Content("~/Content/plugins/datatables/language/pt-br.json")"
+                }
+            });
+        });*@
+
+    </script>
+    <script>
+        $('btnGravarEstufagem').click(function () {
+            $.ajax({
+
+            });
+        });
+    </script>
+}

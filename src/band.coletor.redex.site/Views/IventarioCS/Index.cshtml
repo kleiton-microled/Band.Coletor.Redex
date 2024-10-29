@@ -1,0 +1,168 @@
+﻿<div>
+    <div class="row padding-bottom">
+        <div class="col-md-3">
+            Movimentacao Carga Solta
+
+        </div>
+        <div class="col-md-7"></div>
+        <div class="col-md-2">
+            <a id="lnkHome" href="/Home" class="btn btn-warning btn-block"><span aria-hidden="true" class="fa fa-home"></span>&nbsp;&nbsp;Inicio</a>
+        </div>
+    </div>
+    <div class="row padding-bottom">
+        <div class="form-group col-sm-3">
+            <label for="txtLote">Lote: </label>
+            <input type="text" id="txtLote" class="form-control" />
+        </div>
+        <div class="form-group col-sm-3">
+            <label for="txtBL">BL: </label>
+            <input type="text" id="txtBL" class="form-control" />
+        </div>
+        <div class="form-group col-sm-6">
+            <label for="cbItem">Item: </label>
+            <select id="cbItem" class="form-control">
+                <option value="0"> Selecione</option>
+            </select>
+        </div>
+        <div class="form-group col-sm-3">
+            <label for="txtQuantidade">Quantidade: </label>
+            <input type="text" id="txtQuantidade" class="form-control" />
+        </div>
+        <div class="form-group col-sm-3">
+            <label for="txtEmbalagem">Embalagem: </label>
+            <input type="text" id="txtEmbalagem" class="form-control" />
+        </div>
+        <div class="form-group col-sm-3">
+            <label for="txtVolume">Volume: </label>
+            <input type="text" id="txtVolume" class="form-control" />
+        </div>
+        <div class="form-group col-sm-3">
+            <label for="txtLocal">Local: </label>
+            <input type="text" id="txtLocal" class="form-control" />
+        </div>
+        <div class="form-group col-sm-3" id="divMarca" style="display:none;">
+            <label for="txtMercadoria">Mercadoria: </label>
+            <input type="text" id="txtMercadoria" class="form-control" />
+        </div>
+        <div class="form-group col-sm-3">
+            <label for="txtMarca">Marca: </label>
+            <input type="text" id="txtMarca" class="form-control" />
+        </div>
+        <div class="form-group col-sm-3">
+            <label for="txtCliente">Importadora/Exportadora: </label>
+            <input type="text" id="txtCliente" class="form-control" />
+        </div>
+        <div class="form-group col-sm-3">
+            <label for="txtNVOCC">NVOCC: </label>
+            <input type="text" id="txtNVOCC" class="form-control" />
+        </div>
+        <div class="form-group col-sm-3">
+            <label for="txtConteiner">Contêiner: </label>
+            <input type="text" id="txtConteiner" class="form-control" />
+        </div>
+        <div class="form-group col-sm-3">
+            <label for="txtEntrada">Entrada: </label>
+            <input type="text" id="txtEntrada" class="form-control" />
+        </div>
+        @*Campos que tem update panel e não são utilizados aparentemente*@
+        <div class="form-group col-sm-3" id="divDoc" style="display:none;">
+            <label for="txtDoc">Doc.: </label>
+            <input type="text" id="txtDoc" class="form-control" />
+        </div>
+        <div class="form-group col-sm-3" id="divCanal" style="display:none;">
+            <label for="txtCanal">Canal: </label>
+            <input type="text" id="txtCanal" class="form-control" />
+        </div>
+        <div class="form-group col-sm-3" id="divMovAgenda" style="display:none;">
+            <label for="txtMovAgenda">Mov. Agenda: </label>
+            <input type="text" id="txtMovAgenda" class="form-control" />
+        </div>
+        @*Campos que tem update panel e não são utilizados aparentemente*@
+        <div class="form-group col-sm-3">
+            <label for="txtAnvisa">Anvisa: </label>
+            <input type="text" id="txtAnvisa" class="form-control" />
+        </div>
+        <div class="form-group col-sm-3">
+            <label for="txtIMO">IMO: </label>
+            <input type="text" id="txtIMO" class="form-control" />
+        </div>
+        <div class="form-group col-sm-3">
+            <label for="txtQuantidadePOS">Quantidade : </label>
+            <input type="text" id="txtQuantidadePOS" class="form-control" />
+        </div>
+        <div class="form-group col-sm-3">
+            <label for="cbArm">Armazém: </label>
+            <select id="cbArm" class="form-control">
+                <option value="0">Selecione</option>
+                @{
+                    foreach (var item in ViewBag.GetCarregaArmazens)
+                    {
+                        <option value="@item.AUTONUM">@item.DISPLAY</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="form-group col-sm-3">
+            <label for="txtlocalpos">Local Posição: </label>
+            <input type="text" id="txtlocalpos" class="form-control" />
+        </div>
+        <div class="form-group col-sm-3" id="divOcupacaoCT" style="display:none;">
+            <label for="cbOcupacao_CT">Ocupação: </label>
+            <select id="cbOcupacao_CT" class="form-control">
+                <option value="0%">Selecione</option>
+                <option value="25%">25%</option>
+                <option value="50%">50%</option>
+                <option value="75%">75%</option>
+                <option value="100%">100%</option>
+            </select>
+        </div>
+        <div class="col-sm-6 form-group" id="divLocalPOS" style="display:none;">
+
+            <label for="cbLocalPOS">Local Posicionamento: </label>
+            <select id="cbLocalPOS" class="form-control"></select>
+
+        </div>
+
+        <div class="form-group col-sm-3" id="divNoLocal" style="display:none;">
+            <label for="txtCargaNoLocal">No Local: </label>
+            <input type="text" id="txtCargaNoLocal" class="form-control" />
+        </div>
+        <div class="form-group col-sm-6">
+            <label for="cbMotivoPos">Motivo: </label>
+            <select id="cbMotivoPos" class="form-control">
+                <option value="0">Selecione</option>
+                @{
+                    foreach (var item in ViewBag.GetCarregaMotivos)
+                    {
+                        <option value="@item.AUTONUM">@item.DESCRICAO</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="form-group col-sm-3" id="divSistema" style="display:none;">
+            <label for="txtSistema">Sistema: </label>
+            <input type="text" id="txtSistema" class="form-control" />
+        </div>
+        <div class="col-md-3" id="divYard" style="display:none;">
+            <label for="txtYard">&nbsp;</label>
+            <input type="text" id="txtYard" class="form-control" />
+        </div>
+
+    </div>
+    <div class="row padding-bottom">
+        <div class="form-group col-sm-7">
+
+        </div>
+        <div class="form-group col-sm-5">
+            <button id="btnSalvar" class="btn btn-primary"><i class="fa fa-save"></i> Salvar</button>
+            <button id="btnGravarRepetir" class="btn btn-primary"><i class="fa fa-save"></i> Gravar/Repetir</button>
+            <button id="btnLimpar" class="btn btn-warning"><i class="fa fa-trash"></i> Limpar</button>
+            <a href="@Url.Content("~/Home")" id="btnSair" class="btn btn-success"><i class="fa fa-arrow-circle-left"></i> Voltar</a>
+        </div>
+    </div>
+</div>
+@section scripts{
+    @Html.Partial("_iventarioCS/_scripts")
+    }
+
+
