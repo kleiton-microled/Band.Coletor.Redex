@@ -41,67 +41,6 @@ namespace Band.Coletor.Redex.Site.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public ActionResult Login(UsuarioLoginViewModel viewModel)
-        {
-            if (!ModelState.IsValid)
-                return View(viewModel);
-
-            try
-            {
-                // Mock de usuário
-                var usuario = new
-                {
-                    Id = 1,
-                    Nome = "Kleiton",
-                    Login = viewModel.Login.Trim(),
-                    Ativo = true,
-                    PatioColetorId = 1
-                };
-
-                if (usuario.Ativo == false)
-                    throw new Exception($"O usuário {usuario.Login} está inativo");
-
-                var usuarioJson = JsonConvert.SerializeObject(new
-                {
-                    usuario.Id,
-                    usuario.Nome,
-                    usuario.Login,
-                    usuario.Ativo,
-                    usuario.PatioColetorId,
-                    LocalPatio = viewModel.LocalPatio.ToValue()
-                });
-
-                FormsAuthentication.SignOut();
-
-                Session["USUARIO"] = usuario.Id;
-                Session["AUTONUMPATIO"] = viewModel.LocalPatio.ToValue();
-
-                FormsAuthenticationTicket authTicket = new FormsAuthenticationTicket(
-                    1,
-                    usuario.Login,
-                    DateTime.Now,
-                    DateTime.Now.AddMinutes(30),
-                    viewModel.Lembrar,
-                    usuarioJson);
-
-                Response.Cookies.Add(
-                    new HttpCookie(
-                        FormsAuthentication.FormsCookieName,
-                        FormsAuthentication.Encrypt(authTicket)));
-
-                if (!string.IsNullOrEmpty(viewModel.ReturnUrl))
-                    return Redirect(Server.UrlDecode(viewModel.ReturnUrl));
-
-                return RedirectToAction("Index", "Home");
-            }
-            catch (Exception ex)
-            {
-                ViewBag.Mensagem = ex.Message;
-            }
-
-            return View(viewModel);
-        }
-
         //public ActionResult Login(UsuarioLoginViewModel viewModel)
         //{
         //    if (!ModelState.IsValid)
@@ -109,66 +48,51 @@ namespace Band.Coletor.Redex.Site.Controllers
 
         //    try
         //    {
-        //        var usuario = _usuarioLoginRepositorio.Busca(viewModel.Login.Trim(), viewModel.Senha);
-
-
-        //        if (usuario != null)
+        //        // Mock de usuário
+        //        var usuario = new
         //        {
-        //            if (usuario.Ativo == false)
-        //                throw new Exception($"O usuário {usuario.Login} está inativo");
+        //            Id = 1,
+        //            Nome = "Kleiton",
+        //            Login = viewModel.Login.Trim(),
+        //            Ativo = true,
+        //            PatioColetorId = 1
+        //        };
 
-        //            var usuarioJson = JsonConvert.SerializeObject(new
-        //            {
-        //                usuario.Id,
-        //                usuario.Nome,
-        //                usuario.Login,
-        //                usuario.Ativo,
-        //                usuario.PatioColetorId,                        
-        //                LocalPatio = viewModel.LocalPatio.ToValue()
-        //            });
+        //        if (usuario.Ativo == false)
+        //            throw new Exception($"O usuário {usuario.Login} está inativo");
 
-        //            FormsAuthentication.SignOut();
-
-        //            Session["USUARIO"] = usuario.Id;
-        //            Session["AUTONUMPATIO"] = LocalPatio.Patio;
-
-        //            FormsAuthenticationTicket authTicket = new FormsAuthenticationTicket(
-        //                1,
-        //                usuario.Login,
-        //                DateTime.Now,
-        //                DateTime.Now.AddMinutes(30),
-        //                viewModel.Lembrar,
-        //                usuarioJson);
-
-        //            //Response.Cookies.Add(
-        //            //    new HttpCookie(
-        //            //        FormsAuthentication.FormsCookieName,
-        //            //        FormsAuthentication.Encrypt(authTicket)));
-
-        //            //FormsIdentity formsIdentity = new FormsIdentity(authTicket);
-
-        //            //ClaimsIdentity claimsIdentity = new ClaimsIdentity(formsIdentity);
-
-        //            //Identity.ObterClaims(usuario);
-
-        //            //ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
-
-        //            //HttpContext.User = claimsPrincipal;
-
-        //            Response.Cookies.Add(
-        //               new HttpCookie(
-        //                   FormsAuthentication.FormsCookieName,
-        //                   FormsAuthentication.Encrypt(authTicket)));
-
-        //            if (!string.IsNullOrEmpty(viewModel.ReturnUrl))
-        //                return Redirect(Server.UrlDecode(viewModel.ReturnUrl));
-
-        //            return RedirectToAction("Index", "Home");
-        //        }
-        //        else
+        //        var usuarioJson = JsonConvert.SerializeObject(new
         //        {
-        //            ViewBag.Mensagem = "Usuário não habilitado no sistema";
-        //        }
+        //            usuario.Id,
+        //            usuario.Nome,
+        //            usuario.Login,
+        //            usuario.Ativo,
+        //            usuario.PatioColetorId,
+        //            LocalPatio = viewModel.LocalPatio.ToValue()
+        //        });
+
+        //        FormsAuthentication.SignOut();
+
+        //        Session["USUARIO"] = usuario.Id;
+        //        Session["AUTONUMPATIO"] = viewModel.LocalPatio.ToValue();
+
+        //        FormsAuthenticationTicket authTicket = new FormsAuthenticationTicket(
+        //            1,
+        //            usuario.Login,
+        //            DateTime.Now,
+        //            DateTime.Now.AddMinutes(30),
+        //            viewModel.Lembrar,
+        //            usuarioJson);
+
+        //        Response.Cookies.Add(
+        //            new HttpCookie(
+        //                FormsAuthentication.FormsCookieName,
+        //                FormsAuthentication.Encrypt(authTicket)));
+
+        //        if (!string.IsNullOrEmpty(viewModel.ReturnUrl))
+        //            return Redirect(Server.UrlDecode(viewModel.ReturnUrl));
+
+        //        return RedirectToAction("Index", "Home");
         //    }
         //    catch (Exception ex)
         //    {
@@ -177,6 +101,66 @@ namespace Band.Coletor.Redex.Site.Controllers
 
         //    return View(viewModel);
         //}
+
+        public ActionResult Login(UsuarioLoginViewModel viewModel)
+        {
+            if (!ModelState.IsValid)
+                return View(viewModel);
+
+            if (string.IsNullOrEmpty(viewModel.Senha))
+            {
+                ModelState.AddModelError("Senha", "A senha é obrigatória.");
+                return View(viewModel);
+            }
+
+            try
+            {
+                var usuario = _usuarioLoginRepositorio.Busca(viewModel.Login.Trim(), viewModel.Senha);
+
+                if (usuario != null)
+                {
+                    var usuarioJson = JsonConvert.SerializeObject(new
+                    {
+                        usuario.Id,
+                        usuario.Nome,
+                        usuario.Login,
+                        usuario.Ativo,
+                        usuario.PatioColetorId,
+                        LocalPatio = viewModel.LocalPatio.ToValue()
+                    });
+
+                    FormsAuthentication.SignOut();
+
+                    Session["USUARIO"] = usuario.Id;
+                    Session["AUTONUMPATIO"] = viewModel.LocalPatio.ToValue();
+
+                    FormsAuthenticationTicket authTicket = new FormsAuthenticationTicket(
+                        1,
+                        usuario.Login,
+                        DateTime.Now,
+                        DateTime.Now.AddMinutes(30),
+                        viewModel.Lembrar,
+                        usuarioJson);
+
+                    Response.Cookies.Add(
+                       new HttpCookie(
+                           FormsAuthentication.FormsCookieName,
+                           FormsAuthentication.Encrypt(authTicket)));
+
+                    if (!string.IsNullOrEmpty(viewModel.ReturnUrl))
+                        return Redirect(Server.UrlDecode(viewModel.ReturnUrl));
+
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);  // Adiciona a mensagem de erro ao ModelState
+            }
+
+            return View(viewModel);
+        }
+
 
         public ActionResult Logout()
         {

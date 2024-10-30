@@ -1,0 +1,247 @@
+@{
+    ViewBag.Title = "Carregamento Carga Solta";
+}
+
+@model List<Band.Coletor.Redex.Site.Models.CarregamentoCargaSolta.Veiculo>
+
+
+<div>
+    <div class="row padding-bottom">
+        <div class="col-md-12">
+            <h4>
+                <i class="fas fa-truck fa-lg"></i>
+                Carregamento Carga Solta
+            </h4>
+        </div>
+    </div>
+
+    <!-- Dropdown de Veículos -->
+    <div class="row padding-bottom">
+        <div class="form-group col-sm-12">
+            <label for="cbVeiculos">Selecione o Veículo: </label>
+            <select id="cbVeiculos" class="form-control">
+                @foreach (var item in Model)
+                {
+                    <option value="@item.Id">@item.Descricao</option>
+                }
+            </select>
+        </div>
+    </div>
+
+    <!-- Tabela ORDEN DE CARREGAMENTO -->
+    <div class="row">
+        <div class="col-md-12">
+            <h5>ORDEN DE CARREGAMENTO</h5>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>NUM OC</th>
+                        <th>LOTE</th>
+                        <th>QTDE</th>
+                        <th>CARREG</th>
+                        <th>EMBALAGEM</th>
+                    </tr>
+                </thead>
+                <tbody id="orderTableBody">
+                    <!-- Dados serão preenchidos dinamicamente -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- Tabela ITENS CARREGADOS -->
+    <!-- Tabela ITENS CARREGADOS -->
+    <div class="row">
+        <div class="col-md-12">
+            <h5>ITENS CARREGADOS</h5>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>MARCANTE</th>
+                        <th>LOTE</th>
+                        <th>QUANTIDADE</th>
+                    </tr>
+                </thead>
+                <tbody id="loadedItemsTableBody">
+                    <!-- Dados da tabela "ITENS CARREGADOS" serão preenchidos aqui -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Inputs para adicionar novos itens -->
+    <div class="row padding-bottom">
+        <div class="form-group col-md-3">
+            <label for="inputMarcante">Marcante</label>
+            <input type="text" class="form-control" id="inputMarcante" placeholder="Marcante">
+        </div>
+        <div class="form-group col-md-3">
+            <label for="inputLocal">Local</label>
+            <input type="text" class="form-control" id="inputLocal" placeholder="Local">
+        </div>
+        <div class="form-group col-md-3">
+            <label for="inputLote">Lote</label>
+            <input type="text" class="form-control" id="inputLote" placeholder="Lote">
+        </div>
+        <div class="form-group col-md-3">
+            <label for="inputQuantidade">Quantidade</label>
+            <input type="number" class="form-control" id="inputQuantidade" placeholder="Quantidade">
+        </div>
+    </div>
+</div>
+<!-- Conteúdo da página -->
+<!-- Footer com botões -->
+<footer class="fixed-bottom bg-light py-3">
+    <div class="container d-flex justify-content-start">
+        <a id="lnkInicio" href="@Url.Content("~/Inicio")" class="btn btn-warning mx-1">
+            <span aria-hidden="true" class="fa fa-home"></span>&nbsp;&nbsp;Início
+        </a>
+
+        <a id="lnkFotos" href="#" class="btn btn-warning mx-1">
+            <span aria-hidden="true" class="fa fa-camera"></span>&nbsp;&nbsp;Fotos
+        </a>
+
+        <a id="lnkFinalizar" href="#" class="btn btn-warning mx-1">
+            <span aria-hidden="true" class="fa fa-check"></span>&nbsp;&nbsp;Finalizar
+        </a>
+
+        <a id="lnkAtualizar" href="#" class="btn btn-warning mx-1">
+            <span aria-hidden="true" class="fa fa-sync"></span>&nbsp;&nbsp;Atualizar
+        </a>
+
+        <a id="lnkHome" href="@Url.Content("~/Home")" class="btn btn-warning mx-1">
+            <span aria-hidden="true" class="fa fa-home"></span>&nbsp;&nbsp;Home
+        </a>
+    </div>
+</footer>
+
+
+<script>
+    // Função para atualizar a tabela com dados do backend
+    document.getElementById('cbVeiculos').addEventListener('change', function () {
+        var veiculoId = this.value;
+
+        // Faz uma requisição AJAX para obter os dados de carregamento
+        $.ajax({
+            url: '@Url.Action("ObterVeiculos", "CarregamentoCargaSolta")',
+            type: 'GET',
+            data: { veiculoId: veiculoId },
+            success: function (data) {
+                var tableBody = document.getElementById('orderTableBody');
+                tableBody.innerHTML = ''; // Limpa a tabela
+
+                data.forEach(function (item) {
+                    var row = `<tr>
+                        <td>${item.NumOc}</td>
+                        <td>${item.Lote}</td>
+                        <td>${item.Qtde}</td>
+                        <td>${item.Carreg}</td>
+                        <td>${item.Embalagem}</td>
+                    </tr>`;
+                    tableBody.innerHTML += row;
+                });
+            }
+        });
+    });
+
+    // Evento para capturar quando o input "Marcante" perde o foco
+    document.getElementById('inputMarcante').addEventListener('blur', function () {
+    var marcante = this.value;
+
+    if (marcante) { // Apenas faz a chamada se houver valor no input
+        $.ajax({
+            url: '@Url.Action("ObterMarcante", "CarregamentoCargaSolta")',
+            type: 'GET',
+            data: { marcante: marcante },
+            success: function (data) {
+                // Preenche os campos com os dados retornados
+                document.getElementById('inputLocal').value = data.Local;
+                document.getElementById('inputLote').value = data.Lote;
+
+                // Adiciona o item na tabela "ITENS CARREGADOS"
+                var tableBody = document.getElementById('loadedItemsTableBody');
+                var newRow = document.createElement('tr');
+
+                newRow.innerHTML = `
+                    <td>${data.Marcante}</td>
+                    <td>${data.Lote}</td>
+                    <td><input type="number" class="form-control" value="1" min="1" /></td>
+                `;
+
+                tableBody.appendChild(newRow);
+
+                // Exibe notificação de sucesso
+                showNotification("Item carregado com sucesso.", "success");
+            },
+            error: function () {
+                showNotification("Erro ao buscar informações do Marcante."); // Exibe notificação de erro
+            }
+        });
+    }
+});
+
+
+
+    // Função para exibir a notificação
+    function showNotification(message, type = 'error') {
+        var notification = document.getElementById('notification');
+        var notificationMessage = document.getElementById('notificationMessage');
+
+        // Define a mensagem e o tipo de notificação (erro ou sucesso)
+        notificationMessage.textContent = message;
+        notification.classList.remove('hidden', 'success');
+        notification.classList.add(type === 'success' ? 'success' : 'error');
+
+        // Exibe a notificação e oculta automaticamente após 5 segundos
+        notification.style.display = 'flex';
+        setTimeout(() => {
+            closeNotification();
+        }, 5000);
+    }
+
+    // Função para fechar a notificação manualmente
+    function closeNotification() {
+        var notification = document.getElementById('notification');
+        notification.style.display = 'none';
+    }
+
+</script>
+
+<!-- Componente de Notificação -->
+<div id="notification" class="notification hidden">
+    <span id="notificationMessage"></span>
+    <button onclick="closeNotification()" class="close-btn">&times;</button>
+</div>
+
+<style>
+    .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 20px;
+        border-radius: 5px;
+        background-color: #f8d7da; /* Cor padrão para erro */
+        color: #721c24;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        display: flex;
+        align-items: center;
+        z-index: 1000;
+    }
+
+        .notification.success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .notification.hidden {
+            display: none;
+        }
+
+    .close-btn {
+        margin-left: 15px;
+        font-size: 18px;
+        background: none;
+        border: none;
+        color: inherit;
+        cursor: pointer;
+    }
+</style>

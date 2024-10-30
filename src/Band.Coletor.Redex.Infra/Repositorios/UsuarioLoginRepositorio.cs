@@ -12,13 +12,14 @@ namespace Band.Coletor.Redex.Infra.Repositorios
     {
         public UsuarioLogin Busca(string login, string senha)
         {
-            using (SqlConnection con = new SqlConnection(Config.StringConexao()))
+            try
             {
-                var parametros = new DynamicParameters();
-                parametros.Add(name: "Login", value: login, direction: ParameterDirection.Input);
-                parametros.Add(name: "Senha", value: senha, direction: ParameterDirection.Input);
-
-                return con.Query<UsuarioLogin>(@"
+                using (SqlConnection con = new SqlConnection(Config.StringConexao()))
+                {
+                    var parametros = new DynamicParameters();
+                    parametros.Add(name: "Login", value: login, direction: ParameterDirection.Input);
+                    parametros.Add(name: "Senha", value: senha, direction: ParameterDirection.Input);
+                    string query = @"
                     SELECT
                         A.AUTONUM_USU As Id,
                         A.USUARIO As Login,
@@ -31,8 +32,18 @@ namespace Band.Coletor.Redex.Infra.Repositorios
                     LEFT JOIN
                         REDEX..TB_EMPRESAS B ON A.COD_EMPRESA = B.AUTONUM
                     WHERE
-	                     USUARIO = @Login AND SENHA = @Senha", param: parametros).FirstOrDefault();
+	                     USUARIO = @Login AND SENHA = @Senha";
+
+                var usuario = con.Query<UsuarioLogin>(query, param: parametros).FirstOrDefault();
+                    return usuario;
+                }
             }
+            catch (System.Exception ex)
+            {
+
+                throw;
+            }
+           
         }
     }
 }
