@@ -1,0 +1,131 @@
+@{
+    ViewBag.Title = "Descarga Exportacao";
+}
+
+<div>
+    <div class="row padding-bottom">
+        <div class="col-md-12">
+            <h4>
+                <i class="fas fa-truck fa-lg"></i>
+                Descarga Exportacao
+            </h4>
+        </div>
+    </div>
+
+    <form method="post" action="@Url.Action("Buscar", "DescargaExportacao")">
+        <div class="row padding-bottom">
+            <div class="form-group col-md-3">
+                <label for="talie">TALIE</label>
+                <input type="text" class="form-control" id="talie" name="talie" placeholder="Digite o TALIE">
+            </div>
+            <div class="form-group col-md-3">
+                <label for="inicio">INICIO</label>
+                <input type="datetime-local" class="form-control" id="inicio" name="inicio">
+            </div>
+            <div class="form-group col-md-3">
+                <label for="termino">TERMINO</label>
+                <input type="datetime-local" class="form-control" id="termino" name="termino">
+            </div>
+            <div class="form-group col-md-3">
+                <label for="registro">REGISTRO</label>
+                <input type="text" class="form-control" id="registro" name="registro" placeholder="Digite o registro">
+            </div>
+        </div>
+
+        <div class="row padding-bottom">
+            <div class="form-group col-md-3">
+                <label for="placa">PLACA</label>
+                <input type="text" class="form-control" id="placa" name="placa" placeholder="Digite a placa">
+            </div>
+            <div class="form-group col-md-3">
+                <label for="reserva">RESERVA</label>
+                <input type="text" class="form-control" id="reserva" name="reserva" placeholder="Digite a reserva">
+            </div>
+            <div class="form-group col-md-3">
+                <label for="cliente">CLIENTE</label>
+                <input type="text" class="form-control" id="cliente" name="cliente" placeholder="Digite o cliente">
+            </div>
+        </div>
+
+        <div class="row padding-bottom">
+            <div class="form-group col-md-6">
+                <button type="submit" class="btn btn-primary btn-block">Buscar</button>
+            </div>
+            <div class="form-group col-md-6">
+                <button type="reset" class="btn btn-secondary btn-block">Restaurar Dados</button>
+            </div>
+        </div>
+    </form>
+    <!--Combobox conferente, equipe, operacao-->
+    <div class="row padding-bottom">
+        <div class="form-group col-sm-4">
+            <label for="cbConferente">Selecione o conferente: </label>
+            <select id="cbConferente" class="form-control">
+                @*@foreach (var item in Model)
+                    {
+                        <option value="@item.Id">@item.Descricao</option>
+                    }*@
+            </select>
+        </div>
+        <div class="form-group col-sm-4">
+            <label for="cbConferente">Selecione a equipe: </label>
+            <select id="cbConferente" class="form-control">
+                @*@foreach (var item in Model)
+                    {
+                        <option value="@item.Id">@item.Descricao</option>
+                    }*@
+            </select>
+        </div>
+        <div class="form-group col-sm-4">
+            <label for="cbConferente">Selecione a operacao: </label>
+            <select id="cbConferente" class="form-control">
+                @*@foreach (var item in Model)
+                    {
+                        <option value="@item.Id">@item.Descricao</option>
+                    }*@
+            </select>
+        </div>
+    </div>
+</div>
+<!-- Footer com botões -->
+<footer class="fixed-bottom bg-light py-3">
+    <div class="container d-flex flex-wrap justify-content-start">
+        <a id="lnkInicio" href="#" class="btn btn-warning flex-grow-1 mx-1 my-1">
+            <span aria-hidden="true" class="fa fa-home"></span>&nbsp;&nbsp;Observacao
+        </a>
+
+        <a id="lnkFotos" href="#" class="btn btn-warning flex-grow-1 mx-1 my-1">
+            <span aria-hidden="true" class="fa fa-camera"></span>&nbsp;&nbsp;Cancelar
+        </a>
+
+        <a id="lnkFinalizar" href="#" class="btn btn-warning flex-grow-1 mx-1 my-1">
+            <span aria-hidden="true" class="fa fa-check"></span>&nbsp;&nbsp;Gravar
+        </a>
+
+        <a id="lnkMarcantes" href="#" class="btn btn-warning flex-grow-1 mx-1 my-1">
+            <span aria-hidden="true" class="fa fa-sync"></span>&nbsp;&nbsp;Marcantes
+        </a>
+
+        <a id="lnkAvarias" href="#" class="btn btn-warning flex-grow-1 mx-1 my-1">
+            <span aria-hidden="true" class="fa fa-sync"></span>&nbsp;&nbsp;Avarias
+        </a>
+
+        <a id="lnkExcluir" href="#" class="btn btn-warning flex-grow-1 mx-1 my-1">
+            <span aria-hidden="true" class="fa fa-sync"></span>&nbsp;&nbsp;Excluir
+        </a>
+
+        <a id="lnkFinalizar" href="#" class="btn btn-warning flex-grow-1 mx-1 my-1">
+            <span aria-hidden="true" class="fa fa-sync"></span>&nbsp;&nbsp;Finalizar
+        </a>
+
+        <a id="lnkProximo" href="#" class="btn btn-warning flex-grow-1 mx-1 my-1">
+            <span aria-hidden="true" class="fa fa-sync"></span>&nbsp;&nbsp;Proximo
+        </a>
+
+        <a id="lnkHome" href="@Url.Content("~/Home")" class="btn btn-warning flex-grow-1 mx-1 my-1">
+            <span aria-hidden="true" class="fa fa-home"></span>&nbsp;&nbsp;Home
+        </a>
+    </div>
+</footer>
+
+
