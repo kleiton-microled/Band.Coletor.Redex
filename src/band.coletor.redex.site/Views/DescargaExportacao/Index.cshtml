@@ -11,7 +11,7 @@
             </h4>
         </div>
     </div>
-
+    <!--FORM-->
     <form method="post" action="@Url.Action("Buscar", "DescargaExportacao")">
         <div class="row padding-bottom">
             <div class="form-group col-md-3">
@@ -55,71 +55,71 @@
                 <button type="reset" class="btn btn-secondary btn-block">Restaurar Dados</button>
             </div>
         </div>
-    </form>
-    <!--Combobox conferente, equipe, operacao-->
-    <div class="row padding-bottom">
-        <div class="form-group col-sm-4">
-            <label for="cbConferente">Selecione o conferente: </label>
-            <select id="cbConferente" class="form-control">
-                @*@foreach (var item in Model)
+        <!--Combobox conferente, equipe, operacao-->
+        <div class="row padding-bottom">
+            <div class="form-group col-sm-4">
+                <label for="cbConferente">Selecione o conferente: </label>
+                <select id="cbConferente" class="form-control">
+                    @*@foreach (var item in Model)
                     {
                         <option value="@item.Id">@item.Descricao</option>
                     }*@
-            </select>
-        </div>
-        <div class="form-group col-sm-4">
-            <label for="cbConferente">Selecione a equipe: </label>
-            <select id="cbConferente" class="form-control">
-                @*@foreach (var item in Model)
+                </select>
+            </div>
+            <div class="form-group col-sm-4">
+                <label for="cbConferente">Selecione a equipe: </label>
+                <select id="cbConferente" class="form-control">
+                    @*@foreach (var item in Model)
                     {
                         <option value="@item.Id">@item.Descricao</option>
                     }*@
-            </select>
-        </div>
-        <div class="form-group col-sm-4">
-            <label for="cbConferente">Selecione a operacao: </label>
-            <select id="cbConferente" class="form-control">
-                @*@foreach (var item in Model)
+                </select>
+            </div>
+            <div class="form-group col-sm-4">
+                <label for="cbConferente">Selecione a operacao: </label>
+                <select id="cbConferente" class="form-control">
+                    @*@foreach (var item in Model)
                     {
                         <option value="@item.Id">@item.Descricao</option>
                     }*@
-            </select>
+                </select>
+            </div>
         </div>
-    </div>
+    </form>    
 </div>
 <!-- Footer com botões -->
 <footer class="fixed-bottom bg-light py-3">
     <div class="container d-flex flex-wrap justify-content-start">
-        <a id="lnkInicio" href="#" class="btn btn-warning flex-grow-1 mx-1 my-1">
-            <span aria-hidden="true" class="fa fa-home"></span>&nbsp;&nbsp;Observacao
+        <a id="lnkObservacao" href="#" class="btn btn-warning flex-grow-1 mx-1 my-1">
+            <span aria-hidden="true" class="fa fa-sticky-note"></span>&nbsp;&nbsp;Observacao
         </a>
 
-        <a id="lnkFotos" href="#" class="btn btn-warning flex-grow-1 mx-1 my-1">
-            <span aria-hidden="true" class="fa fa-camera"></span>&nbsp;&nbsp;Cancelar
+        <a id="lnkCancelar" href="#" class="btn btn-warning flex-grow-1 mx-1 my-1">
+            <span aria-hidden="true" class="fa fa-window-close"></span>&nbsp;&nbsp;Cancelar
         </a>
 
-        <a id="lnkFinalizar" href="#" class="btn btn-warning flex-grow-1 mx-1 my-1">
+        <a id="lnkGravar" href="#" class="btn btn-warning flex-grow-1 mx-1 my-1">
             <span aria-hidden="true" class="fa fa-check"></span>&nbsp;&nbsp;Gravar
         </a>
 
         <a id="lnkMarcantes" href="#" class="btn btn-warning flex-grow-1 mx-1 my-1">
-            <span aria-hidden="true" class="fa fa-sync"></span>&nbsp;&nbsp;Marcantes
+            <span aria-hidden="true" class="fa fa-sort-numeric-up"></span>&nbsp;&nbsp;Marcantes
         </a>
 
         <a id="lnkAvarias" href="#" class="btn btn-warning flex-grow-1 mx-1 my-1">
-            <span aria-hidden="true" class="fa fa-sync"></span>&nbsp;&nbsp;Avarias
+            <span aria-hidden="true" class="fa fa-window-close"></span>&nbsp;&nbsp;Avarias
         </a>
 
         <a id="lnkExcluir" href="#" class="btn btn-warning flex-grow-1 mx-1 my-1">
-            <span aria-hidden="true" class="fa fa-sync"></span>&nbsp;&nbsp;Excluir
+            <span aria-hidden="true" class="fa fa-trash-alt"></span>&nbsp;&nbsp;Excluir
         </a>
 
         <a id="lnkFinalizar" href="#" class="btn btn-warning flex-grow-1 mx-1 my-1">
-            <span aria-hidden="true" class="fa fa-sync"></span>&nbsp;&nbsp;Finalizar
+            <span aria-hidden="true" class="fa fa-check"></span>&nbsp;&nbsp;Finalizar
         </a>
 
         <a id="lnkProximo" href="#" class="btn btn-warning flex-grow-1 mx-1 my-1">
-            <span aria-hidden="true" class="fa fa-sync"></span>&nbsp;&nbsp;Proximo
+            <span aria-hidden="true" class="fa fa-chevron-right"></span>&nbsp;&nbsp;Proximo
         </a>
 
         <a id="lnkHome" href="@Url.Content("~/Home")" class="btn btn-warning flex-grow-1 mx-1 my-1">

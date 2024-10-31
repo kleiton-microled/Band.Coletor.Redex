@@ -1,0 +1,181 @@
+@{
+    ViewBag.Title = "Estufagem Container";
+}
+
+<div>
+    <div class="row padding-bottom">
+        <div class="col-md-12">
+            <h4>
+                <i class="fas fa-truck fa-lg"></i>
+                Estufagem Container
+            </h4>
+        </div>
+    </div>
+    <!--FORM-->
+    <form method="post" action="@Url.Action("Buscar", "EstufagemContainer")">
+        <div class="row padding-bottom">
+            <div class="form-group col-md-3">
+                <label for="planejamento">PLANEJAMENTO</label>
+                <input type="text" class="form-control" id="planejamento" name="talie">
+            </div>
+            <div class="form-group col-md-3">
+                <label for="reserva">RESERVA</label>
+                <input type="text" class="form-control" id="reserva" name="reserva">
+            </div>
+            <div class="form-group col-md-3">
+                <label for="cliente">CLIENTE</label>
+                <input type="text" class="form-control" id="cliente" name="cliente">
+            </div>
+            <div class="form-group col-md-3">
+                <label for="container">CONTAINER</label>
+                <input type="text" class="form-control" id="container" name="container" placeholder="Digite o container">
+            </div>
+        </div>
+
+        <div class="row padding-bottom">
+            <div class="form-group col-md-3">
+                <label for="inicio">INICIO</label>
+                <input type="datetime-local" class="form-control" id="inicio" name="inicio">
+            </div>
+            <div class="form-group col-md-3">
+                <label for="termino">TERMINO</label>
+                <input type="datetime-local" class="form-control" id="termino" name="termino">
+            </div>
+        </div>
+        <!--COMBO BOX-->
+        <div class="row padding-bottom">
+            <div class="form-group col-sm-4">
+                <label for="cbConferente">Selecione o conferente: </label>
+                <select id="cbConferente" class="form-control">
+                    @*@foreach (var item in Model)
+                        {
+                            <option value="@item.Id">@item.Descricao</option>
+                        }*@
+                </select>
+            </div>
+            <div class="form-group col-sm-4">
+                <label for="cbConferente">Selecione a equipe: </label>
+                <select id="cbConferente" class="form-control">
+                    @*@foreach (var item in Model)
+                        {
+                            <option value="@item.Id">@item.Descricao</option>
+                        }*@
+                </select>
+            </div>
+            <div class="form-group col-sm-4">
+                <label for="cbModo">Selecione o modo: </label>
+                <select id="cbModo" class="form-control">
+                    @*@foreach (var item in Model)
+                        {
+                            <option value="@item.Id">@item.Descricao</option>
+                        }*@
+                </select>
+            </div>
+        </div>
+
+        <div class="row padding-bottom">
+            <div class="form-group col-md-12">
+                <label for="inicio">CAMERA</label>
+                <input type="text" class="form-control" id="camera" name="camera">
+            </div>
+        </div>
+
+        <div class="row padding-bottom">
+            <div class="form-group col-md-3">
+                <label for="produto">PRODUTO</label>
+                <input type="text" class="form-control" id="produto" name="produto">
+            </div>
+            <div class="form-group col-md-3">
+                <label for="plan">PLAN</label>
+                <input type="text" class="form-control" id="plan" name="plan">
+            </div>
+            <div class="form-group col-md-3">
+                <label for="ttl">TTL</label>
+                <input type="text" class="form-control" id="ttl" name="ttl">
+            </div>
+            <div class="form-group col-md-3">
+                <label for="lote">LOTE</label>
+                <input type="text" class="form-control" id="lote" name="lote">
+            </div>
+        </div>
+
+        <div class="row padding-bottom">
+            <div class="form-group col-md-6">
+                <button type="submit" class="btn btn-primary btn-block">Limpar</button>
+            </div>
+        </div>
+    </form>
+
+    <!--TAble Estufados-->
+    <div class="row">
+        <div class="col-md-12">
+            <h5>Estufados</h5>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Numero</th>
+                        <th>Reserva</th>
+                        <th>NF</th>
+                        <th>Embalagem</th>
+                        <th>Lote</th>
+                        <th>Mercadoria</th>
+                        <th>Cod.Barras</th>
+                        <th>Qtde</th>
+                    </tr>
+                </thead>
+                <tbody id="loadedItemsTableBody">
+                    <!-- Dados da tabela "ESTUFADOS" serão preenchidos aqui -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!--ETIQUETAS-->
+    <div class="row">
+        <div class="col-md-12">
+            <h5>Etiquetas Disponiveis</h5>
+            <!--<table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Numero</th>
+                        <th>Reserva</th>
+                        <th>NF</th>
+                        <th>Embalagem</th>
+                        <th>Lote</th>
+                        <th>Mercadoria</th>
+                        <th>Cod.Barras</th>
+                        <th>Qtde</th>
+                    </tr>
+                </thead>
+                <tbody id="loadedItemsTableBody">-->
+            <!-- Dados da tabela "ESTUFADOS" serão preenchidos aqui -->
+            <!--</tbody>
+            </table>-->
+        </div>
+    </div>
+
+</div>
+
+<!-- Footer com botões -->
+<footer class="fixed-bottom bg-light py-3">
+    <div class="container d-flex justify-content-start">
+
+        <a id="lnkFotos" href="#" class="btn btn-warning mx-1">
+            <span aria-hidden="true" class="fa fa-camera"></span>&nbsp;&nbsp;Fotos
+        </a>
+
+        <a id="lnkFotos7" href="#" class="btn btn-warning mx-1">
+            <span aria-hidden="true" class="fa fa-camera"></span>&nbsp;&nbsp;Fotos 7
+        </a>
+
+        <a id="lnkFinalizar" href="#" class="btn btn-warning mx-1">
+            <span aria-hidden="true" class="fa fa-check"></span>&nbsp;&nbsp;Estufar
+        </a>
+
+        <a id="lnkHome" href="@Url.Content("~/Home")" class="btn btn-warning mx-1">
+            <span aria-hidden="true" class="fa fa-home"></span>&nbsp;&nbsp;Home
+        </a>
+    </div>
+</footer>
+
+

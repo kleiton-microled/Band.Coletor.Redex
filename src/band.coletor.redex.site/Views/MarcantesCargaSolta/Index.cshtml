@@ -1,0 +1,83 @@
+@{
+    ViewBag.Title = "Marcantes Carga Solta";
+}
+
+<div>
+    <div class="row padding-bottom">
+        <div class="col-md-12">
+            <h4>
+                <i class="fas fa-truck fa-lg"></i>
+                Marcantes Carga Solta
+            </h4>
+        </div>
+    </div>
+    <form method="post" action="@Url.Action("Buscar", "MarcantesCargaSolta")">
+        <div class="row padding-bottom">
+            @*<div class="form-group col-md-8">
+                    <label for="lote">LOTE</label>
+                    <input type="text" class="form-control" id="lote" name="lote">
+                </div>*@
+            <div class="form-group col-md-12">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="Pesquise um lote" aria-label="Pesquisar Lote" aria-describedby="basic-addon2">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="button">Filtrar Lote</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row padding-bottom">
+            <div class="form-group col-sm-6">
+                <label for="cbContainer">Selecione um container: </label>
+                <select id="cbContainer" class="form-control">
+                    @*@foreach (var item in Model)
+                        {
+                            <option value="@item.Id">@item.Descricao</option>
+                        }*@
+                </select>
+            </div>
+            <div class="form-group col-md-3">
+                <label for="quantidade">QUANTIDADE</label>
+                <input type="text" class="form-control" id="quantidade" name="quantidade">
+            </div>
+            <div class="form-group col-md-3">
+                <label for="embalagem">EMBALAGEM</label>
+                <input type="text" class="form-control" id="embalagem" name="embalagem">
+            </div>
+        </div>
+        <div class="row padding-bottom">
+            <div class="form-group col-md-8">
+                <label for="marcante">MARCANTE</label>
+                <input type="text" class="form-control" id="marcante" name="marcante">
+            </div>
+            <div class="form-group col-md-4">
+                <label for="qtdMarcantes">QTD.MARCANTES</label>
+                <input type="text" class="form-control" id="qtdMarcantes" name="qtdMarcantes">
+            </div>
+        </div>
+
+    </form>
+</div>
+
+<!-- Footer com botões -->
+<footer class="fixed-bottom bg-light py-3">
+    <div class="container d-flex justify-content-start">
+
+        <a id="lnkFotos" href="#" class="btn btn-warning mx-1">
+            <span aria-hidden="true" class="fa fa-camera"></span>&nbsp;&nbsp;Fotos
+        </a>
+
+        <a id="lnkImprimir" href="#" class="btn btn-warning mx-1">
+            <span aria-hidden="true" class="fa fa-print"></span>&nbsp;&nbsp;Imprimir
+        </a>
+
+        <a id="lnkReImprimir" href="#" class="btn btn-warning mx-1">
+            <span aria-hidden="true" class="fa fa-print"></span>&nbsp;&nbsp;Reimprimir
+        </a>
+
+        <a id="lnkHome" href="@Url.Content("~/Home")" class="btn btn-warning mx-1">
+            <span aria-hidden="true" class="fa fa-home"></span>&nbsp;&nbsp;Home
+        </a>
+    </div>
+</footer>

@@ -178,6 +178,9 @@
     <Compile Include="App_Start\UnityConfig.cs" />
     <Compile Include="App_Start\UnityMvcActivator.cs" />
     <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\MarcantesCargaSoltaController.cs" />
+    <Compile Include="Controllers\InventarioCargaSoltaController.cs" />
+    <Compile Include="Controllers\EstufagemContainerController.cs" />
     <Compile Include="Controllers\DescargaExportacaoController.cs" />
     <Compile Include="Controllers\CarregamentoCargaSoltaController.cs" />
     <Compile Include="Controllers\ContatosController.cs" />
@@ -523,6 +526,9 @@
     <Content Include="Views\Shared\_movimentacao_carga_solta\_scripts_inserir.cshtml" />
     <Content Include="Views\CarregamentoCargaSolta\Index.cshtml" />
     <Content Include="Views\DescargaExportacao\Index.cshtml" />
+    <Content Include="Views\EstufagemContainer\Index.cshtml" />
+    <Content Include="Views\InventarioCargaSolta\Index.cshtml" />
+    <Content Include="Views\MarcantesCargaSolta\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Band.Coletor.Redex.Business\Band.Coletor.Redex.Business.csproj">
