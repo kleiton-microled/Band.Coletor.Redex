@@ -12,7 +12,7 @@
         $('#txtConteiner').mask('SSSS000000-0');
         $('#divPeso').hide();
         $('#txtRegistro').mask('000000000000');
-      
+
         //carrega talies na aba talies
         var talie = "";
         var registro = "";
@@ -20,7 +20,7 @@
 
         var cd = "@ViewBag.CD";
         var dd = "@ViewBag.DD";
-      
+
         if (dd > 0) {
             $('#pnlCrossDocking').hide();
             $('#divContainer').hide();
@@ -29,10 +29,10 @@
         }
         else {
             $('#pnlCrossDocking').show();
-            $('#divContainer').show();       
+            $('#divContainer').show();
             $('#checkCrossDocking').attr('checked', true);
             $('#checkCrossDocking').attr('disabled', true);
-         
+
         }
         //alert(navigator.userAgent);
         getAllDadosTalie(talie, registro, descarga);
@@ -42,13 +42,13 @@
 <script>
         var cd = "@ViewBag.CD";
         var dd = "@ViewBag.DD";
-  
+
         if (dd > 0) {
             $('#txtRegistro').change(function () {
                 var id = $(this).val();
-           
+
                 getTalieById(id);
-            });        
+            });
         }
         else {
             $('#txtRegistro').change(function () {
@@ -57,26 +57,26 @@
 
 
             });
-       
+
             $('#txtConteiner').change(function () {
-                
+
                 var conteiner = $(this).val();
                 var id = $('#txtRegistro').val();
-             
-            
+
+
                 if (conteiner.length > 11) {
-               
+
                     getTalieByIdConteiner(id, conteiner)
                 }
             })
 
         }
 
-    
+
 </script>
 <script>
     function getTalieByIdConteiner(id, conteiner) {
-       
+
         $.ajax({
             url: '@Url.Content("~/TalieColetorDescarga/ObterTaliePorIdConteiner")',
             type: 'GET',
@@ -96,8 +96,8 @@
                         alert("Preencha o número do conteiner ");
                     }
                     else {
-                        toastr.error("Preencha o número do conteiner", 'Coletor');    
-                    }                    
+                        toastr.error("Preencha o número do conteiner", 'Coletor');
+                    }
                 }
                 else {
                     $('#preloader').hide();
@@ -128,13 +128,13 @@
                         var patio = Dados.objetoRetorno.Patio;
                         var patioId = Dados.objetoRetorno.PatioId;
                         var conteiner = Dados.objetoRetorno.ConteinerId;
-                    
+
                         var clienteId = Dados.objetoRetorno.ClienteId;
                         var estufagem = Dados.objetoRetorno.Estufagem;
                         var autoNumTalie = Dados.objetoRetorno.talieId;
-                        
+
                         var txtConteiner = Dados.objetoRetorno.idContainer;
-                        
+
                         $('#pnlEdicaoItem').hide();
                         $('#txtProduto').val('');
                         $('#txtEmbalagem').val('');
@@ -161,23 +161,23 @@
 
 
                         //$('#txtConteiner').attr('disabled', true);
-                        
-                        $('#txtRegistro').attr('disabled', true);        
-                     
-                     
+
+                        $('#txtRegistro').attr('disabled', true);
+
+
                         if (fechado == 1) {
                             $('#checkTalieFechado').attr('disabled', true);
                             $('#checkTalieFechado').attr('checked', true);
                             $('#btnTalieGravar').hide();
                             $('#btnTalieFinalizar').hide();
-                      
-                          
+
+
                         }
                         else {
                             $('#checkTalieFechado').attr('checked', false);
                             $('#btnTalieGravar').show();
                             $('#btnTalieFinalizar').show();
-                         
+
                         }
 
                         if (estufagem == 1) {
@@ -187,7 +187,7 @@
                             $('#estufagemCompleta').attr('checked', false);
                         }
 
-                      
+
                         if (ID == 0) {
                             $('#btnTalieFinalizar').hide();
                             $('#txtTalieNumero').val();
@@ -223,7 +223,7 @@
                             }
                         });
 
-                      
+
                        // $('#txtConteiner').val(conteiner);
                        // $('#txtConteiner').val(conteiner);
                         //alert("teste");
@@ -277,187 +277,127 @@
 
 </script>
 <script>
-    function getTalieById(id) {        
-        $.ajax({
-            url: '@Url.Content("~/TalieColetorDescarga/ObterTaliePorId")',
-            type: 'GET',
-            data: { id: id },
+    function getTalieById(id) {
+        console.log('getTalieById', id);
+    $.ajax({
+        url: '@Url.Content("~/TalieColetorDescarga/ObterTaliePorId")',
+        type: 'GET',
+        data: { id: id },
+        beforeSend: function () {
+            $('#preloader').show();
+        },
+        success: function (Dados) {
+            $('#preloader').hide();
+            console.log(Dados);
+            const { Mensagem, possuiDados, objetoRetorno } = Dados;
 
-            beforeSend: function () {
-               
-                $('#preloader').show();
-               
-            },
-            success: function (Dados) {
-                $('#preloader').hide();
-               
-                var mensagem = Dados.Mensagem;
-                
-                var possuiDados = Dados.possuiDados;
-              
-                if (possuiDados) {
-                    var ID = Dados.objetoRetorno.Id;
-                    var registroId = Dados.objetoRetorno.RegistroId;
-                    var inicio = moment(Dados.objetoRetorno.Inicio).format('DD/MM/YYYY HH:mm');                                        
-                    var termino = moment(Dados.objetoRetorno.Termino).format('DD/MM/YYYY HH:mm');
-                    var crossDocking = Dados.objetoRetorno.CrossDocking;
-                    var conferenteId = Dados.objetoRetorno.ConferenteId;
-                    var equipeId = Dados.objetoRetorno.EquipeId;
-                    var bookingId = Dados.objetoRetorno.BookingId;
-                    var operacaoId = Dados.objetoRetorno.OperacaoId;
-                    var placa = Dados.objetoRetorno.Placa;
-                    var reference = Dados.objetoRetorno.Reference;
-                    var fechado = Dados.objetoRetorno.Fechado;
-                    var gateId = Dados.objetoRetorno.GateId;
-                    var observacoes = Dados.objetoRetorno.OBSERVACOES;
-                    var cliente = Dados.objetoRetorno.fantasia;
-                    var patio = Dados.objetoRetorno.Patio;
-                    var patioId = Dados.objetoRetorno.PatioId;
-                    var conteiner = Dados.objetoRetorno.ConteinerId;
-                    var clienteId = Dados.objetoRetorno.ClienteId;
-                    var estufagem = Dados.objetoRetorno.Estufagem;
-                    var autoNumTalie = Dados.objetoRetorno.talieId;  
-                    
-                    $('#pnlEdicaoItem').hide();
-                    $('#txtProduto').val('');
-                    $('#txtEmbalagem').val('');
-                    $('#txtQuantidadeDescarga').val('');
-                    $('#txtQuantidadeNF').val('');
-                    $('#txtComprimento').val('');
-                    $('#txtAltura').val('');
-                    $('#txtLargura').val('');
-                    $('#txtPeso').val('');
-                    $('#txtLocal').val('');
-                    $('#cbNF').empty();
-
-                    $('#btnConfirmarFechamento').attr('data-id', ID);
-                    $('#hddnGateId').val(gateId);
-                    $('#hddnReserva').val(bookingId);
-                    $('#hddnReservaId').val(bookingId);
-                    $('#hddnConteinerId').val(conteiner);
-                    $('#hddnClienteId').val(clienteId);
-                    $('#txtRegistro').val(registroId);
-                    $('#txtTalieNumero').val(ID);
-                    $('#hddnConteinerId').val(patioId);
-
-
-                   
-                    //if (crossDocking == 1) {
-                    //    $('#checkCrossDocking').attr('checked', true);
-                    //}
-                    //else {
-                    //    $('#checkCrossDocking').attr('checked', false);
-                    //}
-                   
-                    if (fechado == 1) {
-                        $('#checkTalieFechado').attr('disabled', true);
-                        $('#checkTalieFechado').attr('checked', true);
-                        $('#btnTalieGravar').hide();
-                        $('#btnTalieFinalizar').hide();
-                    }
-                    else {
-                        $('#checkTalieFechado').attr('checked', false);
-                        $('#btnTalieGravar').show();
-                        $('#btnTalieFinalizar').show();
-                     
-                    }
-                   
-                    if (estufagem == 1) {
-                        $('#estufagemCompleta').attr('checked', true);
-                    }
-                    else {
-                        $('#estufagemCompleta').attr('checked', false);
-                    }
-                
-                    if (ID == 0) {
-                        $('#btnTalieFinalizar').hide();
-                        $('#txtTalieNumero').val("");
-                    }                    
-
-                    $('#txtInicio').val(inicio);
-                    $('#txtTermino').val(termino);
-                    $('#txtCliente').val(cliente);
-                    $('#txtPlaca').val(placa);
-                    $('#txtReserva').val(reference);
-                  
-                    $('#cbConferente option').each(function () {
-                        var idConferente = $(this).val();
-
-                    if (idConferente == conferenteId) {
-                            $(this).attr('selected', true);
-                        }
-                    });
-
-                    $('#cbEquipe option').each(function () {
-                        var idEquipe = $(this).val();
-
-                        if (idEquipe == equipeId) {
-                            $(this).attr('selected', true);
-                        }
-                    });
-                  
-                    $('#cbModo option').each(function () {
-                        var idOperacao = $(this).val();
-
-                        if (idOperacao == operacaoId) {
-                            $(this).attr('selected', true)
-                        }
-                    });
-
-                    $('#txtConteiner').val(conteiner);
-             
-                    
-                    getAllDadosTalieItens(ID);
-                }
-                else {
-                    toastr.info(mensagem, 'Resultado da busca');
-                    $('#hddnGateId').val("");
-                    $('#hddnReserva').val("");
-                    $('#hddnReservaId').val("");
-                    $('#hddnConteinerId').val("");
-                    $('#hddnClienteId').val("");
-                    $('#hddnConteinerId')
-                    $('#txtRegistro').val("");
-                    $('#txtTalieNumero').val("");
-                    $('#txtInicio').val("");
-                    $('#txtTermino').val("");
-                    $('#txtCliente').val("");
-                    $('#txtPlaca').val("");
-                    $('#txtReserva').val("");
-                    $('#cbConferente').val(0);
-                    $('#cbEquipe').val(0);
-                    $('#cbModo').val(0);
-                    $('#checkTalieFechado').attr('checked', false);
-                    $('#estufagemCompleta').attr('checked', false);
-                    $('#pnlEdicaoItem').hide();
-                    $('#grdItens').DataTable().destroy();
-                    $('#grdItens').hide();
-                    $('#grdItens').empty();
-                  
-                }
-
-            },
-            error: function () {
-
-               $('#preloader').hide();
-
-                toastr.error("Os dados não foram carregados 1", 'Erro');
+            if (possuiDados) {
+                preencherCamposTalie(objetoRetorno);
+                configurarEstadoUI(objetoRetorno);
+                getAllDadosTalieItens(objetoRetorno.Id);
+            } else {
+                limparCamposTalie();
+                toastr.info(Mensagem, 'Resultado da busca');
             }
-        });
+        },
+        error: function () {
+            $('#preloader').hide();
+            toastr.error("Os dados não foram carregados.", 'Erro');
+        }
+    });
+}
+
+function preencherCamposTalie(dados) {
+    const {
+        Id, RegistroId, Inicio, Termino, CrossDocking, ConferenteId,
+        EquipeId, BookingId, OperacaoId, Placa, Reference, Fechado,
+        GateId, OBSERVACOES, fantasia: Cliente, Patio, PatioId,
+        ConteinerId, ClienteId, Estufagem, talieId
+    } = dados;
+
+    $('#btnConfirmarFechamento').attr('data-id', Id);
+    $('#hddnGateId').val(GateId);
+    $('#hddnReserva, #hddnReservaId').val(BookingId);
+    $('#hddnConteinerId').val(ConteinerId);
+    $('#hddnClienteId').val(ClienteId);
+    $('#txtRegistro').val(RegistroId);
+    $('#txtTalieNumero').val(Id || '');
+    $('#txtInicio').val(moment(Inicio).format('DD/MM/YYYY HH:mm'));
+    $('#txtTermino').val(moment(Termino).format('DD/MM/YYYY HH:mm'));
+    $('#txtCliente').val(Cliente);
+    $('#txtPlaca').val(Placa);
+    $('#txtReserva').val(Reference);
+    $('#txtConteiner').val(ConteinerId);
+
+    selecionarOpcao('#cbConferente', ConferenteId);
+    selecionarOpcao('#cbEquipe', EquipeId);
+    selecionarOpcao('#cbModo', OperacaoId);
+
+    $('#pnlEdicaoItem').hide();
+    limparCamposItem();
+}
+
+function configurarEstadoUI(dados) {
+    const { Fechado, Estufagem } = dados;
+
+    $('#checkTalieFechado').prop('checked', Fechado === 1).prop('disabled', Fechado === 1);
+    $('#btnTalieGravar, #btnTalieFinalizar').toggle(Fechado === 0);
+
+    $('#estufagemCompleta').prop('checked', Estufagem === 1);
+
+    if (dados.Id === 0) {
+        $('#btnTalieFinalizar').hide();
+        $('#txtTalieNumero').val("");
     }
+}
+
+function limparCamposTalie() {
+    const campos = [
+        '#hddnGateId', '#hddnReserva', '#hddnReservaId', '#hddnConteinerId',
+        '#hddnClienteId', '#txtRegistro', '#txtTalieNumero', '#txtInicio',
+        '#txtTermino', '#txtCliente', '#txtPlaca', '#txtReserva'
+    ];
+
+    campos.forEach(campo => $(campo).val(''));
+    $('#cbConferente, #cbEquipe, #cbModo').val(0);
+    $('#checkTalieFechado, #estufagemCompleta').prop('checked', false);
+    $('#pnlEdicaoItem').hide();
+    limparTabelaItens();
+}
+
+function limparCamposItem() {
+    const campos = [
+        '#txtProduto', '#txtEmbalagem', '#txtQuantidadeDescarga', '#txtQuantidadeNF',
+        '#txtComprimento', '#txtAltura', '#txtLargura', '#txtPeso', '#txtLocal'
+    ];
+    campos.forEach(campo => $(campo).val(''));
+    $('#cbNF').empty();
+}
+
+function selecionarOpcao(seletor, valor) {
+    $(seletor).find(`option[value="${valor}"]`).prop('selected', true);
+}
+
+function limparTabelaItens() {
+    if ($.fn.DataTable.isDataTable('#grdItens')) {
+        $('#grdItens').DataTable().destroy();
+    }
+    $('#grdItens').hide().empty();
+}
+
 
 </script>
 <script>
     //eventos para cancelar e gravar talie
     $('#btnTalieCancelar').click(function () {
-        $('#txtTalieNumero').val("");        
+        $('#txtTalieNumero').val("");
         $('#checkTalieFechado').attr('checked', false);
         $('#txtInicio').val("");
         $('#txtTermimo').val("");
         $('#txtCliente').val("");
         $('#txtPlaca').val("");
         $('#txtReserva').val("");
-       // $('#cbConferente').val("0");
+        // $('#cbConferente').val("0");
         $('#estufagemCompleta').attr('checked', false);
         $('#cbEquipe').val("0");
         $('#cbModo').val("0");
@@ -522,7 +462,7 @@
         var obs = "";
         var flagEstufagem = 0;
         var browser = navigator.appName;;
-  
+
         if (autonumREG == "") {
             autonumREG = 0;
         }
@@ -539,7 +479,7 @@
         }
 
         if (inicio == "") {
-            
+
 
             if (browser == "Microsoft Internet Explorer") {
                 alert("Preencha a data de início ");
@@ -547,7 +487,7 @@
             else {
                 toastr.error("Preencha a data de início", 'Campo obrigatório');
             }
-            
+
         }
         else if (conferente == 0) {
 
@@ -557,7 +497,7 @@
             else {
                 toastr.error("Selecione um conferente", 'Campo obrigatório');
             }
-            
+
         }
         else if (equipe == 0) {
             if (browser == "Microsoft Internet Explorer") {
@@ -565,7 +505,7 @@
             }
             else {
                 toastr.error("Selecione uma equipe", 'Campo obrigatório');
-            }            
+            }
         }
         else if (operacao == 0) {
             if (browser == "Microsoft Internet Explorer") {
@@ -574,7 +514,7 @@
             else {
                 toastr.error("Selecione o modo da operação", 'Campo obrigatório');
             }
-            
+
         }
         else if ((tipoDescarga == tipoDescargaCD) && registroBusca == 0) {
 
@@ -585,7 +525,7 @@
                 toastr.error("Informe um contêiner válido", 'Campo obrigatório');
             }
 
-            
+
         }
         else if (placa == "") {
 
@@ -595,7 +535,7 @@
             else {
                 toastr.error("Informe a placa do veículo descarregado", 'Campo obrigatório');
             }
-            
+
         }
         else if (talieFechado == 1) {
             if (browser == "Microsoft Internet Explorer") {
@@ -604,10 +544,10 @@
             else {
                 toastr.error("Talie fechado, alteração não permitida", 'Erro');
             }
-            
+
         }
         else {
-            
+
             var inserirTalie = {
                 "AUTONUM_TALIE": id,
                 "DtInicio": inicio,
@@ -623,7 +563,7 @@
                 "Observacoes": obs,
                 "FLAG_ESTUFAGEM": flagEstufagem,
             }
-      
+
             $.ajax({
                 url: '@Url.Content("~/TalieColetorDescarga/CadastrarTalie")',
                 type: 'GET',
@@ -636,8 +576,8 @@
                     $('#preloader').hide();
                     var mensagem = Dados.Mensagem;
                     var status = Dados.statusRetorno;
-                    
-                 
+
+
                     $('#txtTalieNumero').val(Dados.objetoRetorno.AUTONUM_TALIE);
                     if (status == "200") {
                         if (browser == 'Microsoft Internet Explorer') {
@@ -653,25 +593,25 @@
                         }
                         else {
                             toastr.error(mensagem, 'Erro');
-                        }                       
+                        }
                     }
 
                     var reg = $('#txtRegistro').val();
 
-                    //Linhas Com a validacao do CD x Da 
+                    //Linhas Com a validacao do CD x Da
                     var cd = "@ViewBag.CD";
                     var dd = "@ViewBag.DD";
-                
+
                     if (dd > 0) {
-                  
-                        getTalieById($('#txtRegistro').val());                        
+
+                        getTalieById($('#txtRegistro').val());
                     }
                     else {
                      getTalieByIdConteiner($('#txtRegistro').val(), $('#txtConteiner').val());
                     }
-                    //Linhas Com a validacao do CD x Da 
+                    //Linhas Com a validacao do CD x Da
 
-                   
+
 
                 },
                 error: function () {
@@ -681,7 +621,7 @@
                 },
                 complete: function () {
                     var talie = $('#txtTalieNumero').val();
-           
+
                     getAllDadosTalieItens(talie);
                 }
             });
@@ -701,19 +641,19 @@
             else {
                 toastr.error('Finalize somente após o lançamento do talie', 'Coletor');
             }
-            
+
             return;
         }
         $.get('@Url.Content("~/TalieColetorDescarga/ObterTotalItensPorTalie")', { id: talie }, function (Dados) {
             var totalItensTalie = Dados.objetoRetorno;
-            if (totalItensTalie == 0) {               
+            if (totalItensTalie == 0) {
                 if (browser == 'Microsoft Internet Explorer') {
                     alert('Não foi encontrado lancamento de carga para o talie selecionado');
                 }
                 else {
                     toastr.error('Não foi encontrado lancamento de carga para o talie selecionado');
                 }
-                
+
                 return;
             }
         });
@@ -728,7 +668,7 @@
         var talie = $(this).attr('data-id');
         var conteinerId = "";
         var descarga = "@ViewBag.TipoDescarga";
-        
+
         btnTalieFinalizar(talie, descarga, conteinerId);
     });
 </script>
@@ -764,7 +704,7 @@
 
 
     $('#txtQuantidadeDescarga').change(function () {
-      
+
         var quantidadeDescarga = $('#txtQuantidadeDescarga').val();
 
         if (quantidadeDescarga < 0) {
@@ -806,16 +746,16 @@
         var uno4 = $('#txtUno4').val();
         var marcacao = $('#txtMarcacao').val();
         var observacao = $('#txtObservacao').val();
-     
+
 
       //  alert(numerada + "  " + observacao);
         var browser = navigator.appName;
-       
+
         var inserir = {
             "AUTONUM_TI": talieItem,
             "AUTONUM_TALIE": talieId,
             "QTDE_DESCARGA": quantidadeNF,
-            "AUTONUM_NF": nf, 
+            "AUTONUM_NF": nf,
             "LARGURA": largura,
             "ALTURA": altura,
             "COMPRIMENTO": comprimento,
@@ -839,8 +779,8 @@
             "FLAG_NUMERADA": numerada,
             "AUTONUM_EMB": embalagem,
         };
-       
-      
+
+
         if (quantidadeDescarga == 0) {
             if (browser == 'Microsoft Internet Explorer') {
                 alert('A quantidade não pode ser zero');
@@ -848,7 +788,7 @@
             else {
                 toastr.error("A quantidade não pode ser zero", "Erro");
             }
-            
+
         }
         else {
             $.ajax({
@@ -866,14 +806,14 @@
                 var status = Dados.statusRetorno;
 
                 if (status == "200") {
-                    
+
                     if (browser == 'Microsoft Internet Explorer') {
                         alert(mensagem);
                     }
                     else {
                         toastr.success(mensagem, 'Sucesso');
-                    }                    
-                    
+                    }
+
                      //Linhas que validam CD X DA
 
                     var cd = "@ViewBag.CD";
@@ -886,8 +826,8 @@
                         getTalieByIdConteiner($('#txtRegistro').val(), $('#txtConteiner').val());
                     }
 
-                    //Linhas que validam CD X DA 
-              
+                    //Linhas que validam CD X DA
+
                     getAllDadosTalieItens(talieId);
                 }
 
@@ -897,7 +837,7 @@
                     }
                     else {
                         toastr.error(mensagem, 'Erro');
-                    }                      
+                    }
                 }
             },
             error: function () {
@@ -910,155 +850,175 @@
 </script>
 <script>
     $('#btnCancelarItem').click(function () {
-        
+
     });
 </script>
+
 <script>
-    //Carrega Scripts Aba talie
     function getAllDadosTalie(talie, registro, tipoDescarga) {
-      
-        $.ajax({
-            url: '@Url.Content("~/TalieColetorDescarga/GetAllDadosTalie")',
-            type: 'GET',
-            data: { talie: talie, registro: registro, tipoDescarga: tipoDescarga },
+    $.ajax({
+        url: '@Url.Content("~/TalieColetorDescarga/GetAllDadosTalie")',
+        type: 'GET',
+        //data: { talie: talie, registro: registro, tipoDescarga: tipoDescarga },
+        data: function (d) {
+            d.talie = talie;
+            d.registro = registro;
+            d.tipoDescarga = tipoDescarga;
+            d.pageNumber = (d.start / d.length) + 1; // Página atual
+            d.pageSize = d.length; // Número de registros por página
+        },
 
-            before: function() {
-                $('#preloader').show();
-            },
-            success: function (Dados) {
-                $('#preloader').hide();
+        beforeSend: function() {
+            $('#preloader').show();
+        },
+        success: function (response) {
+            $('#preloader').hide();
 
-                $('#grdViewTable').empty();
-                $('#grdViewTable').show();
-                $('#grdViewTable').append("<thead>"
-                    + '<th>Lote</th>'
-                    + '<th>Talie</th>'
-                    + '<th>Início</th>'
-                    //+ '<th>Término</th>'
-                    + '<th>Placa</th>'
-                    + '<th>Conteiner</th>'
-                    + '<th>Reserva</th>'
-                    + '<th>Instrução</th>'
-                    + '<th>Fantasia</th>'
-                    + '<th></th>'
-                    + '</thead>'
-                    + '<tbody>'
-                );
-                $.each(Dados.objetoRetorno, function (i, item) {
-                    var autonum_reg = item.autonum_reg;
-                    var Id = item.Id;
-              
-                    var Inicio = moment(item.Inicio).format('DD/MM/YYYY HH:mm');
-                    var termino = moment(item.Termino).format('DD/MM/YYYY');
-                    var idConteiner = item.id_conteiner;
-                    var reference = item.reference;
-                    var instrucao = item.instrucao;
-                    var fantasia = item.fantasia;
-                    var placaCv = item.Placa;
-                  
-                    $('#grdViewTable').append('<tr>'
-                        + '<td>' + autonum_reg + '</td>'
-                        + '<td>' + Id + '</td>'
-                        + '<td>' + Inicio + '</td>'
-                        //+ '<td>' + termino + '</td>'
-                        + '<td>' + placaCv + '</td>'
-                        + '<td>' + idConteiner + '</td>'
-                        + '<td>' + reference + '</td>'
-                        + '<td>' + instrucao + '</td>'
-                        + '<td>' + fantasia + '</td>'                      
-                          +  '<td>'
-                            + '<a href="#"  class="btn btn-info btnEditTalie"data-cntr="' + idConteiner + '" data-talie="' + Id + '" data-id="' + autonum_reg + '" data-toggle="modal" role="button" data-target="#modal-alteracao" title="Alterar"><i class="fa fa-edit"></i></a>'
-                            + '<a href="#"  class="btn btn-danger btnDeleteTalie" data-talie="' + Id + '" data-id="' + autonum_reg + '" data-toggle="modal" role="button" data-target="#modal-exclusao" title="Excluir"><i class="fa fa-trash"></i></a>'                        
-                            + '</td>'
-                        + '</tr>'
-                    );
-                });
-
-              
-
-
-                $('.btnEditTalie').click(function () {
-               
-                   
-                    var talieId = $(this).attr('data-talie');
-                    
-                    var idcntr = $(this).attr('data-cntr');
-                    var reg = $(this).attr('data-id');
-                  
-                    $('#tabDescarga').addClass('active');
-                 
-                    $('#tabDescarga').addClass('show');
-                 
-                    $('#tabTalies').removeClass('active');
-                
-                    $('#tabTalies').removeClass('show');
-                  
-                    $('#descarga').addClass('fade');
-                  
-                    $('#talie').removeClass('fade');
-                   
-                    $('#descarga').addClass('active');
-                  
-                    $('#descarga').addClass('show');
-                  
-                    $('#talies').removeClass('active');
-                   
-                    $('#talies').removeClass('show');
-                  
-
-                    //Linhas Com a validacao do CD x Da
-                    var cd = "@ViewBag.CD";
-                    var dd = "@ViewBag.DD";
-                   
-                    if (dd > 0) {
-                   // getTalieById($('#txtRegistro').val());
-                       getTalieById(reg)
-                     
-                    }
-                    else {
-                     // getTalieByIdConteiner($('#txtRegistro').val(), $('#txtConteiner').val());
-                   
-                        getTalieByIdConteiner(talieId, idcntr)
-                      
-                    }
-                    //Linhas Com a validacao do CD x Da
-               
-                    getAllDadosTalieItens(talieId);
-                });
-
-                $('#grdViewTable').append('</tbody></table>');
-
-                $('#grdViewTable').DataTable().destroy();
-                $('#grdViewTable').DataTable({
-                    "language": {
-                        "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Portuguese-Brasil.json"
-                    }
-                });
-
-                $('.btnDeleteTalie').click(function () {
-                    var id = $(this).attr('data-talie');
-                    var quantidade = $(this).attr('data-quantidade');
-                    $('#origem').empty();
-                    $('#btnConfirmaExclusao').attr('data-id', 0);
-                    $('#btnConfirmaExclusao').attr('data-id', id)
-                    $('#btnConfirmaExclusao').attr('data-quantidade', quantidade);
-
-                    $('#modal-exclusao').attr('data-origem', 'talie');
-                    $('#hddnOrigem').val('talie');
-                    $('#origem').append('talie');
-                });
-            },
-            error: function () {
-                $('#preloader').hide();
-                toastr.error("Os dados não foram carregados");
+            if (!response || !response.dados) {
+                toastr.error("Erro ao carregar dados de talie.");
+                return;
             }
-        });
-    }
+
+            // Atualiza o total de registros e o número de páginas
+            let totalRecords = response.recordsTotal;
+            let filteredRecords = response.recordsFiltered || totalRecords;
+            let totalPages = Math.ceil(filteredRecords / reponse.pageSize);
+            $('#totalRecords').text(`Total de registros: ${totalRecords}`);
+            $('#totalPages').text(`Total de páginas: ${totalPages}`);
+
+            // Limpa e recria o cabeçalho da tabela
+            $('#grdViewTable').empty().show().append(`
+                <thead>
+                    <tr>
+                        <th>Lote</th>
+                        <th>Talie</th>
+                        <th>Início</th>
+                        <th>Placa</th>
+                        <th>Conteiner</th>
+                        <th>Reserva</th>
+                        <th>Instrução</th>
+                        <th>Fantasia</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            `);
+
+            // Inicializa ou destrói e reinicializa o DataTables
+            if ($.fn.DataTable.isDataTable('#grdViewTable')) {
+                $('#grdViewTable').DataTable().destroy();
+            }
+            $('#grdViewTable').DataTable({
+                paging: true,
+                pageLength: response.pageSize,
+                serverSide: true,
+                processing: true,
+                language: {
+                    "sEmptyTable": "Nenhum registro encontrado",
+                    "sInfo": "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                    "sInfoEmpty": "Mostrando 0 até 0 de 0 registros",
+                    "sInfoFiltered": "(filtrado de _MAX_ registros no total)",
+                    "sInfoThousands": ".",
+                    "sLengthMenu": "Mostrar _MENU_ registros",
+                    "sLoadingRecords": "Carregando...",
+                    "sProcessing": "Processando...",
+                    "sZeroRecords": "Nenhum registro encontrado",
+                    "sSearch": "Pesquisar",
+                    "oPaginate": {
+                        "sNext": "Próximo",
+                        "sPrevious": "Anterior",
+                        "sFirst": "Primeiro",
+                        "sLast": "Último"
+                    },
+                    "oAria": {
+                        "sSortAscending": ": Ordenar colunas de forma ascendente",
+                        "sSortDescending": ": Ordenar colunas de forma descendente"
+                    }
+                },
+                ajax: function (responseData, callback) {
+                    callback({
+                        draw: responseData.draw,
+                        recordsTotal: response.recordsTotal,
+                        recordsFiltered: response.recordsFiltered,
+                        data: response.dados
+                    });
+                },
+                columns: [
+                    { data: 'autonum_reg' },       // Nome do campo conforme no JSON
+                    { data: 'Id' },
+                    { data: 'Inicio', render: function (data) { return moment(data).format('DD/MM/YYYY HH:mm'); } },
+                    { data: 'Placa' },
+                    { data: 'id_conteiner' },
+                    { data: 'reference' },
+                    { data: 'instrucao' },
+                    { data: 'fantasia' },
+                    {
+                        data: null,
+                        orderable: false,
+                        render: function (data, type, row) {
+                            return `
+                                <a href="#" class="btn btn-info btnEditTalie" data-cntr="${row.id_conteiner}" data-talie="${row.Id}" data-id="${row.autonum_reg}" data-toggle="modal" data-target="#modal-alteracao" title="Alterar"><i class="fa fa-edit"></i></a>
+                                <a href="#" class="btn btn-danger btnDeleteTalie" data-talie="${row.Id}" data-id="${row.autonum_reg}" data-toggle="modal" data-target="#modal-exclusao" title="Excluir"><i class="fa fa-trash"></i></a>
+                            `;
+                        }
+                    }
+                ]
+            });
+
+            // Eventos para botões de Edição e Exclusão
+            initializeActionButtons();
+        },
+        error: function () {
+            $('#preloader').hide();
+            toastr.error("Os dados não foram carregados");
+        }
+    });
+}
+
+function initializeActionButtons() {
+    // Ação de Edição
+    console.log('Teste');
+    $('.btnEditTalie').off('click').on('click', function () {
+        let talieId = $(this).data('talie');
+        let idcntr = $(this).data('cntr');
+        let reg = $(this).data('id');
+        //
+        $('#tabDescarga').addClass('active show');
+        $('#tabTalies').removeClass('active show');
+        $('#descarga').addClass('fade active show');
+        $('#talies').removeClass('active show');
+        //
+        //// Validação e busca de talie
+        let cd = "@ViewBag.CD";
+        let dd = "@ViewBag.DD";
+        //
+        if (dd > 0) {
+            getTalieById(reg);
+        } else {
+            console.log(talieId, idcntr);
+            //getTalieByIdConteiner(talieId, idcntr);
+        }
+        //
+        console.log('Editar', talieId, ' - ', idcntr, ' - ', reg);
+        //getAllDadosTalieItens(talieId);
+    });
+
+    // Ação de Exclusão
+    $('.btnDeleteTalie').off('click').on('click', function () {
+        let id = $(this).data('talie');
+        let quantidade = $(this).data('quantidade');
+        $('#origem').empty().append('talie');
+        $('#btnConfirmaExclusao').data('id', id).data('quantidade', quantidade);
+        $('#modal-exclusao').data('origem', 'talie');
+        $('#hddnOrigem').val('talie');
+    });
+}
+
 </script>
 <script>
     //carrega itens talie
     function getAllDadosTalieItens(id) {
-     
+
         $.ajax({
             url: '@Url.Content("~/TalieColetorDescarga/GetAllDadosTalieItens/")',
             type: 'GET',
@@ -1085,7 +1045,7 @@
                     + '<th>Qtde Descarga</th>'
                     + '<th>Comprimento</th>'
                     + '<th>Largura</th>'
-                    + '<th>Altura</th>'     
+                    + '<th>Altura</th>'
                     + '<th>Peso</th>'
                     + '<th>Armazém</th>'
                     + '<th>YARD</th>'
@@ -1097,9 +1057,9 @@
 
                 $.each(Dados.objetoRetorno, function (i, item) {
                     var autonum_talie = item.AUTONUM_TALIE;
-                  
+
                     var autonum_ti = item.AUTONUM_TI;
-                    
+
                     var num_nf = item.num_nf;
                     var serie_nf = item.serie_nf;
                     var talieItem = item.ItemTalie;
@@ -1134,7 +1094,7 @@
                         + '<td>' + comprimento + '</td>'
                         + '<td>' + largura + '</td>'
                         + '<td>' + altura + '</td>'
-                  
+
                         + '<td>' + peso + '</td>'
                         + '<td>' + armazem + '</td>'
                         + '<td>' + yard + '</td>'
@@ -1145,14 +1105,14 @@
                 });
 
                 var fechado = $("#checkTalieFechado").is(':checked');
-              
-               
-            
+
+
+
                 if (fechado == "true") {
-               
+
                     $('.btnEditTalieItem').hide();
                     $('.btnDeleteTalieItem').hide();
-                } 
+                }
                 $('#grdItens').append('</tbody>');
                 $('#grdItens').DataTable().destroy();
                 $('#grdItens').DataTable({
@@ -1163,20 +1123,20 @@
 
                 //var fechado = document.getElementById('checkTalieFechado').checked;
                 //alert(fechado);
-                //if (fechado = "True") {                
+                //if (fechado = "True") {
                 //    $('.btnEditTalieItem').hide();
                 //    $('.btnDeleteTalieItem').hide();
                 //}
 
-           
-             
+
+
 
                 $('.btnEditTalieItem').click(function () {
 
-                   
+
                     $('#pnlEdicaoItem').show();
                     var itemId = $(this).attr('data-id');
-                  
+
                     var desc_produto = $('.desc_produto').attr('data-produto');
 
                     CarregarDadosItemTalie(itemId, desc_produto);
@@ -1204,6 +1164,7 @@
             }
         });
     }
+
 </script>
 <script>
     function CarregarDadosItemTalie(id, produto){
@@ -1248,17 +1209,17 @@
                 var avaria = Dados.objetoRetorno.Avaria;
                 var armazem = Dados.objetoRetorno.ARMAZEM;
                 var marcacao = Dados.objetoRetorno.marcacao;
-                var observacao = Dados.objetoRetorno.observacao; 
+                var observacao = Dados.objetoRetorno.observacao;
 
 
                 $('#cbNF').empty();
-                $.get('/TalieColetorDescarga/GetDadosNF', { id: autonum_reg }, function (DadosNF) {                    
+                $.get('/TalieColetorDescarga/GetDadosNF', { id: autonum_reg }, function (DadosNF) {
                     $.each(DadosNF.objetoRetorno, function (i, item) {
                         var display = item.DISPLAY;
                         var autonum = item.AUTONUM;
                         $('#cbNF').append('<option value = "' + autonum + '">' + display + '</option> ');
                     });
-                });               
+                });
 
                 carregaEmbalagens(EmbalagemId)
                 $('#btnItemSalvar').attr('data-id', id);
@@ -1323,14 +1284,14 @@
             }
         });
     }
-</script> 
+</script>
 <script>
     $('#btnConfirmaExclusao').click(function () {
         var origem = $('#hddnOrigem').val();
         var id = $(this).attr('data-id');
-       
+
         var talieId = $(this).attr('data-talie-id');
-       
+
         var quantidade = $(this).attr('data-quantidade');
         var url = '';
         var browser = navigator.appName;
@@ -1364,11 +1325,11 @@
                     }
                     else {
                         toastr.success(mensagem, 'Sucesso');
-                    }                    
+                    }
 
                     if (origem == 'item') {
                         $('#modal-exclusao').modal('toggle');
-                        
+
                         //Linhas que validam CD X DA
 
                         var cd = "@ViewBag.CD";
@@ -1382,21 +1343,21 @@
                         }
 
                         //Linhas que validam CD X DA
-                    
+
                         getAllDadosTalieItens(talieId);
                     }
                     else {
                         location.reload();
                     }
                 }
-                else {                    
+                else {
                     if (browser == 'Microsoft Internet Explorer') {
                         alert(mensagem);
                     }
                     else {
                         toastr.error(mensagem, 'Erro');
                     }
-                    
+
                 }
             },
             error: function () {
@@ -1413,7 +1374,7 @@
         $.ajax({
             url: "@Url.Content("~/TalieColetorDescarga/GetValidarFecharTalie")",
             type: 'GET',
-            data: { talieId: talieId, tipoDescarga: tipoDescarga, conteinerId: conteinerId }, 
+            data: { talieId: talieId, tipoDescarga: tipoDescarga, conteinerId: conteinerId },
 
             success: function (Dados) {
                 var etiquetas = Dados.objetoRetorno.etiquetas;
@@ -1430,7 +1391,7 @@
                 $('#btnAtualizarAlertaEtiqueta1').attr('data-totalItens', totalItens);
                 var dd = @ViewBag.DD;
                 var cd = @ViewBag.CD;
-                
+
                 if (dd == 1) {
 
                     if (etiquetas == 0) {
@@ -1482,7 +1443,7 @@
                 estufagemCompleta: estufagemCompleta,
                 conteiner: conteiner,
                 atualizarAlertaEtiqueta1: atualizarAlertaEtiqueta1,
-                atualizarAlertaEtiqueta2: atualizarAlertaEtiqueta2, 
+                atualizarAlertaEtiqueta2: atualizarAlertaEtiqueta2,
                 //usuario: usuario,
                 etiquetas: etiquetas,
                 pendencias: pendencias,
@@ -1507,7 +1468,7 @@
                         toastr.success(mensagem, 'Sucesso');
                     }
 
-                    
+
 
                     setTimeout(function () {
                         location.reload();
@@ -1520,7 +1481,7 @@
                     }
                     else {
                         toastr.error(mensagem, 'Erro');
-                    }                    
+                    }
                 }
             },
             error: function () {
@@ -1539,7 +1500,7 @@
         atualizarAlertaEtiqueta1 = 1;
         atualizarAlertaEtiqueta2 = 0;
 
-        var etiquetas =  $('#btnAtualizarAlertaEtiqueta1').attr('data-etiqueta');
+        var etiquetas = $('#btnAtualizarAlertaEtiqueta1').attr('data-etiqueta');
         var pendencias = $('#btnAtualizarAlertaEtiqueta1').attr('data-pendencias');
         var totalItens = $('#btnAtualizarAlertaEtiqueta1').attr('data-totalItens');
 
@@ -1554,7 +1515,7 @@
         }
     }
     function VerificaPendenciaEmisssoEtiquetas() {
-        
+
         $('#btnVerificaPendenciaEmisssoEtiquetas')
             .html('<i class="fa fa-spinner fa-spin"></i>')
             .addClass('disabled');
@@ -1573,12 +1534,12 @@
         var browser = navigator.appName;
 
         $.ajax({
-            url: "@Url.Content("~/TalieColetorDescarga/GetComboEmbalagens")", 
-            type: 'GET', 
+            url: "@Url.Content("~/TalieColetorDescarga/GetComboEmbalagens")",
+            type: 'GET',
 
             beforeSend: function () {
                 $('#cbEmbalagens').empty();
-                $('#cbEmbalagens').append('<option value="0">Aguarde</option>'); 
+                $('#cbEmbalagens').append('<option value="0">Aguarde</option>');
             },
             success: function (Dados) {
                 $('#cbEmbalagens').empty();
@@ -1587,7 +1548,7 @@
 
                 if (possuiDados) {
                     $.each(Dados.objetoRetorno, function (i, item) {
-                        var id = item.AUTONUM_EMB; 
+                        var id = item.AUTONUM_EMB;
                         var descricao = item.DESCRICAO_EMB;
                         var selected = "";
 
@@ -1614,9 +1575,9 @@
     }
 </script>
 @*<script>
-    var browser = navigator.appName;;
-    
-    if (browser == "Microsoft Internet Explorer") {
-        alert("Alert de teste de versão no IE ");
-    }    
-</script>*@
+        var browser = navigator.appName;;
+
+        if (browser == "Microsoft Internet Explorer") {
+            alert("Alert de teste de versão no IE ");
+        }
+    </script>*@

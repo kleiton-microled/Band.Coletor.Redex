@@ -7,7 +7,7 @@ namespace Band.Coletor.Redex.Business.Interfaces.Repositorios
 {
     public interface ITalieColetorDescargaRepositorio
     {
-        IEnumerable<TalieDTO> GetAllDadosTalie(string talie, string registro, string tipoDescarga);
+        (IEnumerable<TalieDTO>, int TotalRecords) GetAllDadosTalie(string talie, string registro, string tipoDescarga, int pageNumber, int pageSize);
         TalieDTO GetTalieById(int id);
         TalieDTO GetTalieByRegistro(int id);
         IEnumerable<TalieDTO> GetAllDadosTalieItens(int id);

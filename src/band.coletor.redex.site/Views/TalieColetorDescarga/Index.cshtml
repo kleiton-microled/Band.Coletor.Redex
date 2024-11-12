@@ -1,4 +1,4 @@
-﻿@using Band.Coletor.Redex.Site.Extensions; 
+﻿@using Band.Coletor.Redex.Site.Extensions;
 <div>
     <div class="pull-left">
         <div class="row padding-bottom">
@@ -13,7 +13,7 @@
                 <a href="#descarga" id="tabDescarga" class="nav-link active" data-toggle="tab"><i class="fa fa-edit" style="padding-right: 8px;"></i>Descarga</a>
             </li>
             <li class="nav-item">
-                <a href="#talies" id="tabTalies"  class="nav-link" data-toggle="tab">
+                <a href="#talies" id="tabTalies" class="nav-link" data-toggle="tab">
                     <i class="fa fa-search" style="padding-right: 8px;"></i>Talies
                 </a>
             </li>
@@ -35,15 +35,15 @@
                     <input class="form-control" id="txtTalieNumero" />
                 </div>
                 <div class="col-sm-3 form-group" style="padding-top:20px;" id="pnlTalieFechada">
-                
-                    <input  type="checkbox" id="checkTalieFechado" />
+
+                    <input type="checkbox" id="checkTalieFechado" />
                     <label for="checkTalieFechado">Talie Fechado? </label>
                 </div>
                 <div class="col-sm-3 form-group" style="padding-top:20px;" id="pnlCrossDocking">
-                
-                    <input  type="checkbox" id="checkCrossDocking" checked />
+
+                    <input type="checkbox" id="checkCrossDocking" checked />
                     <label for="checkCrossDocking">Crossdocking? </label>
-                    
+
                 </div>
 
             </div>
@@ -74,15 +74,15 @@
                     <label for="txtReserva">Reserva: </label>
                     <input type="text" class="form-control" id="txtReserva" />
                 </div>
-                </div>
+            </div>
             <div class="row">
                 <div class="col-sm-3 form-group">
                     <label for="cbConferente">Conferente: </label>
-                    <select class="form-control" id="cbConferente" disabled>                        
+                    <select class="form-control" id="cbConferente" disabled>
                         @*@foreach (var item in ViewBag.Conferente)
-                        {
-                            <option value="@item.Id">@item.Descricao</option>
-                        }*@
+                            {
+                                <option value="@item.Id">@item.Descricao</option>
+                            }*@
 
                         <option value="@User.ObterId()">@User.ObterNome()</option>
                     </select>
@@ -143,7 +143,7 @@
                 <div class="col-md-4">
                     <button class="btn btn-warning btn-block dados-agendamento" id="btnTalieCancelar"><i class="fa fa-eraser"></i>Limpar</button>
                 </div>
-                <div class="col-md-4">                    
+                <div class="col-md-4">
                     <button class="btn btn-primary btn-block dados-agendamento" id="btnTalieGravar"><i class="fa fa-save"></i>Gravar</button>
                 </div>
                 <div class="col-sm-4">
@@ -274,33 +274,35 @@
                 </div>
             </div>
         </div>
+        <!-- TABELA TALIES -->
         <div class="tab-pane fade" id="talies">
-            <div class="row" style="padding-top: 10px; display:none;">
-                <div class="col-md-3">
-                    <label for="txtFiltroRegistro">Registro</label>
-                    <input type="text" id="txtFiltroRegistro" class="form-control" />
-                </div>
-                <div class="col-md-3">
-                    <label for="txtFiltroRegistro">Talie</label>
-                    <input type="text" id="txtFiltroTalie" class="form-control" />
-                </div>
-                <div class="col-md-5 padding-bottom" style="padding-top:30px;">
-                    <button id="btnPesquisarTalie" class="btn btn-primary"><i class="fa fa-search"></i> Pesquisar</button>
-                    <button id="btnCancelarFiltro" class="btn btn-primary"><i class="fa fa-times"></i> Cancelar</button>
-                </div>
-
-            </div>
-            <div class="row padding-bottom">
+            <div class="row mt-5">
                 <div class="table-responsive">
-                    <table class="table table-hover table-sm data-table-grid" id="grdViewTable" style="display:none"></table>
+                    <table class="table table-hover table-sm data-table-grid" id="grdViewTable" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Lote</th>
+                                <th>Talie</th>
+                                <th>Início</th>
+                                <th>Placa</th>
+                                <th>Conteiner</th>
+                                <th>Reserva</th>
+                                <th>Instrução</th>
+                                <th>Fantasia</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <!-- Os dados serão adicionados aqui dinamicamente -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
-
     </div>
+
 </div>
-@Html.Partial("_talieColetorDescarga/_modais")
-@section  scripts{
+@section scripts {
     @Styles.Render("~/bundles/datatablesCSS")
     @Scripts.Render("~/bundles/datatables")
 

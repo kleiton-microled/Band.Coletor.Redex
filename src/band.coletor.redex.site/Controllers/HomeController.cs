@@ -41,125 +41,125 @@ namespace Band.Coletor.Redex.Site.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public ActionResult Login(UsuarioLoginViewModel viewModel)
-        {
-            if (!ModelState.IsValid)
-                return View(viewModel);
-
-            try
-            {
-                // Mock de usuário
-                var usuario = new
-                {
-                    Id = 1,
-                    Nome = "Kleiton",
-                    Login = viewModel.Login.Trim(),
-                    Ativo = true,
-                    PatioColetorId = 1
-                };
-
-                if (usuario.Ativo == false)
-                    throw new Exception($"O usuário {usuario.Login} está inativo");
-
-                var usuarioJson = JsonConvert.SerializeObject(new
-                {
-                    usuario.Id,
-                    usuario.Nome,
-                    usuario.Login,
-                    usuario.Ativo,
-                    usuario.PatioColetorId,
-                    LocalPatio = viewModel.LocalPatio.ToValue()
-                });
-
-                FormsAuthentication.SignOut();
-
-                Session["USUARIO"] = usuario.Id;
-                Session["AUTONUMPATIO"] = viewModel.LocalPatio.ToValue();
-
-                FormsAuthenticationTicket authTicket = new FormsAuthenticationTicket(
-                    1,
-                    usuario.Login,
-                    DateTime.Now,
-                    DateTime.Now.AddMinutes(30),
-                    viewModel.Lembrar,
-                    usuarioJson);
-
-                Response.Cookies.Add(
-                    new HttpCookie(
-                        FormsAuthentication.FormsCookieName,
-                        FormsAuthentication.Encrypt(authTicket)));
-
-                if (!string.IsNullOrEmpty(viewModel.ReturnUrl))
-                    return Redirect(Server.UrlDecode(viewModel.ReturnUrl));
-
-                return RedirectToAction("Index", "Home");
-            }
-            catch (Exception ex)
-            {
-                ViewBag.Mensagem = ex.Message;
-            }
-
-            return View(viewModel);
-        }
-
         //public ActionResult Login(UsuarioLoginViewModel viewModel)
         //{
         //    if (!ModelState.IsValid)
         //        return View(viewModel);
 
-        //    if (string.IsNullOrEmpty(viewModel.Senha))
-        //    {
-        //        ModelState.AddModelError("Senha", "A senha é obrigatória.");
-        //        return View(viewModel);
-        //    }
-
         //    try
         //    {
-        //        var usuario = _usuarioLoginRepositorio.Busca(viewModel.Login.Trim(), viewModel.Senha);
-
-        //        if (usuario != null)
+        //        // Mock de usuário
+        //        var usuario = new
         //        {
-        //            var usuarioJson = JsonConvert.SerializeObject(new
-        //            {
-        //                usuario.Id,
-        //                usuario.Nome,
-        //                usuario.Login,
-        //                usuario.Ativo,
-        //                usuario.PatioColetorId,
-        //                LocalPatio = viewModel.LocalPatio.ToValue()
-        //            });
+        //            Id = 1,
+        //            Nome = "Kleiton",
+        //            Login = viewModel.Login.Trim(),
+        //            Ativo = true,
+        //            PatioColetorId = 1
+        //        };
 
-        //            FormsAuthentication.SignOut();
+        //        if (usuario.Ativo == false)
+        //            throw new Exception($"O usuário {usuario.Login} está inativo");
 
-        //            Session["USUARIO"] = usuario.Id;
-        //            Session["AUTONUMPATIO"] = viewModel.LocalPatio.ToValue();
+        //        var usuarioJson = JsonConvert.SerializeObject(new
+        //        {
+        //            usuario.Id,
+        //            usuario.Nome,
+        //            usuario.Login,
+        //            usuario.Ativo,
+        //            usuario.PatioColetorId,
+        //            LocalPatio = viewModel.LocalPatio.ToValue()
+        //        });
 
-        //            FormsAuthenticationTicket authTicket = new FormsAuthenticationTicket(
-        //                1,
-        //                usuario.Login,
-        //                DateTime.Now,
-        //                DateTime.Now.AddMinutes(30),
-        //                viewModel.Lembrar,
-        //                usuarioJson);
+        //        FormsAuthentication.SignOut();
 
-        //            Response.Cookies.Add(
-        //               new HttpCookie(
-        //                   FormsAuthentication.FormsCookieName,
-        //                   FormsAuthentication.Encrypt(authTicket)));
+        //        Session["USUARIO"] = usuario.Id;
+        //        Session["AUTONUMPATIO"] = viewModel.LocalPatio.ToValue();
 
-        //            if (!string.IsNullOrEmpty(viewModel.ReturnUrl))
-        //                return Redirect(Server.UrlDecode(viewModel.ReturnUrl));
+        //        FormsAuthenticationTicket authTicket = new FormsAuthenticationTicket(
+        //            1,
+        //            usuario.Login,
+        //            DateTime.Now,
+        //            DateTime.Now.AddMinutes(30),
+        //            viewModel.Lembrar,
+        //            usuarioJson);
 
-        //            return RedirectToAction("Index", "Home");
-        //        }
+        //        Response.Cookies.Add(
+        //            new HttpCookie(
+        //                FormsAuthentication.FormsCookieName,
+        //                FormsAuthentication.Encrypt(authTicket)));
+
+        //        if (!string.IsNullOrEmpty(viewModel.ReturnUrl))
+        //            return Redirect(Server.UrlDecode(viewModel.ReturnUrl));
+
+        //        return RedirectToAction("Index", "Home");
         //    }
         //    catch (Exception ex)
         //    {
-        //        ModelState.AddModelError(string.Empty, ex.Message);  // Adiciona a mensagem de erro ao ModelState
+        //        ViewBag.Mensagem = ex.Message;
         //    }
 
         //    return View(viewModel);
         //}
+
+        public ActionResult Login(UsuarioLoginViewModel viewModel)
+        {
+            if (!ModelState.IsValid)
+                return View(viewModel);
+
+            if (string.IsNullOrEmpty(viewModel.Senha))
+            {
+                ModelState.AddModelError("Senha", "A senha é obrigatória.");
+                return View(viewModel);
+            }
+
+            try
+            {
+                var usuario = _usuarioLoginRepositorio.Busca(viewModel.Login.Trim(), viewModel.Senha);
+
+                if (usuario != null)
+                {
+                    var usuarioJson = JsonConvert.SerializeObject(new
+                    {
+                        usuario.Id,
+                        usuario.Nome,
+                        usuario.Login,
+                        usuario.Ativo,
+                        usuario.PatioColetorId,
+                        LocalPatio = viewModel.LocalPatio.ToValue()
+                    });
+
+                    FormsAuthentication.SignOut();
+
+                    Session["USUARIO"] = usuario.Id;
+                    Session["AUTONUMPATIO"] = viewModel.LocalPatio.ToValue();
+
+                    FormsAuthenticationTicket authTicket = new FormsAuthenticationTicket(
+                        1,
+                        usuario.Login,
+                        DateTime.Now,
+                        DateTime.Now.AddMinutes(30),
+                        viewModel.Lembrar,
+                        usuarioJson);
+
+                    Response.Cookies.Add(
+                       new HttpCookie(
+                           FormsAuthentication.FormsCookieName,
+                           FormsAuthentication.Encrypt(authTicket)));
+
+                    if (!string.IsNullOrEmpty(viewModel.ReturnUrl))
+                        return Redirect(Server.UrlDecode(viewModel.ReturnUrl));
+
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);  // Adiciona a mensagem de erro ao ModelState
+            }
+
+            return View(viewModel);
+        }
 
 
         public ActionResult Logout()

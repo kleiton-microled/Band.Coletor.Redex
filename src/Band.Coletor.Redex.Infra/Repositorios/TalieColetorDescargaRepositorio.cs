@@ -12,100 +12,147 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Runtime.Caching;
 using System.Text;
+using Band.Coletor.Redex.Infra.Repositorios.Sql;
 
 namespace Band.Coletor.Redex.Infra.Repositorios
 {
-    public class TalieColetorDescargaRepositorio: ITalieColetorDescargaRepositorio
+    public class TalieColetorDescargaRepositorio : ITalieColetorDescargaRepositorio
     {
+        //public IEnumerable<TalieDTO> GetAllDadosTalie(string talie, string registro, string tipoDescarga)
+        //{
+        //    if (talie == "")
+        //        talie = null;
+
+        //    if (registro == "")
+        //        registro = null;
+
+        //    if (tipoDescarga == "")
+        //        tipoDescarga = null;
+
+        //    try
+        //    {
+        //        using (var _db = new SqlConnection(Config.StringConexao()))
+        //        {
+        //            StringBuilder sb = new StringBuilder();
+
+        //            sb.AppendLine(" SELECT ");
+        //            sb.AppendLine(" a.autonum_reg, ");
+        //            sb.AppendLine(" isnull(c.id_conteiner, '') as id_conteiner, ");
+        //            sb.AppendLine(" b.reference, ");
+        //            sb.AppendLine(" b.instrucao, ");
+        //            sb.AppendLine(" d.fantasia, ");
+        //            sb.AppendLine(" b.autonum_parceiro, ");
+        //            sb.AppendLine(" a.AUTONUM_TALIE as Id, ");
+        //            sb.AppendLine(" a.AUTONUM_PATIO, ");
+        //            sb.AppendLine(" isnull(a.Placa, '') as Placa, ");
+        //            sb.AppendLine(" a.Inicio, ");
+        //            sb.AppendLine(" a.TERMINO, ");
+        //            sb.AppendLine(" a.FLAG_DESCARGA, ");
+        //            sb.AppendLine(" a.FLAG_ESTUFAGEM, ");
+        //            sb.AppendLine(" a.CROSSDOCKING, ");
+        //            sb.AppendLine(" a.CONFERENTE, ");
+        //            sb.AppendLine(" a.EQUIPE, ");
+        //            sb.AppendLine(" a.AUTONUM_BOO, ");
+        //            sb.AppendLine(" a.FLAG_CARREGAMENTO, ");
+        //            sb.AppendLine(" A.AUTONUM_GATE, ");
+        //            sb.AppendLine(" a.flag_fechado, ");
+        //            sb.AppendLine(" A.FLAG_COMPLETO, ");
+        //            sb.AppendLine(" a.forma_operacao ");
+        //            sb.AppendLine(" FROM ");
+        //            sb.AppendLine(" REDEX..tb_talie a ");
+        //            sb.AppendLine(" INNER JOIN  ");
+        //            sb.AppendLine(" REDEX..tb_booking b on a.autonum_boo = b.autonum_boo ");
+        //            sb.AppendLine(" left JOIN  ");
+        //            sb.AppendLine(" REDEX..tb_patio c on a.autonum_patio = c.autonum_patio ");
+        //            sb.AppendLine(" INNER JOIN  ");
+        //            sb.AppendLine(" REDEX..tb_cad_parceiros d on b.autonum_parceiro = d.autonum ");
+        //            sb.AppendLine(" WHERE  ");
+        //            sb.AppendLine("  1=1 AND a.flag_fechado = 0  ");
+
+        //            if (talie != null)
+        //            {
+        //                sb.AppendLine(" AND a.AUTONUM_TALIE = '" + talie + "' ");
+        //            }
+
+        //            if (registro != null)
+        //            {
+        //                sb.AppendLine(" AND a.AUTONUM_TALIE = '" + talie + "'  ");
+
+        //            }
+        //            if (tipoDescarga == OpcoesDescarga.DA.ToString())
+        //            {
+        //                sb.AppendLine(" AND flag_descarga= 1 ");
+        //            }
+        //            else
+        //            {
+        //                sb.AppendLine(" AND flag_descarga= 0 ");
+        //            }
+        //            if (tipoDescarga == OpcoesDescarga.CD.ToString())
+        //            {
+        //                sb.AppendLine(" AND crossdocking = 1 ");
+        //            }
+        //            else
+        //            {
+        //                sb.AppendLine(" AND crossdocking = 0 ");
+        //            }
+
+
+        //            var query = _db.Query<TalieDTO>(sb.ToString()).AsEnumerable();
+
+        //            return query;
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return null;
+        //    }
+        //}
+
         public IEnumerable<TalieDTO> GetAllDadosTalie(string talie, string registro, string tipoDescarga)
         {
-            if (talie == "")
-                talie = null;
-
-            if (registro == "")
-                registro = null;
-
-            if (tipoDescarga == "")
-                tipoDescarga = null;
-
             try
             {
                 using (var _db = new SqlConnection(Config.StringConexao()))
                 {
-                    StringBuilder sb = new StringBuilder();
+                    var parameters = new DynamicParameters();
 
-                    sb.AppendLine(" SELECT ");
-                    sb.AppendLine(" a.autonum_reg, ");
-                    sb.AppendLine(" isnull(c.id_conteiner, '') as id_conteiner, ");
-                    sb.AppendLine(" b.reference, ");
-                    sb.AppendLine(" b.instrucao, ");
-                    sb.AppendLine(" d.fantasia, ");
-                    sb.AppendLine(" b.autonum_parceiro, ");
-                    sb.AppendLine(" a.AUTONUM_TALIE as Id, ");
-                    sb.AppendLine(" a.AUTONUM_PATIO, ");
-                    sb.AppendLine(" isnull(a.Placa, '') as Placa, ");
-                    sb.AppendLine(" a.Inicio, ");
-                    sb.AppendLine(" a.TERMINO, ");
-                    sb.AppendLine(" a.FLAG_DESCARGA, ");
-                    sb.AppendLine(" a.FLAG_ESTUFAGEM, ");
-                    sb.AppendLine(" a.CROSSDOCKING, ");
-                    sb.AppendLine(" a.CONFERENTE, ");
-                    sb.AppendLine(" a.EQUIPE, ");
-                    sb.AppendLine(" a.AUTONUM_BOO, ");
-                    sb.AppendLine(" a.FLAG_CARREGAMENTO, ");
-                    sb.AppendLine(" A.AUTONUM_GATE, ");
-                    sb.AppendLine(" a.flag_fechado, ");
-                    sb.AppendLine(" A.FLAG_COMPLETO, ");
-                    sb.AppendLine(" a.forma_operacao ");
-                    sb.AppendLine(" FROM ");
-                    sb.AppendLine(" REDEX..tb_talie a ");
-                    sb.AppendLine(" INNER JOIN  ");
-                    sb.AppendLine(" REDEX..tb_booking b on a.autonum_boo = b.autonum_boo ");
-                    sb.AppendLine(" left JOIN  ");
-                    sb.AppendLine(" REDEX..tb_patio c on a.autonum_patio = c.autonum_patio ");
-                    sb.AppendLine(" INNER JOIN  ");
-                    sb.AppendLine(" REDEX..tb_cad_parceiros d on b.autonum_parceiro = d.autonum ");
-                    sb.AppendLine(" WHERE  ");
-                    sb.AppendLine("  1=1 AND a.flag_fechado = 0  ");
+                    // Adiciona todos os parâmetros
+                    parameters.Add("talie", string.IsNullOrWhiteSpace(talie) ? (object)null : talie);
+                    parameters.Add("registro", string.IsNullOrWhiteSpace(registro) ? (object)null : registro);
+                    parameters.Add("tipoDescarga", tipoDescarga);
 
-                    if (talie != null)
-                    {
-                        sb.AppendLine(" AND a.AUTONUM_TALIE = '" + talie + "' ");
-                    }
-
-                    if (registro != null)
-                    {
-                        sb.AppendLine(" AND a.AUTONUM_TALIE = '" + talie + "'  ");
-
-                    }
-                    if (tipoDescarga == OpcoesDescarga.DA.ToString())
-                    {
-                        sb.AppendLine(" AND flag_descarga= 1 ");
-                    }
-                    else
-                    {
-                        sb.AppendLine(" AND flag_descarga= 0 ");
-                    }
-                    if (tipoDescarga == OpcoesDescarga.CD.ToString())
-                    {
-                        sb.AppendLine(" AND crossdocking = 1 ");
-                    }
-                    else
-                    {
-                        sb.AppendLine(" AND crossdocking = 0 ");
-                    }
-
-
-                    var query = _db.Query<TalieDTO>(sb.ToString()).AsEnumerable();
-
-                    return query;
+                    // Executa a consulta sem montar outra cláusula WHERE
+                    var result = _db.Query<TalieDTO>(SqlQueries.GetTalieData, parameters).AsEnumerable();
+                    return result;
                 }
             }
             catch (Exception ex)
             {
-                return null;
+                throw new DataAccessException("Erro ao buscar dados de talie.", ex);
             }
         }
+
+        public (IEnumerable<TalieDTO>, int TotalRecords) GetAllDadosTalie(string talie, string registro, string tipoDescarga, int pageNumber, int pageSize)
+        {
+            var parameters = new DynamicParameters();
+
+            parameters.Add("talie", string.IsNullOrWhiteSpace(talie) ? (object)null : talie);
+            parameters.Add("registro", string.IsNullOrWhiteSpace(registro) ? (object)null : registro);
+            parameters.Add("tipoDescarga", tipoDescarga);
+            parameters.Add("offset", (pageNumber - 1) * pageSize);
+            parameters.Add("limit", pageSize);
+
+            string query = SqlQueries.GetTalieDataPaginado;
+
+            using (var _db = new SqlConnection(Config.StringConexao()))
+            {
+                int totalRecords = _db.QuerySingle<int>(SqlQueries.CountQuery, parameters);
+
+                var result = _db.Query<TalieDTO>(query, parameters).AsEnumerable();
+                return (result, totalRecords);
+            }
+        }
+
         public TalieDTO GetTalieByIdConteiner(int id, string conteiner)
         {
             try
@@ -177,7 +224,7 @@ namespace Band.Coletor.Redex.Infra.Repositorios
                 using (var _db = new SqlConnection(Config.StringConexao()))
                 {
                     StringBuilder sb = new StringBuilder();
-                    
+
                     sb.AppendLine(" SELECT ");
                     sb.AppendLine(" A.AUTONUM_TALIE AS Id, ");
                     sb.AppendLine(" A.AUTONUM_REG AS RegistroId, ");
@@ -217,8 +264,8 @@ namespace Band.Coletor.Redex.Infra.Repositorios
                     sb.AppendLine(" LEFT JOIN ");
                     sb.AppendLine(" REDEX..tb_cad_parceiros Eq on a.EQUIPE = Eq.AUTONUM ");
                     sb.AppendLine(" WHERE  ");
-                    sb.AppendLine(" A.AUTONUM_REG = " + id );
-                  //  sb.AppendLine(" A.autonum_talie = " + id);
+                    sb.AppendLine(" A.AUTONUM_REG = " + id);
+                    //  sb.AppendLine(" A.autonum_talie = " + id);
                     sb.AppendLine(" ORDER BY  ");
                     sb.AppendLine(" A.INICIO DESC, D.FANTASIA, C.ID_CONTEINER, B.REFERENCE, B.INSTRUCAO ");
 
@@ -314,7 +361,7 @@ namespace Band.Coletor.Redex.Infra.Repositorios
                     sb.AppendLine(" f.autonum_emb AS AUTONUM_EMBALAGEM, ");
                     sb.AppendLine(" a.MARCACAO + ' - ' + a.MARCA  as marcacao, ");
                     sb.AppendLine(" CONVERT(VARCHAR,a.OBSERVACAO) + ' - ' + a.obs as observacao, ");
-                    sb.AppendLine(" isnull(a.flag_numerada,0) as flag_numerada "); 
+                    sb.AppendLine(" isnull(a.flag_numerada,0) as flag_numerada ");
                     sb.AppendLine(" FROM  ");
                     sb.AppendLine(" REDEX..tb_talie g ");
                     sb.AppendLine(" INNER JOIN  REDEX..tb_talie_item a on a.autonum_talie = g.autonum_talie ");
@@ -340,7 +387,7 @@ namespace Band.Coletor.Redex.Infra.Repositorios
             {
                 return null;
             }
-        }        
+        }
         public int CadastrarTalie(Talie obj)
         {
             try
@@ -348,7 +395,7 @@ namespace Band.Coletor.Redex.Infra.Repositorios
                 using (var _db = new SqlConnection(Config.StringConexao()))
                 {
                     StringBuilder sb = new StringBuilder();
-                  
+
                     if (obj.AUTONUM_PATIO == 0)
                     {
                         sb.AppendLine(" INSERT INTO ");
@@ -385,7 +432,7 @@ namespace Band.Coletor.Redex.Infra.Repositorios
                         sb.AppendLine(" ); SELECT CAST(SCOPE_IDENTITY() AS INT)");
 
 
-                     int ret =   _db.Query<int>(sb.ToString(), new
+                        int ret = _db.Query<int>(sb.ToString(), new
                         {
                             //Inicio = Convert.ToDateTime(obj.DtInicio),
                             CrossDocking = obj.CrossDocking,
@@ -398,12 +445,12 @@ namespace Band.Coletor.Redex.Infra.Repositorios
                             RegistroId = obj.AUTONUM_REG,
                             Observacoes = obj.Observacoes,
                             FLAG_ESTUFAGEM = obj.FLAG_ESTUFAGEM,
-                         
 
-             }).FirstOrDefault();
 
-                      
-                       
+                        }).FirstOrDefault();
+
+
+
 
                         return ret;
                     }
@@ -445,7 +492,7 @@ namespace Band.Coletor.Redex.Infra.Repositorios
                         sb.AppendLine(" );SELECT CAST(SCOPE_IDENTITY() AS INT)");
 
 
-                      var ret =  _db.Query<int>(sb.ToString(), new
+                        var ret = _db.Query<int>(sb.ToString(), new
                         {
                             AUTONUM_PATIO = obj.AUTONUM_PATIO,
                             //Inicio = Convert.ToDateTime(obj.DtInicio),
@@ -462,11 +509,11 @@ namespace Band.Coletor.Redex.Infra.Repositorios
 
                         }).FirstOrDefault();
 
-                       
+
 
                         return ret;
                     }
-                    
+
                 }
             }
             catch (Exception ex)
@@ -474,7 +521,7 @@ namespace Band.Coletor.Redex.Infra.Repositorios
                 return 0;
             }
         }
-        
+
         public Talie AtualizarTalie(Talie obj)
         {
             try
@@ -594,7 +641,7 @@ namespace Band.Coletor.Redex.Infra.Repositorios
                 return null;
             }
         }
-        
+
 
 
         #region Finalizar Talie 
@@ -634,7 +681,7 @@ namespace Band.Coletor.Redex.Infra.Repositorios
                     return null;
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return null;
             }
@@ -988,7 +1035,7 @@ namespace Band.Coletor.Redex.Infra.Repositorios
                     sb.AppendLine(" @COMPRIMENTO,");
                     sb.AppendLine(" @LARGURA,");
                     sb.AppendLine(" @ALTURA,");
-                    sb.AppendLine(" replace('"+ obj.BRUTONF + "', ',', '.'),");
+                    sb.AppendLine(" replace('" + obj.BRUTONF + "', ',', '.'),");
                     sb.AppendLine(" @DT_PRIM_ENTRADA,");
                     sb.AppendLine(" @FLAG_HISTORICO,");
                     sb.AppendLine(" @AUTONUM_REGCS,");
@@ -1170,7 +1217,7 @@ namespace Band.Coletor.Redex.Infra.Repositorios
                 {
                     StringBuilder sb = new StringBuilder();
 
-                    sb.AppendLine(" UPDATE REDEX..TB_BOOKING_CARGA SET IMO = '"+ IMO + "' WHERE AUTONUM_BCG  =  " + id);
+                    sb.AppendLine(" UPDATE REDEX..TB_BOOKING_CARGA SET IMO = '" + IMO + "' WHERE AUTONUM_BCG  =  " + id);
 
                     _db.Query<TalieDTO>(sb.ToString()).FirstOrDefault();
 
@@ -1265,7 +1312,8 @@ namespace Band.Coletor.Redex.Infra.Repositorios
                     sb.AppendLine(" 0 ");
                     sb.AppendLine(" ) ");
 
-                    _db.Query<TalieDTO>(sb.ToString(), new {
+                    _db.Query<TalieDTO>(sb.ToString(), new
+                    {
 
                         GateId = obj.autonum_gate,
                         PatioCsId = obj.AUTONUM_PCS,
@@ -1802,11 +1850,11 @@ namespace Band.Coletor.Redex.Infra.Repositorios
                 {
                     StringBuilder sb = new StringBuilder();
 
-                    sb.AppendLine(" SELECT Min(Inicio) FROM REDEX.DBO.TB_TALIE WHERE AUTONUM_PATIO=" + id + " AND FLAG_DESCARGA=1 ");                    
+                    sb.AppendLine(" SELECT Min(Inicio) FROM REDEX.DBO.TB_TALIE WHERE AUTONUM_PATIO=" + id + " AND FLAG_DESCARGA=1 ");
 
                     DateTime dtInicio = _Db.Query<DateTime>(sb.ToString()).FirstOrDefault();
 
-                    string date = dtInicio.ToString("dd-MM-yyyy HH:mm:ss");                    
+                    string date = dtInicio.ToString("dd-MM-yyyy HH:mm:ss");
 
                     return date;
                 }
@@ -2057,7 +2105,7 @@ namespace Band.Coletor.Redex.Infra.Repositorios
                     sb.AppendLine(" ( ");
                     sb.AppendLine(" AUTONUM_PATIO, AUTONUM_NFI, QTDE_ESTUFADA ");
                     sb.AppendLine(" ) VALUES ( ");
-                    
+
                     sb.AppendLine(" " + id + ", ");
                     sb.AppendLine(" " + nf + ", ");
                     sb.AppendLine(" " + quantidade + " ");
@@ -2117,7 +2165,7 @@ namespace Band.Coletor.Redex.Infra.Repositorios
                     id = _Db.Query<long>(sb.ToString()).FirstOrDefault();
 
                     return id;
-                       
+
                 }
             }
             catch (Exception ex)
@@ -2166,11 +2214,11 @@ namespace Band.Coletor.Redex.Infra.Repositorios
                     sb.AppendLine(" " + conteinerId + ", ");
                     sb.AppendLine(" '" + conteiner + "', ");
                     sb.AppendLine(" '', ");
-                    sb.AppendLine(" convert(datetime, '"+ dtEstufagem + "', 103),  ");
+                    sb.AppendLine(" convert(datetime, '" + dtEstufagem + "', 103),  ");
                     sb.AppendLine(" " + autonumNF + ", ");
-                    sb.AppendLine(" " + talieCarregamento +  ", ");
-                    sb.AppendLine(" " + autonum_ro +  " ");                    
-                    sb.AppendLine("  ) ");                    
+                    sb.AppendLine(" " + talieCarregamento + ", ");
+                    sb.AppendLine(" " + autonum_ro + " ");
+                    sb.AppendLine("  ) ");
 
                     _db.Query<TalieDTO>(sb.ToString()).FirstOrDefault();
 
@@ -2236,7 +2284,7 @@ namespace Band.Coletor.Redex.Infra.Repositorios
                     StringBuilder sb = new StringBuilder();
 
                     sb.AppendLine(" select QTDE_DESCARGA from REDEX..tb_talie_item where autonum_ti= " + id);
-                 
+
 
                     qtde_descarga = _db.Query<long>(sb.ToString()).FirstOrDefault();
 
@@ -2250,7 +2298,7 @@ namespace Band.Coletor.Redex.Infra.Repositorios
         }
 
 
-       public long countQuantidadeTotalDescarga(int id)
+        public long countQuantidadeTotalDescarga(int id)
         {
             long qtde_descarga = 0;
             try
@@ -2307,9 +2355,9 @@ namespace Band.Coletor.Redex.Infra.Repositorios
             {
                 using (var _db = new SqlConnection(Config.StringConexao()))
                 {
-                    StringBuilder sb = new StringBuilder();                    
+                    StringBuilder sb = new StringBuilder();
 
-                    sb.AppendLine(" UPDATE       ");                 
+                    sb.AppendLine(" UPDATE       ");
                     sb.AppendLine(" REDEX..TB_TALIE_ITEM    ");
                     sb.AppendLine(" SET ");
                     sb.AppendLine(" QTDE_DESCARGA =  @QTDE_DESCARGA, ");
@@ -2339,18 +2387,18 @@ namespace Band.Coletor.Redex.Infra.Repositorios
                     sb.AppendLine(" AUTONUM_TI = @AUTONUM_TI ");
 
 
-                    _db.Query<TalieItemDTO>(sb.ToString(), new 
+                    _db.Query<TalieItemDTO>(sb.ToString(), new
                     {
-                        AUTONUM_TI = obj.AUTONUM_TI, 
-                        QTDE_DESCARGA = obj.Quantidade, 
-                        LARGURA  = obj.LARGURA, 
-                        ALTURA = obj.ALTURA, 
-                        COMPRIMENTO = obj.COMPRIMENTO, 
+                        AUTONUM_TI = obj.AUTONUM_TI,
+                        QTDE_DESCARGA = obj.Quantidade,
+                        LARGURA = obj.LARGURA,
+                        ALTURA = obj.ALTURA,
+                        COMPRIMENTO = obj.COMPRIMENTO,
                         PESO = obj.Peso,
                         YARD = obj.YARD,
                         Carimbo = obj.Carimbo,
                         FLAG_FRAGIL = obj.FLAG_FRAGIL,
-                        FLAG_AVARIA  = obj.FLAG_AVARIA,
+                        FLAG_AVARIA = obj.FLAG_AVARIA,
                         REMONTE = obj.REMONTE,
                         IMO = obj.IMO,
                         IMO2 = obj.IMO2,
@@ -2360,9 +2408,9 @@ namespace Band.Coletor.Redex.Infra.Repositorios
                         UNO2 = obj.UNO2,
                         UNO3 = obj.UNO3,
                         UNO4 = obj.UNO4,
-                        MARCACAO = obj.MARCACAO, 
+                        MARCACAO = obj.MARCACAO,
                         OBSERVACAO = obj.OBSERVACAO,
-                        FLAG_NUMERADA = obj.FLAG_NUMERADA, 
+                        FLAG_NUMERADA = obj.FLAG_NUMERADA,
                         CARGA_NUMERADA = obj.FLAG_NUMERADA,
                         AUTONUM_EMB = obj.AUTONUM_EMB,
 
@@ -2376,8 +2424,8 @@ namespace Band.Coletor.Redex.Infra.Repositorios
                 return null;
             }
         }
-        
-        #endregion 
+
+        #endregion
         #region descarga automatica 
         public IEnumerable<DescargaAutomaticaDTO> GetDadosDescargaAutomatica(int id)
         {
@@ -2418,7 +2466,7 @@ namespace Band.Coletor.Redex.Infra.Repositorios
 
                     var query = _db.Query<DescargaAutomaticaDTO>(sb.ToString()).AsEnumerable();
 
-                    return query; 
+                    return query;
                 }
 
             }
@@ -2513,7 +2561,7 @@ namespace Band.Coletor.Redex.Infra.Repositorios
                 return peso;
             }
         }
-        
+
         public DescargaAutomaticaDTO InserirTalieItemDescargaAutomatica(DescargaAutomaticaDTO obj)
         {
             try
@@ -2544,7 +2592,7 @@ namespace Band.Coletor.Redex.Infra.Repositorios
                     sb.AppendLine(" LARGURA, ");
                     sb.AppendLine(" ALTURA, ");
                     sb.AppendLine(" PESO, ");
-                    sb.AppendLine(" QTDE_ESTUFAGEM, "); 
+                    sb.AppendLine(" QTDE_ESTUFAGEM, ");
                     sb.AppendLine(" MARCA, ");
                     sb.AppendLine(" REMONTE, ");
                     sb.AppendLine(" FUMIGACAO, ");
@@ -2569,7 +2617,7 @@ namespace Band.Coletor.Redex.Infra.Repositorios
                     sb.AppendLine(" @AUTONUM_TALIE, ");
                     sb.AppendLine(" @AUTONUM_REGCS, ");
                     sb.AppendLine(" @QTDE_DESCARGA, ");
-                    sb.AppendLine(" 'TOTAL', ");                    
+                    sb.AppendLine(" 'TOTAL', ");
                     sb.AppendLine(" 0, ");
                     sb.AppendLine(" '', ");
                     sb.AppendLine(" 0, ");
@@ -2599,23 +2647,23 @@ namespace Band.Coletor.Redex.Infra.Repositorios
                     sb.AppendLine(" @AUTONUM_PRO ");
                     sb.AppendLine(" ) ");
 
-                    _db.Query<DescargaAutomaticaDTO>(sb.ToString(), new 
+                    _db.Query<DescargaAutomaticaDTO>(sb.ToString(), new
                     {
-                        AUTONUM_TALIE = obj.AUTONUM_TALIE, 
+                        AUTONUM_TALIE = obj.AUTONUM_TALIE,
                         AUTONUM_REGCS = obj.AUTONUM_REGCS,
-                        QTDE_DESCARGA = obj.QUANTIDADE, 
-                        AUTONUM_NF = obj.AUTONUM_NF, 
-                        NF = obj.NF, 
+                        QTDE_DESCARGA = obj.QUANTIDADE,
+                        AUTONUM_NF = obj.AUTONUM_NF,
+                        NF = obj.NF,
                         IMO = obj.imo,
                         UNO = obj.uno,
-                        IMO2 = obj.imo2, 
-                        UNO2 = obj.uno2, 
-                        IMO3 = obj.imo3, 
-                        UNO3 = obj.uno3, 
-                        IMO4 = obj.imo4, 
+                        IMO2 = obj.imo2,
+                        UNO2 = obj.uno2,
+                        IMO3 = obj.imo3,
+                        UNO3 = obj.uno3,
+                        IMO4 = obj.imo4,
                         UNO4 = obj.uno4,
                         AUTONUM_EMB = obj.AUTONUM_EMB,
-                        AUTONUM_PRO = obj.AUTONUM_PRO, 
+                        AUTONUM_PRO = obj.AUTONUM_PRO,
                         //PESO = obj.Peso
 
                     }).FirstOrDefault();
@@ -2638,7 +2686,7 @@ namespace Band.Coletor.Redex.Infra.Repositorios
                     StringBuilder sb = new StringBuilder();
 
                     sb.AppendLine("DELETE FROM REDEX..TB_TALIE_ITEM WHERE AUTONUM_TALIE =" + id);
-                    
+
                     _db.Query<Talie>(sb.ToString()).FirstOrDefault();
                     sb.Clear();
 
@@ -2718,7 +2766,7 @@ namespace Band.Coletor.Redex.Infra.Repositorios
                     sb.AppendLine(" INNER JOIN ");
                     sb.AppendLine(" REDEX..TB_NOTAS_FISCAIS NF ON TI.AUTONUM_NF = NF.AUTONUM_NF ");
                     sb.AppendLine(" WHERE ");
-                    sb.AppendLine(" TI.AUTONUM_TALIE = "+ id);
+                    sb.AppendLine(" TI.AUTONUM_TALIE = " + id);
                     sb.AppendLine(" AND ");
                     sb.AppendLine(" ISNULL(TI.AUTONUM_NF, 0) <> 0 ");
                     sb.AppendLine(" AND ");
@@ -2735,7 +2783,7 @@ namespace Band.Coletor.Redex.Infra.Repositorios
             {
                 return null;
             }
-        }        
+        }
         public int countEtiquetas(int id)
         {
             try
@@ -2831,8 +2879,48 @@ namespace Band.Coletor.Redex.Infra.Repositorios
             }
             catch (Exception ex)
             {
-                return null;   
+                return null;
             }
         }
+
+        #region UTILS
+        private (List<string> conditions, DynamicParameters parameters) BuildFilter(string talie, string registro, string tipoDescarga)
+        {
+            var conditions = new List<string> { "a.flag_fechado = 0" }; // Condição padrão
+            var parameters = new DynamicParameters();
+
+            // Adicione `talie` ao `DynamicParameters` sempre
+            conditions.Add("(@talie IS NULL OR a.AUTONUM_TALIE = @talie)");
+            parameters.Add("talie", string.IsNullOrWhiteSpace(talie) ? (object)null : talie);
+
+            // Adicione `registro` ao `DynamicParameters` sempre
+            conditions.Add("(@registro IS NULL OR a.AUTONUM_TALIE = @registro)");
+            parameters.Add("registro", string.IsNullOrWhiteSpace(registro) ? (object)null : registro);
+
+            // Adicione `tipoDescarga` ao `DynamicParameters` sempre
+            parameters.Add("tipoDescarga", tipoDescarga);
+
+            if (tipoDescarga == OpcoesDescarga.DA.ToString())
+            {
+                conditions.Add("flag_descarga = 1");
+            }
+            else if (tipoDescarga == OpcoesDescarga.CD.ToString())
+            {
+                conditions.Add("crossdocking = 1");
+            }
+            else
+            {
+                conditions.Add("flag_descarga = 0");
+                conditions.Add("crossdocking = 0");
+            }
+
+            return (conditions, parameters);
+        }
+
+
+
+
+        #endregion UTILS
+
     }
 }

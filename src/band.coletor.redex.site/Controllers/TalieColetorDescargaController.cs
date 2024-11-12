@@ -39,13 +39,13 @@ namespace Band.Coletor.Redex.Site.Controllers
                 {
                     ViewBag.DD = 1;
                     ViewBag.CD = 0;
-                    ViewBag.TipoDescarga = Band.Coletor.Redex.Business.Enums.OpcoesDescarga.DA;
+                    ViewBag.TipoDescarga = Business.Enums.OpcoesDescarga.DA;
                 }
                 else
                 {
                     ViewBag.DD = 0;
                     ViewBag.CD = 1;
-                    ViewBag.TipoDescarga = Band.Coletor.Redex.Business.Enums.OpcoesDescarga.CD;
+                    ViewBag.TipoDescarga = Business.Enums.OpcoesDescarga.CD;
                 }
                 ViewBag.Equipes = _talieRepositorio.ObterEquipes();
                 ViewBag.Conferente = _talieRepositorio.ObterConferentes(User.ObterId());
@@ -53,30 +53,40 @@ namespace Band.Coletor.Redex.Site.Controllers
                 return View();
             }
         }
-        public JsonResult GetAllDadosTalie(string talie, string registro, string tipoDescarga)
+        public JsonResult GetAllDadosTalie(string talie, string registro, string tipoDescarga, int pageNumber = 1, int pageSize = 25, string search = "")
         {
+            var responseJson = new ResponseJson();
+
             try
             {
-                var query = _talieColetorDescargaRepositorio.GetAllDadosTalie(talie, registro, tipoDescarga);
+                var (data, totalRecords) = _talieColetorDescargaRepositorio.GetAllDadosTalie(talie, registro, tipoDescarga, pageNumber, pageSize);
 
-                retornoJson.Mensagem = "";
-                retornoJson.objetoRetorno = query;
-                retornoJson.possuiDados = true;
-                retornoJson.statusRetorno = "200";
+                var dataResult = new
+                {
+                    draw = pageNumber, // Requerido pelo DataTables
+                    recordsTotal = totalRecords, // Total de registros no banco, independente da pesquisa
+                    recordsFiltered = data.Count(),
+                    pageSize = pageSize,// Total de registros após aplicação dos filtros
+                    dados = data
+                };
 
-                return Json(retornoJson, JsonRequestBehavior.AllowGet);
-
+                return Json(dataResult, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
-                retornoJson.Mensagem = "Os dados de talie não foram carregados";
-                retornoJson.objetoRetorno = null;
-                retornoJson.possuiDados = false;
-                retornoJson.statusRetorno = "500";
+                // Log do erro
+                Console.WriteLine($"Erro ao carregar dados de talie: {ex.Message}");
 
-                return Json(retornoJson, JsonRequestBehavior.AllowGet);
+                responseJson.Mensagem = "Erro ao carregar dados de talie.";
+                responseJson.objetoRetorno = null;
+                responseJson.possuiDados = false;
+                responseJson.statusRetorno = "500";
+
+                return Json(responseJson, JsonRequestBehavior.AllowGet);
             }
         }
+
+
         public JsonResult GetAllDadosTalieItens(int id)
         {
             try
@@ -85,7 +95,7 @@ namespace Band.Coletor.Redex.Site.Controllers
                 var nf = "";
                 if (query.Count() > 0)
                 {
-                  foreach(var i in query)
+                    foreach (var i in query)
                     {
                         if (i.num_nf != nf)
                         {
@@ -96,7 +106,7 @@ namespace Band.Coletor.Redex.Site.Controllers
                         {
                             i.Peso = 0;
                         }
-                  }
+                    }
 
                     retornoJson.Mensagem = "";
                     retornoJson.objetoRetorno = query;
@@ -132,19 +142,19 @@ namespace Band.Coletor.Redex.Site.Controllers
                 var query = _talieColetorDescargaRepositorio.GetTalieByIdConteiner(id, conteiner);
 
                 if (query != null)
-                {                    
+                {
                     retornoJson.Mensagem = "";
                     retornoJson.objetoRetorno = query;
-                    retornoJson.possuiDados = true;  
+                    retornoJson.possuiDados = true;
                 }
-                else 
+                else
                 {
                     query = _talieColetorDescargaRepositorio.GetTalieByRegistro(id);
 
                     if (query != null)
                     {
-                       
-                        if(query.AUTONUM_TALIE == 0)
+
+                        if (query.AUTONUM_TALIE == 0)
                         {
                             query.AUTONUM_TALIE = id;
                         }
@@ -179,7 +189,7 @@ namespace Band.Coletor.Redex.Site.Controllers
         {
             try
             {
-                    var query = _talieColetorDescargaRepositorio.GetTalieById(id);
+                var query = _talieColetorDescargaRepositorio.GetTalieById(id);
 
                 if (query != null)
                 {
@@ -227,14 +237,14 @@ namespace Band.Coletor.Redex.Site.Controllers
             {
                 var id = obj.AUTONUM_TALIE;
                 var idReg = obj.AUTONUM_REG;
-                var boo = obj.BookingId;     
+                var boo = obj.BookingId;
                 var retorno = 0;
                 DescargaAutomaticaDTO dsc = new DescargaAutomaticaDTO();
 
                 string conteiner = obj.ConteinerId;
 
                 int IDconteiner = _talieColetorDescargaRepositorio.getValidaConteiner(conteiner);
-                
+
                 obj.AUTONUM_PATIO = IDconteiner;
 
                 if (conteiner != null)
@@ -252,7 +262,7 @@ namespace Band.Coletor.Redex.Site.Controllers
 
                 if (id == 0)
                 {
-                retorno = _talieColetorDescargaRepositorio.CadastrarTalie(obj);
+                    retorno = _talieColetorDescargaRepositorio.CadastrarTalie(obj);
                 }
                 else
                 {
@@ -261,7 +271,7 @@ namespace Band.Coletor.Redex.Site.Controllers
 
                 if (id == 0)
                 {
-                  //  id = Convert.ToInt32(_talieColetorDescargaRepositorio.GetTalieCarregamentoId());
+                    //  id = Convert.ToInt32(_talieColetorDescargaRepositorio.GetTalieCarregamentoId());
 
                     var query = _talieColetorDescargaRepositorio.GetDadosDescargaAutomatica(idReg);
 
@@ -273,7 +283,7 @@ namespace Band.Coletor.Redex.Site.Controllers
 
                         double pesoBruto = _talieColetorDescargaRepositorio.GetPesoBruto(idNF);
 
-                      
+
 
                         dsc.AUTONUM_TALIE = retorno;
 
@@ -298,14 +308,16 @@ namespace Band.Coletor.Redex.Site.Controllers
 
                         _talieColetorDescargaRepositorio.InserirTalieItemDescargaAutomatica(dsc);
                     }
-                }               
+                }
 
-                if (retorno > 0) {
+                if (retorno > 0)
+                {
                     retornoJson.Mensagem = "Talie gravada com sucesso";
                     retornoJson.objetoRetorno = dsc;
                     retornoJson.possuiDados = true;
                     retornoJson.statusRetorno = "200";
-                } else
+                }
+                else
                 {
                     retornoJson.Mensagem = "Talie atualizada com sucesso";
                     retornoJson.objetoRetorno = "";
@@ -313,7 +325,7 @@ namespace Band.Coletor.Redex.Site.Controllers
                     retornoJson.statusRetorno = "200";
                 }
 
-       
+
 
                 return Json(retornoJson, JsonRequestBehavior.AllowGet);
             }
@@ -328,15 +340,15 @@ namespace Band.Coletor.Redex.Site.Controllers
             }
         }
         public JsonResult GetFinalizarTalie(
-            int id, 
-            string inicio, 
-            string tipoDescarga, 
-            int estufagemCompleta, 
-            string conteiner, 
+            int id,
+            string inicio,
+            string tipoDescarga,
+            int estufagemCompleta,
+            string conteiner,
             int atualizarAlertaEtiqueta1,
-            int atualizarAlertaEtiqueta2, 
-            int etiquetas, 
-            int pendencias, 
+            int atualizarAlertaEtiqueta2,
+            int etiquetas,
+            int pendencias,
             int totalItens,
             string idContainer
             )
@@ -347,7 +359,7 @@ namespace Band.Coletor.Redex.Site.Controllers
                 string tipoDescargaDa = Band.Coletor.Redex.Business.Enums.OpcoesDescarga.DA.ToString();
                 int boo = 0;
 
-                if (countTalies != 0) 
+                if (countTalies != 0)
                 {
                     if (tipoDescarga == tipoDescargaDa)
                     {
@@ -380,7 +392,7 @@ namespace Band.Coletor.Redex.Site.Controllers
                         }
                     }
                 }
-                
+
                 var query = _talieColetorDescargaRepositorio.GetDadosFinalizarTalie(id);
 
                 if (query != null)
@@ -390,8 +402,8 @@ namespace Band.Coletor.Redex.Site.Controllers
                     int gate = _talieColetorDescargaRepositorio.getAutonumGate(id);
 
                     var bruto = _talieColetorDescargaRepositorio.getBrutoByTbNewGate(gate);
-                    
-                    
+
+
                     if (dataRegistro == null)
                     {
                         retornoJson.Mensagem = "Data de termino invalida ou estava em branco quando o talie foi carregado. Grave a data de termino e carregue o talie novamente";
@@ -453,7 +465,7 @@ namespace Band.Coletor.Redex.Site.Controllers
                     talie.FLAG_HISTORICO = item.FLAG_HISTORICO;
                     talie.AUTONUM_REGCS = item.RegistroCsId;
                     talie.AUTONUM_NF = item.NotaFiscalId;
-                    talie.AUTONUM_PATIOS = item.PatioId;                    
+                    talie.AUTONUM_PATIOS = item.PatioId;
                     talie.AUTONUM_TI = item.TalieItemId;
                     talie.PATIO = item.PatioId;
                     talie.CODPRODUTO = item.CodigoProduto;
@@ -495,120 +507,120 @@ namespace Band.Coletor.Redex.Site.Controllers
 
                 }
 
-                var totalItensPatio = _talieColetorDescargaRepositorio.countItensPatio(id);                    
+                var totalItensPatio = _talieColetorDescargaRepositorio.countItensPatio(id);
 
-                    if (totalItensPatio == 0)
+                if (totalItensPatio == 0)
+                {
+                    retornoJson.Mensagem = "Falha no processo de fechamento, carga não transferida para o estoque, contate o TI assim que possível";
+                    retornoJson.possuiDados = false;
+                    retornoJson.statusRetorno = "500";
+                    retornoJson.objetoRetorno = null;
+
+                    return Json(retornoJson, JsonRequestBehavior.AllowGet);
+                }
+
+                _talieColetorDescargaRepositorio.UpdateFlagFechadoByTalieID(id);
+
+                int QR = _talieColetorDescargaRepositorio.GetCargaEntrada(boo);
+                int QE = _talieColetorDescargaRepositorio.GetQuantidadeEntrada(boo);
+
+                if ((QR == QE) && QR > 0)
+                {
+                    _talieColetorDescargaRepositorio.UpdateFlagFechadoByBoo(boo);
+                }
+                _talieColetorDescargaRepositorio.UpdateFlagFechadoByReserva(boo);
+
+                string enumTipoDescarga = Band.Coletor.Redex.Business.Enums.OpcoesDescarga.CD.ToString();
+
+                //Falta testar esses codigos
+
+                if (enumTipoDescarga == tipoDescarga)
+                {
+                    int containerId = _talieColetorDescargaRepositorio.GetContainerId(id);
+
+                    _talieColetorDescargaRepositorio.UpdatePatioEF(containerId);
+
+                    long reservaCC = _talieColetorDescargaRepositorio.GetReservaCC(containerId);
+
+
+
+                    long romaneioId = _talieColetorDescargaRepositorio.GetRomaneioId(containerId);
+                    long idCurrentRomaneio = 0;
+
+                    int usuarioID = Convert.ToInt32(Session["USUARIO"]);
+
+                    if (romaneioId == 0)
                     {
-                        retornoJson.Mensagem = "Falha no processo de fechamento, carga não transferida para o estoque, contate o TI assim que possível";
-                        retornoJson.possuiDados = false;
-                        retornoJson.statusRetorno = "500";
-                        retornoJson.objetoRetorno = null;
+                        _talieColetorDescargaRepositorio.insertDataSEQRomaneioID();
+                        idCurrentRomaneio = _talieColetorDescargaRepositorio.GetCurrentIdRomaneio();
+                        _talieColetorDescargaRepositorio.InsertRomaneio(usuarioID, containerId, reservaCC, idCurrentRomaneio);
+                    }
+                    var patiosCS = _talieColetorDescargaRepositorio.GetDadosPatioCS(id);
 
-                        return Json(retornoJson, JsonRequestBehavior.AllowGet);
+
+
+                    foreach (var patio in patiosCS)
+                    {
+                        _talieColetorDescargaRepositorio.InsertRomaneioCS(patio.AUTONUM_PCS, idCurrentRomaneio, patio.QTDE_ENTRADA);
                     }
 
-                    _talieColetorDescargaRepositorio.UpdateFlagFechadoByTalieID(id);
 
-                    int QR = _talieColetorDescargaRepositorio.GetCargaEntrada(boo);
-                    int QE = _talieColetorDescargaRepositorio.GetQuantidadeEntrada(boo);
 
-                    if ((QR == QE) && QR > 0)
+                    string dtInicio = _talieColetorDescargaRepositorio.GetDataInicioTalie(containerId);
+                    string dtFim = _talieColetorDescargaRepositorio.GetDataTerminoTalie(containerId);
+                    int equipeID = _talieColetorDescargaRepositorio.GetEquipeTalie(containerId);
+                    int conferenteID = _talieColetorDescargaRepositorio.GetConferenteTalie(containerId);
+                    string modoID = _talieColetorDescargaRepositorio.GetFormaOperacaoTalie(containerId);
+                    int countTalieByFlagCarregamento = _talieColetorDescargaRepositorio.countFlagCarregamentoTalie(containerId);
+                    long TalieCarregamento = 0;
+
+                    if (countTalieByFlagCarregamento == 0)
                     {
-                        _talieColetorDescargaRepositorio.UpdateFlagFechadoByBoo(boo);
+                        _talieColetorDescargaRepositorio.InserirTalieFechamento(containerId, dtInicio, dtFim, reservaCC, modoID, conferenteID, equipeID, idCurrentRomaneio);
+
+                        TalieCarregamento = _talieColetorDescargaRepositorio.GetTalieCarregamentoId();
+
+                        _talieColetorDescargaRepositorio.UpdateRomaneioIdTalie(TalieCarregamento, idCurrentRomaneio);
                     }
-                    _talieColetorDescargaRepositorio.UpdateFlagFechadoByReserva(boo);
-
-                    string enumTipoDescarga = Band.Coletor.Redex.Business.Enums.OpcoesDescarga.CD.ToString();
-                    
-                    //Falta testar esses codigos
-
-                    if (enumTipoDescarga == tipoDescarga)
+                    else
                     {
-                        int containerId = _talieColetorDescargaRepositorio.GetContainerId(id);
-
-                        _talieColetorDescargaRepositorio.UpdatePatioEF(containerId);
-
-                        long reservaCC = _talieColetorDescargaRepositorio.GetReservaCC(containerId);
-
-                        
-
-                        long romaneioId = _talieColetorDescargaRepositorio.GetRomaneioId(containerId);
-                         long idCurrentRomaneio = 0;
-
-                        int usuarioID = Convert.ToInt32(Session["USUARIO"]);
-
-                        if (romaneioId == 0)
-                        {
-                            _talieColetorDescargaRepositorio.insertDataSEQRomaneioID();
-                            idCurrentRomaneio = _talieColetorDescargaRepositorio.GetCurrentIdRomaneio();
-                            _talieColetorDescargaRepositorio.InsertRomaneio(usuarioID, containerId, reservaCC, idCurrentRomaneio);
-                        }
-                        var patiosCS = _talieColetorDescargaRepositorio.GetDadosPatioCS(id);
-
-
-
-                        foreach (var patio in patiosCS)
-                        {
-                            _talieColetorDescargaRepositorio.InsertRomaneioCS(patio.AUTONUM_PCS, idCurrentRomaneio, patio.QTDE_ENTRADA);
-                        }
-
-
-
-                        string dtInicio = _talieColetorDescargaRepositorio.GetDataInicioTalie(containerId);
-                        string dtFim = _talieColetorDescargaRepositorio.GetDataTerminoTalie(containerId);
-                        int equipeID = _talieColetorDescargaRepositorio.GetEquipeTalie(containerId);
-                        int conferenteID = _talieColetorDescargaRepositorio.GetConferenteTalie(containerId);
-                        string modoID = _talieColetorDescargaRepositorio.GetFormaOperacaoTalie(containerId);
-                        int countTalieByFlagCarregamento = _talieColetorDescargaRepositorio.countFlagCarregamentoTalie(containerId);
-                        long TalieCarregamento = 0 ;
-
-                        if (countTalieByFlagCarregamento == 0)
-                        {
-                            _talieColetorDescargaRepositorio.InserirTalieFechamento(containerId, dtInicio, dtFim, reservaCC, modoID, conferenteID, equipeID, idCurrentRomaneio);
-
-                            TalieCarregamento = _talieColetorDescargaRepositorio.GetTalieCarregamentoId();
-
-                            _talieColetorDescargaRepositorio.UpdateRomaneioIdTalie(TalieCarregamento, idCurrentRomaneio);
-                        }
-                        else
-                        {
-                            _talieColetorDescargaRepositorio.UpdateTalieByInicioTermino(containerId, dtInicio, dtFim);
-                        }
-
-                        foreach (var patioSaidaCarga in patiosCS)
-                        {
-                            _talieColetorDescargaRepositorio.InsertAMRNFSaida(containerId, patioSaidaCarga.AUTONUM_NF, patioSaidaCarga.QTDE_ENTRADA);
-
-                            long idCs = _talieColetorDescargaRepositorio.GetSaidaCargaId();
-
-                            _talieColetorDescargaRepositorio.InsertSaidaCarga(
-                                idCs,
-                                patioSaidaCarga.AUTONUM_PCS,
-                                patioSaidaCarga.QTDE_ENTRADA,
-                                patioSaidaCarga.AUTONUM_EMB,
-                                patioSaidaCarga.BRUTO,
-                                patioSaidaCarga.ALTURA,
-                                patioSaidaCarga.COMPRIMENTO,
-                                patioSaidaCarga.LARGURA,
-                                patioSaidaCarga.VOLUME_DECLARADO,
-                                containerId,
-                                idContainer,
-                                dtInicio,
-                                patioSaidaCarga.AUTONUM_NF,
-                                Convert.ToInt32(TalieCarregamento),
-                                Convert.ToInt32(idCurrentRomaneio)
-                                );
-
-                            long QS = _talieColetorDescargaRepositorio.GetSomaQuantidadeSaida(patioSaidaCarga.AUTONUM_PCS);
-
-                            if (QS >= patioSaidaCarga.QTDE_ENTRADA)
-                            {
-                                _talieColetorDescargaRepositorio.UpdatePatioHistorico(patioSaidaCarga.AUTONUM_PCS);
-                            }
-                        }
+                        _talieColetorDescargaRepositorio.UpdateTalieByInicioTermino(containerId, dtInicio, dtFim);
                     }
 
-                    //Falta testar esses codigos    
+                    foreach (var patioSaidaCarga in patiosCS)
+                    {
+                        _talieColetorDescargaRepositorio.InsertAMRNFSaida(containerId, patioSaidaCarga.AUTONUM_NF, patioSaidaCarga.QTDE_ENTRADA);
+
+                        long idCs = _talieColetorDescargaRepositorio.GetSaidaCargaId();
+
+                        _talieColetorDescargaRepositorio.InsertSaidaCarga(
+                            idCs,
+                            patioSaidaCarga.AUTONUM_PCS,
+                            patioSaidaCarga.QTDE_ENTRADA,
+                            patioSaidaCarga.AUTONUM_EMB,
+                            patioSaidaCarga.BRUTO,
+                            patioSaidaCarga.ALTURA,
+                            patioSaidaCarga.COMPRIMENTO,
+                            patioSaidaCarga.LARGURA,
+                            patioSaidaCarga.VOLUME_DECLARADO,
+                            containerId,
+                            idContainer,
+                            dtInicio,
+                            patioSaidaCarga.AUTONUM_NF,
+                            Convert.ToInt32(TalieCarregamento),
+                            Convert.ToInt32(idCurrentRomaneio)
+                            );
+
+                        long QS = _talieColetorDescargaRepositorio.GetSomaQuantidadeSaida(patioSaidaCarga.AUTONUM_PCS);
+
+                        if (QS >= patioSaidaCarga.QTDE_ENTRADA)
+                        {
+                            _talieColetorDescargaRepositorio.UpdatePatioHistorico(patioSaidaCarga.AUTONUM_PCS);
+                        }
+                    }
+                }
+
+                //Falta testar esses codigos    
 
                 retornoJson.Mensagem = "Carga Transferida para o estoque";
                 retornoJson.possuiDados = true;
@@ -658,7 +670,7 @@ namespace Band.Coletor.Redex.Site.Controllers
                     qtdeNf = _talieColetorDescargaRepositorio.countQuantidadeDescarga(talieItem);
                     qtde = _talieColetorDescargaRepositorio.countQuantidadeTotalDescarga(nfID);
                     qtde = qtde + quantidade;
-                   
+
 
                     if (quantidade > qtdeNf)
                     {
@@ -670,12 +682,12 @@ namespace Band.Coletor.Redex.Site.Controllers
                         return Json(retornoJson, JsonRequestBehavior.AllowGet);
                     }
 
-                   
+
                     _talieColetorDescargaRepositorio.UpdateTalieItem(obj);
 
                     if (quantidade < qtdeNf)
                     {
-                        dif =  Convert.ToInt64(qtdeNf) - Convert.ToInt64(quantidade) ;
+                        dif = Convert.ToInt64(qtdeNf) - Convert.ToInt64(quantidade);
 
                         _talieColetorDescargaRepositorio.InsertTalieItem(dif, talieItem);
 
@@ -827,7 +839,7 @@ namespace Band.Coletor.Redex.Site.Controllers
         public JsonResult GetValidarFecharTalie(int talieId, string tipoDescarga, string conteinerId)
         {
             try
-             {
+            {
                 int countTalie = _talieColetorDescargaRepositorio.GetCountTalie(talieId);
 
                 if (talieId == 0)
@@ -874,52 +886,52 @@ namespace Band.Coletor.Redex.Site.Controllers
                         return Json(retornoJson, JsonRequestBehavior.AllowGet);
                     }
                 }
-                    string wNFs = "";
+                string wNFs = "";
 
-                    var nfLoop = _talieColetorDescargaRepositorio.GetNFByTalieId(talieId);
+                var nfLoop = _talieColetorDescargaRepositorio.GetNFByTalieId(talieId);
 
-                    foreach (var item in nfLoop)
-                    {
-                        if (wNFs != "")
-                        {
-                            wNFs = wNFs + ",";
-                        }
-                    }
-
+                foreach (var item in nfLoop)
+                {
                     if (wNFs != "")
                     {
-
-                        retornoJson.Mensagem = "A(s) NF(s) abaixo estão sem o vinculo do registro de entrada e isso gera impacto no processo de automatização da DUE <br/>  '" + wNFs + "' ";
-                        retornoJson.objetoRetorno = "";
-                        retornoJson.possuiDados = true;
-                        retornoJson.statusRetorno = "500";
-
-                        return Json(retornoJson, JsonRequestBehavior.AllowGet);
+                        wNFs = wNFs + ",";
                     }
+                }
 
-                    int totalItens = 0;
-                    int pendencias = 0;
-                    int etiquetas = 0;
+                if (wNFs != "")
+                {
 
-                    totalItens = _talieColetorDescargaRepositorio.GetCountTalie(talieId);
-
-                    if (totalItens != 0)
-                    {
-                        etiquetas = _talieColetorDescargaRepositorio.countEtiquetas(talieId);
-                        pendencias = _talieColetorDescargaRepositorio.countPendencias(talieId);
-                    }
-
-                    retornoJson.Mensagem = "";
-                    retornoJson.objetoRetorno = new
-                    {
-
-                        totalItens = totalItens,
-                        etiquetas = etiquetas,
-                        pendencias = pendencias
-                    };
+                    retornoJson.Mensagem = "A(s) NF(s) abaixo estão sem o vinculo do registro de entrada e isso gera impacto no processo de automatização da DUE <br/>  '" + wNFs + "' ";
+                    retornoJson.objetoRetorno = "";
                     retornoJson.possuiDados = true;
-                    retornoJson.statusRetorno = "200";                    
-                
+                    retornoJson.statusRetorno = "500";
+
+                    return Json(retornoJson, JsonRequestBehavior.AllowGet);
+                }
+
+                int totalItens = 0;
+                int pendencias = 0;
+                int etiquetas = 0;
+
+                totalItens = _talieColetorDescargaRepositorio.GetCountTalie(talieId);
+
+                if (totalItens != 0)
+                {
+                    etiquetas = _talieColetorDescargaRepositorio.countEtiquetas(talieId);
+                    pendencias = _talieColetorDescargaRepositorio.countPendencias(talieId);
+                }
+
+                retornoJson.Mensagem = "";
+                retornoJson.objetoRetorno = new
+                {
+
+                    totalItens = totalItens,
+                    etiquetas = etiquetas,
+                    pendencias = pendencias
+                };
+                retornoJson.possuiDados = true;
+                retornoJson.statusRetorno = "200";
+
                 return Json(retornoJson, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
