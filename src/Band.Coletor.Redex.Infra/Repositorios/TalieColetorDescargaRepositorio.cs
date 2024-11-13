@@ -159,64 +159,19 @@ namespace Band.Coletor.Redex.Infra.Repositorios
             {
                 using (var _db = new SqlConnection(Config.StringConexao()))
                 {
-                    StringBuilder sb = new StringBuilder();
-
-                    sb.AppendLine(" SELECT ");
-                    sb.AppendLine(" A.AUTONUM_TALIE AS Id, ");
-                    sb.AppendLine(" A.AUTONUM_REG AS RegistroId, ");
-                    sb.AppendLine(" C.ID_CONTEINER AS ConteinerId, ");
-                    sb.AppendLine(" B.REFERENCE AS Reference, ");
-                    sb.AppendLine(" B.INSTRUCAO AS instrucao, ");
-                    sb.AppendLine(" D.FANTASIA as fantasia, ");
-                    sb.AppendLine(" B.AUTONUM_EXPORTADOR AS ExportadorId, ");
-                    sb.AppendLine(" A.AUTONUM_PATIO AS PatioId, ");
-                    sb.AppendLine(" A.PLACA as Placa, ");
-                    sb.AppendLine(" CONVERT(VarChar(10), a.inicio, 103) + ' ' + CONVERT(VarChar(8), a.inicio, 108) as Inicio, ");
-                    sb.AppendLine(" CONVERT(VarChar(10), a.termino, 103) + ' ' + CONVERT(VarChar(8), a.termino, 108) as Termino, ");
-                    sb.AppendLine(" ISNULL(a.FLAG_DESCARGA, 0) as Descarga, ");
-                    sb.AppendLine(" ISNULL(a.FLAG_ESTUFAGEM, 0) as Estufagem, ");
-                    sb.AppendLine(" a.CROSSDOCKING as CrossDocking, ");
-                    sb.AppendLine(" a.CONFERENTE as ConferenteId, ");
-                    sb.AppendLine(" a.EQUIPE as EquipeId, ");
-                    sb.AppendLine(" a.AUTONUM_BOO as BookingId, ");
-                    sb.AppendLine(" ISNULL(a.FLAG_CARREGAMENTO, 0) as Carregamento, ");
-                    sb.AppendLine(" A.AUTONUM_GATE as GateId, ");
-                    sb.AppendLine(" ISNULL(A.FLAG_FECHADO, 0) as Fechado, ");
-                    sb.AppendLine(" B.AUTONUM_PATIOS as Patio, ");
-                    sb.AppendLine(" A.FORMA_OPERACAO as OperacaoId, ");
-                    sb.AppendLine(" Conf.FANTASIA AS Conferente, ");
-                    sb.AppendLine(" Eq.FANTASIA as Equipe, ");
-                    sb.AppendLine(" case when A.FORMA_OPERACAO = 'A' then 'Automático' else 'Manual' end Operacao ");
-                    sb.AppendLine(" FROM ");
-                    sb.AppendLine(" REDEX..TB_TALIE A ");
-                    sb.AppendLine(" INNER JOIN ");
-                    sb.AppendLine(" REDEX..TB_BOOKING B ON A.AUTONUM_BOO = B.AUTONUM_BOO ");
-                    sb.AppendLine(" LEFT JOIN ");
-                    sb.AppendLine(" REDEX..TB_PATIO C ON A.AUTONUM_PATIO = C.AUTONUM_PATIO ");
-                    sb.AppendLine(" INNER JOIN ");
-                    sb.AppendLine(" REDEX..TB_CAD_PARCEIROS D ON B.AUTONUM_PARCEIRO = D.AUTONUM ");
-                    sb.AppendLine(" LEFT JOIN ");
-                    sb.AppendLine(" REDEX..tb_cad_parceiros Conf on a.CONFERENTE = CONF.AUTONUM ");
-                    sb.AppendLine(" LEFT JOIN ");
-                    sb.AppendLine(" REDEX..tb_cad_parceiros Eq on a.EQUIPE = Eq.AUTONUM ");
-                    sb.AppendLine(" inner JOIN ");
-                    sb.AppendLine(" REDEX..tb_patio cc on a.autonum_patio = cc.AUTONUM_patio ");
-                    sb.AppendLine(" WHERE  ");
-                    sb.AppendLine("( A.AUTONUM_REG = " + id + "or A.AUTONUM_TALIE = " + id + " )");
-                    sb.AppendLine(" and cc.id_conteiner='" + conteiner + "' ");
-                    sb.AppendLine(" ORDER BY  ");
-                    sb.AppendLine(" A.INICIO DESC, D.FANTASIA, C.ID_CONTEINER, B.REFERENCE, B.INSTRUCAO ");
-
-                    var query = _db.Query<TalieDTO>(sb.ToString()).FirstOrDefault();
-
-                    return query;
+                    var parameters = new { Id = id, Conteiner = conteiner };
+                    var result = _db.Query<TalieDTO>(SqlQueries.QueryGetTalieByIdConteiner, parameters).FirstOrDefault();
+                    return result;
                 }
             }
             catch (Exception ex)
             {
+                // Log de erro opcional para depuração
+                Console.WriteLine($"Erro ao buscar talie por ID e conteiner: {ex.Message}");
                 return null;
             }
         }
+
         public TalieDTO GetTalieById(int id)
         {
             try
@@ -2812,27 +2767,24 @@ namespace Band.Coletor.Redex.Infra.Repositorios
                 return 0;
             }
         }
-        public int getValidaConteiner(string id)
+        public int GetValidaConteiner(string id)
         {
             try
             {
                 using (var _db = new SqlConnection(Config.StringConexao()))
                 {
-                    StringBuilder sb = new StringBuilder();
-
-                    sb.AppendLine(" select isnull(max(p.autonum_patio),0) from redex..tb_patio p ");
-                    sb.AppendLine(" where isnull(p.flag_historico,0)=0 and p.id_conteiner='" + id + "' ");
-
-                    int tr = _db.Query<int>(sb.ToString()).FirstOrDefault();
-
-                    return tr;
+                    var parameters = new { IdConteiner = id };
+                    return _db.Query<int>(SqlQueries.QueryValidaConteiner, parameters).FirstOrDefault();
                 }
             }
             catch (Exception ex)
             {
+                // Log do erro para depuração
+                Console.WriteLine($"Erro ao validar contêiner: {ex.Message}");
                 return 0;
             }
         }
+
         public int countPendencias(int id)
         {
             try
@@ -2916,9 +2868,6 @@ namespace Band.Coletor.Redex.Infra.Repositorios
 
             return (conditions, parameters);
         }
-
-
-
 
         #endregion UTILS
 

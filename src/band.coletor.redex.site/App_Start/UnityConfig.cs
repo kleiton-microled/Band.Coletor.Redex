@@ -1,18 +1,20 @@
+using Band.Coletor.Redex.Business;
+using Band.Coletor.Redex.Business.Classes;
+using Band.Coletor.Redex.Business.Interfaces.Business;
 using Band.Coletor.Redex.Business.Interfaces.Repositorios;
 using Band.Coletor.Redex.Infra.Repositorios;
 using System;
-
+using AutoMapper;
 using Unity;
+using Band.Coletor.Redex.Business.Mapping;
+using System.Configuration;
+using Unity.Injection;
 
 namespace Band.Coletor.Redex.Site
 {
-    /// <summary>
-    /// Specifies the Unity configuration for the main container.
-    /// </summary>
     public static class UnityConfig
     {
         #region Unity Container
-
         private static Lazy<IUnityContainer> container =
           new Lazy<IUnityContainer>(() =>
           {
@@ -21,31 +23,15 @@ namespace Band.Coletor.Redex.Site
               return container;
           });
 
-        /// <summary>
-        /// Configured Unity Container.
-        /// </summary>
         public static IUnityContainer Container => container.Value;
+        #endregion
 
-        #endregion Unity Container
-
-        /// <summary>
-        /// Registers the type mappings with the Unity container.
-        /// </summary>
-        /// <param name="container">The unity container to configure.</param>
-        /// <remarks>
-        /// There is no need to register concrete types such as controllers or
-        /// API controllers (unless you want to change the defaults), as Unity
-        /// allows resolving a concrete type even if it was not previously
-        /// registered.
-        /// </remarks>
         public static void RegisterTypes(IUnityContainer container)
         {
-            // NOTE: To load from web.config uncomment the line below.
-            // Make sure to add a Unity.Configuration to the using statements.
-            // container.LoadConfiguration();
+            // Obter a connectionString do web.config
+            string connectionString = ConfigurationManager.ConnectionStrings["StringConexaoSqlServer"].ConnectionString;
 
-            // TODO: Register your type's mappings here.
-            // container.RegisterType<IProductRepository, ProductRepository>();
+            // Repositórios
             container.RegisterType<IConteinerRepositorio, ConteinerRepositorio>();
             container.RegisterType<ITalieRepositorio, TalieRepositorio>();
             container.RegisterType<IUsuarioLoginRepositorio, UsuarioLoginRepositorio>();
@@ -53,11 +39,11 @@ namespace Band.Coletor.Redex.Site
             container.RegisterType<IRegistroRepositorio, RegistroRepositorio>();
             container.RegisterType<IReservaRepositorio, ReservaRepositorio>();
             container.RegisterType<IPreRegistroRepositorio, PreRegistroRepositorio>();
-            container.RegisterType<IConferenteRepositorio, ConferenteRepositorio>();
-            container.RegisterType<IEquipeRepositorio, EquipeRepositorio>();
-            container.RegisterType<IOperacaoRepositorio, OperacaoRepositorio>();
+            //container.RegisterType<IConferenteRepositorio, ConferenteRepositorio>();
+            //container.RegisterType<IEquipeRepositorio, EquipeRepositorio>();
+            //container.RegisterType<IOperacaoRepositorio, OperacaoRepositorio>();
             container.RegisterType<IEstufagemRepositorio, EstufagemRepositorio>();
-            container.RegisterType<ISaidaCaminhaoRepositorio,SaidaCaminhaoRepositorio>();
+            container.RegisterType<ISaidaCaminhaoRepositorio, SaidaCaminhaoRepositorio>();
             container.RegisterType<IIventarioCNTRRepositorio, IventarioCNTRRepositorio>();
             container.RegisterType<IIventarioCSRepositorio, IventarioCSRepositorio>();
             container.RegisterType<IPatiosRepositorio, PatiosRepositorio>();
@@ -69,14 +55,32 @@ namespace Band.Coletor.Redex.Site
             container.RegisterType<IIventarioCegoRepositorio, IventarioCegoRepositorio>();
             container.RegisterType<IVeiculosRepositorio, VeiculosRepositorio>();
             container.RegisterType<IAutorizaSaidaRepository, AutorizaSaidaRepository>();
+            container.RegisterType<IDescargaExportacaoRepositorio, DescargaExportacaoRepositorio>();
+
+           
+
+            // Registrar repositórios com a connectionString injetada
+            container.RegisterType<IEquipeRepositorio, EquipeRepositorio>(new InjectionConstructor(connectionString));
+            container.RegisterType<IConferenteRepositorio, ConferenteRepositorio>(new InjectionConstructor(connectionString));
+            container.RegisterType<IOperacaoRepositorio, OperacaoRepositorio>(new InjectionConstructor(connectionString));
 
 
+            // Camada de Negócios (Business)
+            container.RegisterType<IDescargaExportacaoBusiness, DescargaExportacaoBusiness>();
+            container.RegisterType<IEquipeBusiness, EquipeBusiness>();
+            container.RegisterType<IConferenteBusiness, ConferenteBusiness>();
+            container.RegisterType<IOperacaoBusiness, OperacaoBusiness>();
+            container.RegisterType<ITalieBusiness, TalieBusiness>();
 
+            // Configuração do AutoMapper
+            var mapperConfig = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<MappingProfile>();
+            });
 
-
-
-
-
+            IMapper mapper = mapperConfig.CreateMapper();
+            container.RegisterInstance(mapper); // Registra o IMapper como singleton no contêiner do Unity
         }
     }
+
 }

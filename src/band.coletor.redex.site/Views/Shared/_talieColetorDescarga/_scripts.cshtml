@@ -882,7 +882,7 @@ function limparTabelaItens() {
             // Atualiza o total de registros e o número de páginas
             let totalRecords = response.recordsTotal;
             let filteredRecords = response.recordsFiltered || totalRecords;
-            let totalPages = Math.ceil(filteredRecords / reponse.pageSize);
+            let totalPages = Math.ceil(filteredRecords / response.pageSize);
             $('#totalRecords').text(`Total de registros: ${totalRecords}`);
             $('#totalPages').text(`Total de páginas: ${totalPages}`);
 
@@ -996,7 +996,7 @@ function initializeActionButtons() {
             getTalieById(reg);
         } else {
             console.log(talieId, idcntr);
-            //getTalieByIdConteiner(talieId, idcntr);
+            getTalieByIdConteiner(talieId, idcntr);
         }
         //
         console.log('Editar', talieId, ' - ', idcntr, ' - ', reg);
@@ -1574,10 +1574,3 @@ function initializeActionButtons() {
         });
     }
 </script>
-@*<script>
-        var browser = navigator.appName;;
-
-        if (browser == "Microsoft Internet Explorer") {
-            alert("Alert de teste de versão no IE ");
-        }
-    </script>*@

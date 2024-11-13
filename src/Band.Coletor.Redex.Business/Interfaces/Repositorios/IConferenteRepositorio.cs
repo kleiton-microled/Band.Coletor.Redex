@@ -3,8 +3,9 @@ using System.Collections.Generic;
 
 namespace Band.Coletor.Redex.Business.Interfaces.Repositorios
 {
-    public interface IConferenteRepositorio
+    public interface IConferenteRepositorio : IBaseRepositorio<Conferente>
     {
         IEnumerable<Conferente> ObterConferentes(int idConferente);
     }
+
 }

@@ -1,7 +1,7 @@
 @{
     ViewBag.Title = "Descarga Exportacao";
 }
-
+@model Band.Coletor.Redex.Site.Models.DescargaExportacao.DescargaExportacaoViewModel
 <div>
     <div class="row padding-bottom">
         <div class="col-md-12">
@@ -15,41 +15,41 @@
     <form method="post" action="@Url.Action("Buscar", "DescargaExportacao")">
         <div class="row padding-bottom">
             <div class="form-group col-md-3">
-                <label for="talie">TALIE</label>
-                <input type="text" class="form-control" id="talie" name="talie" placeholder="Digite o TALIE">
+                <label for="registro">REGISTRO</label>
+                <input type="text" class="form-control" id="registro" name="registro" placeholder="Digite o registro">
             </div>
             <div class="form-group col-md-3">
                 <label for="inicio">INICIO</label>
-                <input type="datetime-local" class="form-control" id="inicio" name="inicio">
+                <input type="datetime-local" class="form-control" id="inicio" name="inicio" disabled>
             </div>
             <div class="form-group col-md-3">
                 <label for="termino">TERMINO</label>
-                <input type="datetime-local" class="form-control" id="termino" name="termino">
+                <input type="datetime-local" class="form-control" id="termino" name="termino" disabled>
             </div>
             <div class="form-group col-md-3">
-                <label for="registro">REGISTRO</label>
-                <input type="text" class="form-control" id="registro" name="registro" placeholder="Digite o registro">
+                <label for="talie">TALIE</label>
+                <input type="text" class="form-control" id="talie" name="talie" placeholder="Digite o TALIE" disabled>
             </div>
         </div>
 
         <div class="row padding-bottom">
             <div class="form-group col-md-3">
                 <label for="placa">PLACA</label>
-                <input type="text" class="form-control" id="placa" name="placa" placeholder="Digite a placa">
+                <input type="text" class="form-control" id="placa" name="placa" placeholder="Digite a placa" disabled>
             </div>
             <div class="form-group col-md-3">
                 <label for="reserva">RESERVA</label>
-                <input type="text" class="form-control" id="reserva" name="reserva" placeholder="Digite a reserva">
+                <input type="text" class="form-control" id="reserva" name="reserva" placeholder="Digite a reserva" disabled>
             </div>
             <div class="form-group col-md-3">
                 <label for="cliente">CLIENTE</label>
-                <input type="text" class="form-control" id="cliente" name="cliente" placeholder="Digite o cliente">
+                <input type="text" class="form-control" id="cliente" name="cliente" placeholder="Digite o cliente" disabled>
             </div>
         </div>
 
         <div class="row padding-bottom">
             <div class="form-group col-md-6">
-                <button type="submit" class="btn btn-primary btn-block">Buscar</button>
+                <button type="button" onclick="obterDadosTalie()" class="btn btn-primary btn-block">Buscar</button>
             </div>
             <div class="form-group col-md-6">
                 <button type="reset" class="btn btn-secondary btn-block">Restaurar Dados</button>
@@ -58,34 +58,34 @@
         <!--Combobox conferente, equipe, operacao-->
         <div class="row padding-bottom">
             <div class="form-group col-sm-4">
-                <label for="cbConferente">Selecione o conferente: </label>
-                <select id="cbConferente" class="form-control">
-                    @*@foreach (var item in Model)
+                <label for="cbEquipe">Selecione a equipe:</label>
+                <select id="cbEquipe" class="form-control">
+                    @foreach (var item in Model.Conferentes)
                     {
                         <option value="@item.Id">@item.Descricao</option>
-                    }*@
+                    }
                 </select>
             </div>
             <div class="form-group col-sm-4">
                 <label for="cbConferente">Selecione a equipe: </label>
                 <select id="cbConferente" class="form-control">
-                    @*@foreach (var item in Model)
+                    @foreach (var item in Model.Equipes)
                     {
                         <option value="@item.Id">@item.Descricao</option>
-                    }*@
+                    }
                 </select>
             </div>
             <div class="form-group col-sm-4">
                 <label for="cbConferente">Selecione a operacao: </label>
                 <select id="cbConferente" class="form-control">
-                    @*@foreach (var item in Model)
+                    @foreach (var item in Model.Operacoes)
                     {
                         <option value="@item.Id">@item.Descricao</option>
-                    }*@
+                    }
                 </select>
             </div>
         </div>
-    </form>    
+    </form>
 </div>
 <!-- Footer com botões -->
 <footer class="fixed-bottom bg-light py-3">
@@ -128,4 +128,7 @@
     </div>
 </footer>
 
+@section Scripts {
+    @Scripts.Render("~/bundles/descargaExportacao")
+}
 

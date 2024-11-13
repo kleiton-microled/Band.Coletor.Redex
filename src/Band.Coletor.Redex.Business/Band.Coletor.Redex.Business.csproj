@@ -31,6 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AutoMapper, Version=10.0.0.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\AutoMapper.10.1.1\lib\net461\AutoMapper.dll</HintPath>
+    </Reference>
     <Reference Include="Dapper, Version=1.50.4.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Dapper.1.50.4\lib\net451\Dapper.dll</HintPath>
     </Reference>
@@ -62,6 +65,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\TalieBusiness.cs" />
+    <Compile Include="Classes\OperacaoBusiness.cs" />
+    <Compile Include="Classes\ConferenteBusiness.cs" />
+    <Compile Include="Classes\EquipeBusiness.cs" />
+    <Compile Include="DescargaExportacaoBusiness.cs" />
     <Compile Include="DTO\ArmazensDTO.cs" />
     <Compile Include="DTO\AutorizaSaidaDTO.cs" />
     <Compile Include="DTO\DescargaAutomaticaDTO.cs" />
@@ -72,6 +80,7 @@
     <Compile Include="DTO\IventarioCSDTO.cs" />
     <Compile Include="DTO\MovimentacaoCargaSoltaDTO.cs" />
     <Compile Include="DTO\MovimentacaoContainerDTO.cs" />
+    <Compile Include="DTO\EquipeDTO.cs" />
     <Compile Include="DTO\ParametrosDTO.cs" />
     <Compile Include="DTO\PatiosDTO.cs" />
     <Compile Include="DTO\ClienteDTO.cs" />
@@ -102,10 +111,17 @@
     <Compile Include="Helpers\Converters.cs" />
     <Compile Include="Helpers\DateTimeHelpers.cs" />
     <Compile Include="Helpers\StringHelpers.cs" />
+    <Compile Include="Interfaces\Business\IConferenteBusiness.cs" />
+    <Compile Include="Interfaces\Business\ITalieBusiness.cs" />
+    <Compile Include="Interfaces\Business\IOperacaoBusiness.cs" />
+    <Compile Include="Interfaces\Business\IEquipeBusiness.cs" />
+    <Compile Include="Interfaces\Business\IDescargaExportacaoBusiness.cs" />
     <Compile Include="Interfaces\Repositorios\IArmazensRepositorio.cs" />
     <Compile Include="Interfaces\Repositorios\IAutorizaSaidaRepository.cs" />
+    <Compile Include="Interfaces\Repositorios\IBaseRepositorio.cs" />
     <Compile Include="Interfaces\Repositorios\IConferenteRepositorio.cs" />
     <Compile Include="Interfaces\Repositorios\IConteinerRepositorio.cs" />
+    <Compile Include="Interfaces\Repositorios\IDescargaExportacaoRepositorio.cs" />
     <Compile Include="Interfaces\Repositorios\IEquipesRepositorio.cs" />
     <Compile Include="Interfaces\Repositorios\IEstufagemRepositorio.cs" />
     <Compile Include="Interfaces\Repositorios\IIventarioCegoRepositorio.cs" />
@@ -125,6 +141,7 @@
     <Compile Include="Interfaces\Repositorios\IUsuarioLoginRepositorio.cs" />
     <Compile Include="Interfaces\Repositorios\ITalieRepositorio.cs" />
     <Compile Include="Interfaces\Repositorios\IVeiculosRepositorio.cs" />
+    <Compile Include="Mapping\MappingProfile.cs" />
     <Compile Include="Models\Agendamento.cs" />
     <Compile Include="Models\Armazem.cs" />
     <Compile Include="Models\BrowserInfo.cs" />
@@ -145,6 +162,7 @@
     <Compile Include="Models\RegistrosViewModel.cs" />
     <Compile Include="Models\Reserva.cs" />
     <Compile Include="Models\SaidaCaminhao.cs" />
+    <Compile Include="Models\TableAtribute.cs" />
     <Compile Include="Models\TalieConteiner.cs" />
     <Compile Include="Models\UsuarioLogin.cs" />
     <Compile Include="Models\NotaFiscal.cs" />
@@ -161,6 +179,11 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Band.Coletor.Redex.Application\Band.Coletor.Redex.Application\Band.Coletor.Redex.Application.csproj">
+      <Project>{cfe3f358-5eea-4391-bcc5-e532c0ee19d2}</Project>
+      <Name>Band.Coletor.Redex.Application</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

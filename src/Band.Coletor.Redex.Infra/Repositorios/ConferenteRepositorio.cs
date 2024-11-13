@@ -9,8 +9,12 @@ using System.Text;
 
 namespace Band.Coletor.Redex.Infra.Repositorios
 {
-    public class ConferenteRepositorio : IConferenteRepositorio
+    public class ConferenteRepositorio :BaseRepositorio<Conferente>, IConferenteRepositorio
     {
+        public ConferenteRepositorio(string connectionString) : base(connectionString)
+        {
+        }
+
         public IEnumerable<Conferente> ObterConferentes(int idConferente)
         {
             using (var _db = new SqlConnection(Config.StringConexao()))

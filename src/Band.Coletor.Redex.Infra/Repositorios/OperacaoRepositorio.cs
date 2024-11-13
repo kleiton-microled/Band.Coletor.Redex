@@ -1,20 +1,19 @@
-﻿using Band.Coletor.Redex.Business.DTO;
-using Band.Coletor.Redex.Business.Interfaces.Repositorios;
+﻿using Band.Coletor.Redex.Business.Interfaces.Repositorios;
 using Band.Coletor.Redex.Business.Models;
 using Band.Coletor.Redex.Infra.Configuracao;
 using Dapper;
-using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
 using System.Runtime.Caching;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Band.Coletor.Redex.Infra.Repositorios
 {
-    public class OperacaoRepositorio : IOperacaoRepositorio
+    public class OperacaoRepositorio :BaseRepositorio<Operacao>, IOperacaoRepositorio
     {
+        public OperacaoRepositorio(string connectionString) : base(connectionString)
+        {
+        }
+
         public IEnumerable<Operacao> ObterOperacoes()
         {
             MemoryCache cache = MemoryCache.Default;

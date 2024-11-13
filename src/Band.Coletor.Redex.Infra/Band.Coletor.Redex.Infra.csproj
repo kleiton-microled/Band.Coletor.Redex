@@ -83,8 +83,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositorios\ArmazensRepositorio.cs" />
     <Compile Include="Repositorios\AutorizaSaidaRepository.cs" />
+    <Compile Include="Repositorios\BaseRepositorio.cs" />
     <Compile Include="Repositorios\ConferenteRepositorio.cs" />
     <Compile Include="Repositorios\ConteinerRepositorio.cs" />
+    <Compile Include="Repositorios\DescargaExportacaoRepositorio.cs" />
     <Compile Include="Repositorios\EquipeRepositorio.cs" />
     <Compile Include="Repositorios\EstufagemRepositorio.cs" />
     <Compile Include="Repositorios\IventarioCegoRepositorio.cs" />

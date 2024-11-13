@@ -69,6 +69,10 @@ namespace Band.Coletor.Redex.Site
                .Include("~/Content/js/leitorCodigoDeBarras/JOB.js",
                         "~/Content/js/leitorCodigoDeBarras/Leitura.js"));
 
+            // Bundle para o script descarga_exportacao
+            bundles.Add(new ScriptBundle("~/bundles/descargaExportacao").Include(
+                       "~/Views/DescargaExportacao/scripts/_descargaExportacao.js"));
+
             BundleTable.EnableOptimizations = true;
         }
     }

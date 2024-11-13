@@ -89,7 +89,7 @@ namespace Band.Coletor.Redex.Business.Interfaces.Repositorios
         IEnumerable<TalieDTO> GetNFByTalieId(int id);
         int countEtiquetas(int id);
         int countPendencias(int id);
-        int getValidaConteiner(string id);
+        int GetValidaConteiner(string id);
         TalieDTO GetTalieByIdConteiner(int id, string conteiner);
         IEnumerable<Embalagem> GetListarEmbalagens();
         double GetPesoBruto(int id);

@@ -243,7 +243,7 @@ namespace Band.Coletor.Redex.Site.Controllers
 
                 string conteiner = obj.ConteinerId;
 
-                int IDconteiner = _talieColetorDescargaRepositorio.getValidaConteiner(conteiner);
+                int IDconteiner = _talieColetorDescargaRepositorio.GetValidaConteiner(conteiner);
 
                 obj.AUTONUM_PATIO = IDconteiner;
 
