@@ -1,4 +1,5 @@
 ﻿using Band.Coletor.Redex.Business.Helpers;
+using Band.Coletor.Redex.Business.Models.Entities;
 using FluentValidation;
 using System;
 
@@ -113,6 +114,24 @@ namespace Band.Coletor.Redex.Business.Models
             EquipeId = talie.EquipeId;
             OperacaoId = talie.OperacaoId;
             Observacoes = talie.Observacoes;
+        }
+
+        public static Talie InsertCommand(int autonumTalie, DateTime inicio, int conferente, int equipe, int autonumBooking, string operacao,
+                                                string placa, int autonumGate, int autonumRegistro, string obs)
+        {
+            var entity = new Talie();
+            entity.AUTONUM_TALIE = autonumTalie;
+            entity.Inicio = inicio;
+            entity.ConferenteId = conferente;
+            entity.EquipeId = equipe;
+            entity.BookingId = autonumBooking;
+            entity.OperacaoId = operacao;
+            entity.Placa = placa;
+            entity.GateId = autonumGate;
+            entity.RegistroId = autonumRegistro;
+            entity.Observacoes = obs;
+
+            return entity;
         }
 
         public override void Validar()

@@ -1,7 +1,9 @@
 ﻿using Band.Coletor.Redex.Business.DTO;
 using Band.Coletor.Redex.Business.Models;
+using Band.Coletor.Redex.Business.Models.Entities;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Band.Coletor.Redex.Business.Interfaces.Repositorios
 {
@@ -109,6 +111,12 @@ namespace Band.Coletor.Redex.Business.Interfaces.Repositorios
 
         int ObterProximoIdPatioCS();
         int ObterProximoIdCargaSoltaYard();
+
+        #region NEW
+        Task<TalieEntity> ObterDadosTaliePorRegistroAsync(int registro);
+        Task<Gate> ObterRegistrosGate(int registro);
+        Task<bool> Update(TalieEntity talie);
+        #endregion
 
     }
 }

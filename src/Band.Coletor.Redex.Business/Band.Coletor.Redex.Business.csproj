@@ -148,6 +148,8 @@
     <Compile Include="Models\CargaEstufagem.cs" />
     <Compile Include="Models\Conteiner.cs" />
     <Compile Include="Models\Embalagem.cs" />
+    <Compile Include="Models\Entities\Gate.cs" />
+    <Compile Include="Models\Entities\TalieEntity.cs" />
     <Compile Include="Models\Equipe.cs" />
     <Compile Include="Models\Estufagem.cs" />
     <Compile Include="Models\InventarioCegoDTO.cs" />

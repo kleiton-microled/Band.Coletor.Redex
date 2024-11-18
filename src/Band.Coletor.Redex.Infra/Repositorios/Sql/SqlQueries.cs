@@ -97,6 +97,89 @@ namespace Band.Coletor.Redex.Infra.Repositorios.Sql
                                                AND (flag_descarga = CASE WHEN @tipoDescarga = 'DA' THEN 1 ELSE 0 END)
                                                AND (crossdocking = CASE WHEN @tipoDescarga = 'CD' THEN 1 ELSE 0 END);
                                             ";
+        public const string BuscarDadosTaliePorRegistro = @"SELECT 
+                                                                T.AUTONUM_TALIE, 
+                                                                T.AUTONUM_PATIO, 
+                                                                T.PLACA, 
+                                                                T.INICIO, 
+                                                                T.TERMINO, 
+                                                                T.FLAG_DESCARGA, 
+                                                                T.FLAG_ESTUFAGEM, 
+                                                                T.CROSSDOCKING, 
+                                                                ISNULL(T.CONFERENTE, 0) AS CONFERENTE, 
+                                                                ISNULL(T.EQUIPE, 0) AS EQUIPE, 
+                                                                T.AUTONUM_BOO, 
+                                                                T.FLAG_CARREGAMENTO, 
+                                                                T.FORMA_OPERACAO, 
+                                                                T.AUTONUM_GATE, 
+                                                                T.FLAG_FECHADO, 
+                                                                T.OBS, 
+                                                                T.AUTONUM_RO, 
+                                                                T.AUDIT_225, 
+                                                                T.ANO_TERMO, 
+                                                                T.TERMO, 
+                                                                T.DATA_TERMO, 
+                                                                T.FLAG_PACOTES, 
+                                                                T.ALERTA_ETIQUETA, 
+                                                                T.AUTONUM_REG, 
+                                                                T.FLAG_COMPLETO, 
+                                                                T.EMAIL_ENVIADO, 
+                                                                BOO.REFERENCE, 
+                                                                CP.FANTASIA
+                                                                --T.ID_GEO_CAMERA 
+                                                            FROM 
+                                                                REDEX..TB_TALIE T 
+                                                            INNER JOIN 
+                                                                REDEX..TB_BOOKING BOO ON T.AUTONUM_BOO = BOO.AUTONUM_BOO 
+                                                            INNER JOIN 
+                                                                REDEX..TB_CAD_PARCEIROS CP ON BOO.AUTONUM_PARCEIRO = CP.AUTONUM 
+                                                            WHERE 
+                                                                T.AUTONUM_REG = @registro";
+        public const string BuscarDadosGate = @"SELECT 
+                                                    E.AUTONUM_PARCEIRO, 
+                                                    E.REFERENCE as Reserva, 
+                                                    A.AUTONUM as CodigoGate, 
+                                                    E.AUTONUM_BOO as CodigoBooking, 
+                                                    CP.FANTASIA as CLiente
+                                                FROM 
+                                                    REDEX..TB_REGISTRO B 
+                                                INNER JOIN 
+                                                    REDEX..TB_GATE_NEW A ON B.AUTONUM_GATE = A.AUTONUM 
+                                                INNER JOIN 
+                                                    REDEX..TB_BOOKING E ON B.AUTONUM_BOO = E.AUTONUM_BOO 
+                                                INNER JOIN 
+                                                    REDEX..TB_CAD_PARCEIROS CP ON E.AUTONUM_PARCEIRO = CP.AUTONUM 
+                                                WHERE 
+                                                    B.AUTONUM_REG = @registro 
+                                                    AND A.DT_GATE_IN IS NOT NULL";
+        public const string BuscarItensDescarregados = @"SELECT 
+                                                            TI.AUTONUM_TI AS CodigoItem, 
+                                                            'NF ' + ISNULL(TI.NF, '') + ' ' + 
+                                                            CAST(ISNULL(TI.QTDE_DESCARGA, 0) AS VARCHAR) + '   ' + 
+                                                            ISNULL(E.SIGLA, E.DESCRICAO_EMB) + ' ' + 
+                                                            RTRIM(FORMAT(ISNULL(TI.COMPRIMENTO, 0), '00.00')) + 'x' + 
+                                                            RTRIM(FORMAT(ISNULL(TI.LARGURA, 0), '00.00')) + 'x' + 
+                                                            RTRIM(FORMAT(ISNULL(TI.ALTURA, 0), '00.00')) AS Descricao
+                                                        FROM 
+                                                            REDEX..TB_TALIE T
+                                                        INNER JOIN 
+                                                            REDEX..TB_TALIE_ITEM TI ON T.AUTONUM_TALIE = TI.AUTONUM_TALIE
+                                                        LEFT JOIN 
+                                                            REDEX..TB_CAD_EMBALAGENS E ON TI.AUTONUM_EMB = E.AUTONUM_EMB
+                                                        WHERE 
+                                                            T.AUTONUM_TALIE = @talie
+                                                        ORDER BY 
+                                                            TI.AUTONUM_TI;";
+        public const string AtualizarTalie = @"
+                                              UPDATE REDEX.TB_TALIE SET 
+                                                  INICIO = CONVERT(DATETIME, @DataInicio, 120), 
+                                                  CONFERENTE = @Conferente, 
+                                                  EQUIPE = @Equipe, 
+                                                  FORMA_OPERACAO = @Operacao, 
+                                                  OBS = @Obs, 
+                                                  ID_GEO_CAMERA = @IdGeoCamera
+                                              WHERE 
+                                                  AUTONUM_TALIE = @AutonumTalie";
 
         #region DESCARGA CD
         public const string QueryGetTalieByIdConteiner = @"
@@ -162,6 +245,7 @@ namespace Band.Coletor.Redex.Infra.Repositorios.Sql
                                                   NOME_EQP";
         #endregion
         #endregion
+
     }
 }
 

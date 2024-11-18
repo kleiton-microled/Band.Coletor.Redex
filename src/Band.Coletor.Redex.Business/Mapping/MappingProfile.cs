@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Band.Coletor.Redex.Application.ViewModel;
 using Band.Coletor.Redex.Business.Models;
+using Band.Coletor.Redex.Business.Models.Entities;
 
 namespace Band.Coletor.Redex.Business.Mapping
 {
@@ -11,7 +12,7 @@ namespace Band.Coletor.Redex.Business.Mapping
             CreateMap<Equipe, EquipeViewModel>();
             CreateMap<Conferente, ConferenteViewModel>();
             CreateMap<Operacao, OperacaoViewModel>();
-            CreateMap<Talie, TalieViewModel>();
+            CreateMap<TalieEntity, TalieViewModel>();
         }
     }
 }

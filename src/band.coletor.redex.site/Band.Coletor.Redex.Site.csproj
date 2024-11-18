@@ -238,6 +238,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="Views\Shared\Components\Selects\SelectModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-grid.css" />
@@ -541,6 +542,8 @@
     <Content Include="Views\InventarioCargaSolta\Index.cshtml" />
     <Content Include="Views\MarcantesCargaSolta\Index.cshtml" />
     <Content Include="Views\DescargaExportacao\scripts\_descargaExportacao.js" />
+    <Content Include="Views\DescargaExportacao\_descargaExportacaoItens.cshtml" />
+    <Content Include="Views\Shared\Components\Selects\component_coletor_select.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Band.Coletor.Redex.Application\Band.Coletor.Redex.Application\Band.Coletor.Redex.Application.csproj">

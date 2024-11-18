@@ -9,6 +9,7 @@ namespace Band.Coletor.Redex.Site.Models.DescargaExportacao
        public IEnumerable<ConferenteViewModel> Conferentes { get; set; }
         public IEnumerable<EquipeViewModel> Equipes { get; set; }
         public IEnumerable<OperacaoViewModel> Operacoes { get; set; }
+        public IEnumerable<ItensDescarregadosViewModel> Itens { get; set; }
     }
 
 }

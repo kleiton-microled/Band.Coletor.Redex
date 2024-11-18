@@ -33,7 +33,7 @@ namespace Band.Coletor.Redex.Site
 
             // Repositórios
             container.RegisterType<IConteinerRepositorio, ConteinerRepositorio>();
-            container.RegisterType<ITalieRepositorio, TalieRepositorio>();
+            //container.RegisterType<ITalieRepositorio, TalieRepositorio>();
             container.RegisterType<IUsuarioLoginRepositorio, UsuarioLoginRepositorio>();
             container.RegisterType<ILacreRepositorio, LacreRespositorio>();
             container.RegisterType<IRegistroRepositorio, RegistroRepositorio>();
@@ -63,6 +63,7 @@ namespace Band.Coletor.Redex.Site
             container.RegisterType<IEquipeRepositorio, EquipeRepositorio>(new InjectionConstructor(connectionString));
             container.RegisterType<IConferenteRepositorio, ConferenteRepositorio>(new InjectionConstructor(connectionString));
             container.RegisterType<IOperacaoRepositorio, OperacaoRepositorio>(new InjectionConstructor(connectionString));
+            container.RegisterType<ITalieRepositorio, TalieRepositorio>(new InjectionConstructor(connectionString));
 
 
             // Camada de Negócios (Business)

@@ -12,12 +12,20 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Runtime.Caching;
 using System.Text;
+using System.Threading.Tasks;
+using Band.Coletor.Redex.Infra.Repositorios.Sql;
+using Band.Coletor.Redex.Business.Models.Entities;
+using System.Collections;
 
 
 namespace Band.Coletor.Redex.Infra.Repositorios
 {
-    public class TalieRepositorio : ITalieRepositorio
+    public class TalieRepositorio :BaseRepositorio<Talie>, ITalieRepositorio
     {
+        public TalieRepositorio(string connectionString) : base(connectionString)
+        {
+        }
+
         public int ObterConferentes(int idConferente)
         {
             MemoryCache cache = MemoryCache.Default;
@@ -1528,6 +1536,78 @@ namespace Band.Coletor.Redex.Infra.Repositorios
                      where NF.AUTONUM_NF= @idNF and BCG.AUTONUM_PRO = @idEmbalagem ", parametros).SingleOrDefault();
             }
         }
-       
+
+        #region METODOS ASYNC
+        public async Task<TalieEntity> ObterDadosTaliePorRegistroAsync(int registro)
+        {
+            try
+            {
+                string command = SqlQueries.BuscarDadosTaliePorRegistro;
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("registro", registro);
+                using (var connection = Connection)
+                {
+                    return await connection.QueryFirstOrDefaultAsync<TalieEntity>(command, parameters);
+                }
+            }
+            catch (System.Exception ex)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<Gate> ObterRegistrosGate(int registro)
+        {
+            try
+            {
+                string command = SqlQueries.BuscarDadosGate;
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("registro", registro);
+                using (var connection = Connection)
+                {
+                    return await connection.QueryFirstOrDefaultAsync<Gate>(command, parameters);
+                }
+            }
+            catch (System.Exception ex)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<bool> Update(TalieEntity talie)
+        {
+            var query = SqlQueries.AtualizarTalie;
+            try
+            {
+                using (var connection = new SqlConnection(Config.StringConexao()))
+                {
+                    connection.Open();
+
+                    using (var command = new SqlCommand(query, connection))
+                    {
+                        // Adiciona os parâmetros
+                        command.Parameters.AddWithValue("@DataInicio", talie.INICIO);
+                        command.Parameters.AddWithValue("@Conferente", talie.CONFERENTE);
+                        command.Parameters.AddWithValue("@Equipe", talie.EQUIPE);
+                        command.Parameters.AddWithValue("@Operacao", talie.FORMA_OPERACAO);
+                        command.Parameters.AddWithValue("@Obs", talie.OBS);
+                        command.Parameters.AddWithValue("@IdGeoCamera", talie.ID_GEO_CAMERA);
+                        command.Parameters.AddWithValue("@AutonumTalie", talie.AUTONUM_TALIE);
+
+                        int rowsAffected = await command.ExecuteNonQueryAsync();
+                        return rowsAffected > 0;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erro ao alterar talie: {ex.Message}");
+                return false;
+            }
+            throw new NotImplementedException();
+        }
+        #endregion
     }
 }

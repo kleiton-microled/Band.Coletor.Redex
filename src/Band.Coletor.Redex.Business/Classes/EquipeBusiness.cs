@@ -18,8 +18,9 @@ namespace Band.Coletor.Redex.Business.Classes
         }
         public async Task<IEnumerable<EquipeViewModel>> ListAll()
         {
-            var equipes = await _repositorio.GetAllEquipes();
-            return _mapper.Map<IEnumerable<EquipeViewModel>>(equipes);
+            var data = await _repositorio.GetAllEquipes();
+
+            return _mapper.Map<IEnumerable<EquipeViewModel>>(data);
         }
     }
 }

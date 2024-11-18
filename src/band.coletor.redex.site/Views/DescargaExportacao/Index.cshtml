@@ -12,7 +12,7 @@
         </div>
     </div>
     <!--FORM-->
-    <form method="post" action="@Url.Action("Buscar", "DescargaExportacao")">
+    <form id="formTalie" method="post" action="@Url.Action("Buscar", "DescargaExportacao")">
         <div class="row padding-bottom">
             <div class="form-group col-md-3">
                 <label for="registro">REGISTRO</label>
@@ -28,7 +28,7 @@
             </div>
             <div class="form-group col-md-3">
                 <label for="talie">TALIE</label>
-                <input type="text" class="form-control" id="talie" name="talie" placeholder="Digite o TALIE" disabled>
+                <input type="text" class="form-control" id="talie" name="codigoTalie" placeholder="Digite o TALIE" disabled>
             </div>
         </div>
 
@@ -58,34 +58,53 @@
         <!--Combobox conferente, equipe, operacao-->
         <div class="row padding-bottom">
             <div class="form-group col-sm-4">
-                <label for="cbEquipe">Selecione a equipe:</label>
-                <select id="cbEquipe" class="form-control">
-                    @foreach (var item in Model.Conferentes)
+                @Html.Partial("~/Views/Shared/Components/Selects/component_coletor_select.cshtml", new ComponentColetorSelectModel
+                {
+                    Id = "cbConferente",
+                    Name = "conferente",
+                    Descricao = "Selecione o Conferente",
+                    Value = "0",
+                    Disabled = false,
+                    Options = Model.Conferentes.Select(e => new SelectOption
                     {
-                        <option value="@item.Id">@item.Descricao</option>
-                    }
-                </select>
+                        Value = e.Id.ToString(),
+                        Text = e.Descricao
+                    }).ToList()
+                })
             </div>
             <div class="form-group col-sm-4">
-                <label for="cbConferente">Selecione a equipe: </label>
-                <select id="cbConferente" class="form-control">
-                    @foreach (var item in Model.Equipes)
+                @Html.Partial("~/Views/Shared/Components/Selects/component_coletor_select.cshtml", new ComponentColetorSelectModel
+                {
+                    Id = "cbEquipe",
+                    Name = "equipe",
+                    Descricao = "Selecione a Equipe",
+                    Value = "0",
+                    Disabled = false,
+                    Options = Model.Equipes.Select(e => new SelectOption
                     {
-                        <option value="@item.Id">@item.Descricao</option>
-                    }
-                </select>
+                        Value = e.Id.ToString(),
+                        Text = e.Descricao
+                    }).ToList()
+                })
             </div>
             <div class="form-group col-sm-4">
-                <label for="cbConferente">Selecione a operacao: </label>
-                <select id="cbConferente" class="form-control">
-                    @foreach (var item in Model.Operacoes)
+                @Html.Partial("~/Views/Shared/Components/Selects/component_coletor_select.cshtml", new ComponentColetorSelectModel
+                {
+                    Id = "cbOperacao",
+                    Name = "operacao",
+                    Descricao = "Selecione a Equipe",
+                    Value = "0",
+                    Disabled = false,
+                    Options = Model.Operacoes.Select(e => new SelectOption
                     {
-                        <option value="@item.Id">@item.Descricao</option>
-                    }
-                </select>
+                        Value = e.Id.ToString(),
+                        Text = e.Descricao
+                    }).ToList()
+                })
             </div>
         </div>
     </form>
+    <pre id="formModel"></pre>
 </div>
 <!-- Footer com botões -->
 <footer class="fixed-bottom bg-light py-3">
@@ -98,7 +117,7 @@
             <span aria-hidden="true" class="fa fa-window-close"></span>&nbsp;&nbsp;Cancelar
         </a>
 
-        <a id="lnkGravar" href="#" class="btn btn-warning flex-grow-1 mx-1 my-1">
+        <a id="lnkGravar" href="#"  data-url="@Url.Action("GravarTalie", "DescargaExportacao")" class="btn btn-warning flex-grow-1 mx-1 my-1">
             <span aria-hidden="true" class="fa fa-check"></span>&nbsp;&nbsp;Gravar
         </a>
 
@@ -118,8 +137,8 @@
             <span aria-hidden="true" class="fa fa-check"></span>&nbsp;&nbsp;Finalizar
         </a>
 
-        <a id="lnkProximo" href="#" class="btn btn-warning flex-grow-1 mx-1 my-1">
-            <span aria-hidden="true" class="fa fa-chevron-right"></span>&nbsp;&nbsp;Proximo
+        <a id="lnkProximo" href="@Url.Action("DescargaExportacaoItens", "DescargaExportacao")" class="btn btn-warning flex-grow-1 mx-1 my-1">
+            <span aria-hidden="true" class="fa fa-chevron-right"></span>&nbsp;&nbsp;Próximo
         </a>
 
         <a id="lnkHome" href="@Url.Content("~/Home")" class="btn btn-warning flex-grow-1 mx-1 my-1">
@@ -130,5 +149,6 @@
 
 @section Scripts {
     @Scripts.Render("~/bundles/descargaExportacao")
+
 }
 
