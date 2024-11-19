@@ -1,5 +1,5 @@
 ﻿const formModel = {
-   
+
 };
 
 
@@ -10,7 +10,7 @@ function obterDadosTalie() {
         url: '/DescargaExportacao/ObterDadosTaliePorRegistro',
         type: 'GET',
         data: { registro: registro },
-        success: function(response) {
+        success: function (response) {
             // Preencher os campos do formulário com os dados retornados
             formModel.codigoRegistro = response.Registro || '';
             formModel.inicio = formatarDataParaInput(response.Inicio) || '';
@@ -22,6 +22,7 @@ function obterDadosTalie() {
             formModel.reserva = response.Reserva || '';
             formModel.codigoTalie = response.CodigoTalie || '';
             formModel.cliente = response.Cliente || '';
+            formModel.statusTali = response.StatusTalie || '';
             //$("#codigoGate").val(response.CodigoGate);
             //$("#codigoBooking").val(response.CodigoBooking);
             //$("#inicio").val(response.Inicio);
@@ -35,7 +36,7 @@ function obterDadosTalie() {
             preencherFormularioComModel();
             verificarCondicaoParaProximo();
         },
-        error: function(xhr, status, error) {
+        error: function (xhr, status, error) {
             console.error("Erro ao obter dados do Talie:", error);
             alert("Ocorreu um erro ao buscar os dados. Verifique o console para mais detalhes.");
         }
@@ -48,7 +49,7 @@ function preencherFormularioComModel() {
     for (const key in formModel) {
         if (formModel.hasOwnProperty(key)) {
             const elemento = document.querySelector(`[name="${key}"]`); // Seleciona o campo pelo atributo name
-            
+
             if (elemento) {
                 if (elemento.tagName === 'SELECT') {
                     // Para campos de combo box (select), define o valor somente se a opção existir
@@ -66,8 +67,6 @@ function preencherFormularioComModel() {
         }
     }
 }
-
-
 
 // Atualiza o modelo com base nas alterações no formulário
 function updateFormModel(event) {
@@ -106,7 +105,7 @@ function verificarCondicaoParaProximo() {
     atualizarEstadoDosBotoes("lnkExcluir", registro.trim() !== "");
 }
 
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     verificarCondicaoParaProximo();
     document.getElementById("talie").addEventListener("input", verificarCondicaoParaProximo);
 });
@@ -115,12 +114,6 @@ document.addEventListener("DOMContentLoaded", function() {
 //GRAVAR TALIE
 document.getElementById('lnkGravar').addEventListener('click', function (e) {
     e.preventDefault(); // Evita a navegação padrão
-
-    // Validação simples antes de enviar
-    //if (!formModel.registro || !formModel.inicio || !formModel.equipe || !formModel.conferente || !formModel.operacao) {
-    //    alert("Preencha todos os campos obrigatórios.");
-    //    return;
-    //}
 
     // Envia os dados para o servidor via AJAX
     const gravarTalieUrl = document.getElementById('lnkGravar').dataset.url;
@@ -150,7 +143,7 @@ document.getElementById('lnkGravar').addEventListener('click', function (e) {
 //UTILS
 function formatarDataParaInput(dateString) {
     if (!dateString) return '';
-    
+
     const date = new Date(dateString);
     if (isNaN(date)) return '';
 
@@ -159,8 +152,27 @@ function formatarDataParaInput(dateString) {
     const day = String(date.getDate()).padStart(2, '0');
     const hours = String(date.getHours()).padStart(2, '0');
     const minutes = String(date.getMinutes()).padStart(2, '0');
-    
+
     return `${year}-${month}-${day}T${hours}:${minutes}`;
 }
+
+document.getElementById('salvarObservacao').addEventListener('click', function () {
+    const observacao = document.getElementById('observacaoInput').value;
+
+    if (!observacao.trim()) {
+        alert('Por favor, preencha a observação antes de salvar.');
+        return;
+    }
+
+    // Aqui você pode salvar a observação no servidor ou processá-la como necessário.
+    console.log('Observação salva:', observacao);
+
+    // Fecha o modal
+    $('#observacaoModal').modal('hide');
+
+    // Limpa o campo do modal
+    document.getElementById('observacaoInput').value = '';
+});
+
 
 

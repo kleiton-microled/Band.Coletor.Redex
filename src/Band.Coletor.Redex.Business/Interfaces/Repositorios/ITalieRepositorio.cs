@@ -1,4 +1,5 @@
-﻿using Band.Coletor.Redex.Business.DTO;
+﻿using Band.Coletor.Redex.Business.Classes.ServiceResult;
+using Band.Coletor.Redex.Business.DTO;
 using Band.Coletor.Redex.Business.Models;
 using Band.Coletor.Redex.Business.Models.Entities;
 using System;
@@ -9,7 +10,8 @@ namespace Band.Coletor.Redex.Business.Interfaces.Repositorios
 {
     public interface ITalieRepositorio
     {
-       int ObterConferentes(int idConferente);
+        Task<ServiceResult<int>> GravarTalieAsync(TalieEntity talie);
+        int ObterConferentes(int idConferente);
 
         IEnumerable<Models.Equipe> ObterEquipes();
 
@@ -115,7 +117,9 @@ namespace Band.Coletor.Redex.Business.Interfaces.Repositorios
         #region NEW
         Task<TalieEntity> ObterDadosTaliePorRegistroAsync(int registro);
         Task<Gate> ObterRegistrosGate(int registro);
-        Task<bool> Update(TalieEntity talie);
+        Task<ServiceResult<bool>> Update(TalieEntity talie);
+        ServiceResult<int> ObterIdNotaFiscal(string numeroNotaFiscal, string codigoBooking, string codigoRegistro);
+
         #endregion
 
     }

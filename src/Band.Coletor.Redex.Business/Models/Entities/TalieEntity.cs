@@ -27,7 +27,7 @@ namespace Band.Coletor.Redex.Business.Models.Entities
         public DateTime? DATA_TERMO { get; set; }
         public bool FLAG_PACOTES { get; set; }
         public bool ALERTA_ETIQUETA { get; set; }
-        public int AUTONUM_REG { get; set; }
+        public int? AUTONUM_REG { get; set; }
         public bool FLAG_COMPLETO { get; set; }
         public bool EMAIL_ENVIADO { get; set; }
         public string REFERENCE { get; set; }
@@ -49,7 +49,7 @@ namespace Band.Coletor.Redex.Business.Models.Entities
         }
 
         public static TalieEntity InsertCommand(int autonumTalie, DateTime inicio, int conferente, int equipe, int autonumBooking, string operacao,
-                                                string placa, int autonumGate, int autonumRegistro, string obs, int idGeoCamera)
+                                                string placa, int autonumGate, int? autonumRegistro, string obs)
         {
             var entity = new TalieEntity();
             entity.AUTONUM_TALIE = autonumTalie;
@@ -62,7 +62,6 @@ namespace Band.Coletor.Redex.Business.Models.Entities
             entity.AUTONUM_GATE = autonumGate;
             entity.AUTONUM_REG = autonumRegistro;
             entity.OBS = obs;
-            entity.ID_GEO_CAMERA = idGeoCamera;
 
             return entity;
         }

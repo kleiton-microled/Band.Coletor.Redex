@@ -170,16 +170,47 @@ namespace Band.Coletor.Redex.Infra.Repositorios.Sql
                                                             T.AUTONUM_TALIE = @talie
                                                         ORDER BY 
                                                             TI.AUTONUM_TI;";
+        public const string CadastrarTalie = @"INSERT INTO REDEX..TB_TALIE
+                                                   (
+		                                               INICIO,
+		                                               CROSSDOCKING,
+		                                               CONFERENTE,
+		                                               EQUIPE,
+		                                               AUTONUM_BOO,
+		                                               FORMA_OPERACAO,
+		                                               PLACA,
+		                                               AUTONUM_GATE,
+		                                               AUTONUM_REG,
+		                                               OBS
+                                                   ) VALUES (
+                                                       @Inicio,
+                                                       @CrossDocking,
+                                                       @ConferenteId,
+                                                       @EquipeId,
+                                                       @BookingId,
+                                                       @OperacaoId,
+                                                       @Placa,
+                                                       @GateId,
+                                                       @RegistroId,
+                                                       @Observacoes); SELECT CAST(SCOPE_IDENTITY() AS INT)";
         public const string AtualizarTalie = @"
-                                              UPDATE REDEX.TB_TALIE SET 
-                                                  INICIO = CONVERT(DATETIME, @DataInicio, 120), 
-                                                  CONFERENTE = @Conferente, 
-                                                  EQUIPE = @Equipe, 
-                                                  FORMA_OPERACAO = @Operacao, 
-                                                  OBS = @Obs, 
-                                                  ID_GEO_CAMERA = @IdGeoCamera
+                                              UPDATE REDEX..TB_TALIE SET 
+                                                  INICIO = CONVERT(DATETIME, @Inicio, 120), 
+                                                  CONFERENTE = @ConferenteId, 
+                                                  EQUIPE = @EquipeId, 
+                                                  FORMA_OPERACAO = @OperacaoId, 
+                                                  OBS = @Observacoes
                                               WHERE 
                                                   AUTONUM_TALIE = @AutonumTalie";
+        public const string ObterIdNotaFiscal = @"SELECT 
+                                                      A.AUTONUM_NF
+                                                  FROM 
+                                                      REDEX..TB_NOTAS_FISCAIS A
+                                                  INNER JOIN 
+                                                      REDEX..TB_BOOKING BOO ON A.AUTONUM_BOO = BOO.AUTONUM_BOO
+                                                  WHERE 
+                                                      BOO.AUTONUM_BOO = @AutonumBooking
+                                                      AND A.NUM_NF = @NumeroNotaFiscal";
 
         #region DESCARGA CD
         public const string QueryGetTalieByIdConteiner = @"

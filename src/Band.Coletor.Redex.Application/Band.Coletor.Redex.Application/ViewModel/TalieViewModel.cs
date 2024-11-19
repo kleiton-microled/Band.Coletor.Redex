@@ -13,7 +13,7 @@
         public string Placa { get; set; }
         public string Reserva { get; set; }
         public int CodigoGate { get; set; }
-        public int CodigoRegistro { get; set; }
+        public int? CodigoRegistro { get; set; }
         public string Cliente { get; set; }
         public string Inicio { get; set; }
         public string Termino { get; set; }

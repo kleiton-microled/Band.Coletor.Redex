@@ -16,34 +16,34 @@
         <div class="row padding-bottom">
             <div class="form-group col-md-3">
                 <label for="registro">REGISTRO</label>
-                <input type="text" class="form-control" id="registro" name="registro" placeholder="Digite o registro">
+                <input type="text" class="form-control" id="registro" name="registro" value="@Model.Talie.CodigoRegistro" placeholder="Digite o registro">
             </div>
             <div class="form-group col-md-3">
                 <label for="inicio">INICIO</label>
-                <input type="datetime-local" class="form-control" id="inicio" name="inicio" disabled>
+                <input type="datetime-local" class="form-control" id="inicio" name="inicio" value="@Model.Talie.Inicio" disabled>
             </div>
             <div class="form-group col-md-3">
                 <label for="termino">TERMINO</label>
-                <input type="datetime-local" class="form-control" id="termino" name="termino" disabled>
+                <input type="datetime-local" class="form-control" id="termino" name="termino" value="@Model.Talie.Termino" disabled>
             </div>
             <div class="form-group col-md-3">
                 <label for="talie">TALIE</label>
-                <input type="text" class="form-control" id="talie" name="codigoTalie" placeholder="Digite o TALIE" disabled>
+                <input type="text" class="form-control" id="talie" name="codigoTalie" placeholder="Digite o TALIE" value="@Model.Talie.CodigoTalie" disabled>
             </div>
         </div>
 
         <div class="row padding-bottom">
             <div class="form-group col-md-3">
                 <label for="placa">PLACA</label>
-                <input type="text" class="form-control" id="placa" name="placa" placeholder="Digite a placa" disabled>
+                <input type="text" class="form-control" id="placa" name="placa" placeholder="Digite a placa" value="@Model.Talie.Placa" disabled>
             </div>
             <div class="form-group col-md-3">
                 <label for="reserva">RESERVA</label>
-                <input type="text" class="form-control" id="reserva" name="reserva" placeholder="Digite a reserva" disabled>
+                <input type="text" class="form-control" id="reserva" name="reserva" placeholder="Digite a reserva" value="@Model.Talie.Reserva" disabled>
             </div>
             <div class="form-group col-md-3">
                 <label for="cliente">CLIENTE</label>
-                <input type="text" class="form-control" id="cliente" name="cliente" placeholder="Digite o cliente" disabled>
+                <input type="text" class="form-control" id="cliente" name="cliente" placeholder="Digite o cliente" value="@Model.Talie.Cliente" disabled>
             </div>
         </div>
 
@@ -63,11 +63,11 @@
                     Id = "cbConferente",
                     Name = "conferente",
                     Descricao = "Selecione o Conferente",
-                    Value = "0",
+                    Value = @Model.Talie.Conferente,
                     Disabled = false,
                     Options = Model.Conferentes.Select(e => new SelectOption
                     {
-                        Value = e.Id.ToString(),
+                        Value = e.Id,
                         Text = e.Descricao
                     }).ToList()
                 })
@@ -78,11 +78,11 @@
                     Id = "cbEquipe",
                     Name = "equipe",
                     Descricao = "Selecione a Equipe",
-                    Value = "0",
+                    Value = Model.Talie.Equipe,
                     Disabled = false,
                     Options = Model.Equipes.Select(e => new SelectOption
                     {
-                        Value = e.Id.ToString(),
+                        Value = e.Id,
                         Text = e.Descricao
                     }).ToList()
                 })
@@ -92,12 +92,12 @@
                 {
                     Id = "cbOperacao",
                     Name = "operacao",
-                    Descricao = "Selecione a Equipe",
-                    Value = "0",
+                    Descricao = "Selecione a Operacao",
+                    Value = Convert.ToInt32(@Model.Talie.Operacao),
                     Disabled = false,
                     Options = Model.Operacoes.Select(e => new SelectOption
                     {
-                        Value = e.Id.ToString(),
+                        Value = e.Id,
                         Text = e.Descricao
                     }).ToList()
                 })
@@ -106,22 +106,49 @@
     </form>
     <pre id="formModel"></pre>
 </div>
+<!--MODAL OBS-->
+<div class="modal fade" id="observacaoModal" tabindex="-1" role="dialog" aria-labelledby="observacaoModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="observacaoModalLabel">Adicionar Observação</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="formObservacao">
+                    <div class="form-group">
+                        <label for="observacaoInput">Observação</label>
+                        <textarea id="observacaoInput" class="form-control" rows="4" placeholder="Digite sua observação aqui"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                <button type="button" id="salvarObservacao" class="btn btn-primary">Salvar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Footer com botões -->
 <footer class="fixed-bottom bg-light py-3">
     <div class="container d-flex flex-wrap justify-content-start">
-        <a id="lnkObservacao" href="#" class="btn btn-warning flex-grow-1 mx-1 my-1">
+        <a id="lnkObservacao" href="#" class="btn btn-warning flex-grow-1 mx-1 my-1" data-toggle="modal" data-target="#observacaoModal">
             <span aria-hidden="true" class="fa fa-sticky-note"></span>&nbsp;&nbsp;Observacao
         </a>
+
 
         <a id="lnkCancelar" href="#" class="btn btn-warning flex-grow-1 mx-1 my-1">
             <span aria-hidden="true" class="fa fa-window-close"></span>&nbsp;&nbsp;Cancelar
         </a>
 
-        <a id="lnkGravar" href="#"  data-url="@Url.Action("GravarTalie", "DescargaExportacao")" class="btn btn-warning flex-grow-1 mx-1 my-1">
+        <a id="lnkGravar" href="#" data-url="@Url.Action("GravarTalie", "DescargaExportacao")" class="btn btn-warning flex-grow-1 mx-1 my-1">
             <span aria-hidden="true" class="fa fa-check"></span>&nbsp;&nbsp;Gravar
         </a>
 
-        <a id="lnkMarcantes" href="#" class="btn btn-warning flex-grow-1 mx-1 my-1">
+        <a id="lnkMarcantes" href="@Url.Action("DescargaExportacaoMarcantes", "DescargaExportacao")" class="btn btn-warning flex-grow-1 mx-1 my-1">
             <span aria-hidden="true" class="fa fa-sort-numeric-up"></span>&nbsp;&nbsp;Marcantes
         </a>
 
@@ -146,6 +173,7 @@
         </a>
     </div>
 </footer>
+
 
 @section Scripts {
     @Scripts.Render("~/bundles/descargaExportacao")

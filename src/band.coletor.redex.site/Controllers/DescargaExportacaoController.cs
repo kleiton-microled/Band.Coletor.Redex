@@ -1,11 +1,10 @@
 using Band.Coletor.Redex.Application.ViewModel;
+using Band.Coletor.Redex.Business.Classes.ServiceResult;
 using Band.Coletor.Redex.Business.Interfaces.Business;
-using Band.Coletor.Redex.Business.Models.Entities;
-using Band.Coletor.Redex.Site.Models.CarregamentoCargaSolta;
 using Band.Coletor.Redex.Site.Models.DescargaExportacao;
-using Microsoft.Ajax.Utilities;
 using System;
-using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 
@@ -34,15 +33,52 @@ namespace Band.Coletor.Redex.Site.Controllers
         }
         public async Task<ActionResult> Index()
         {
-            var model = new DescargaExportacaoViewModel
+            var talieData = TempData["DescargaExportacaoData"] as TalieViewModel;
+
+            var viewModel = new DescargaExportacaoViewModel
             {
+                Talie = talieData ?? new TalieViewModel(), 
+                Conferentes = await _conferenteBusiness.ListAll(), 
+                Equipes = await _equipeBusiness.ListAll(), 
+                Operacoes = OperacaoViewModel.Create() 
+            };
+            TempData["DescargaExportacaoData"] = talieData;
+            return View(viewModel);
+        }
+        public async Task<ActionResult> DescargaExportacaoItens()
+        {
+
+            var talieData = TempData["DescargaExportacaoData"] as TalieViewModel;
+
+            var viewModel = new DescargaExportacaoViewModel
+            {
+                Talie = talieData ?? new TalieViewModel(),
                 Conferentes = await _conferenteBusiness.ListAll(),
                 Equipes = await _equipeBusiness.ListAll(),
                 Operacoes = OperacaoViewModel.Create(),
+                Itens = null
             };
-
-            return View(model);
+            TempData["DescargaExportacaoData"] = talieData;
+            return View("_descargaExportacaoItens", viewModel); 
         }
+
+        public async Task<ActionResult> DescargaExportacaoMarcantes()
+        {
+
+            var talieData = TempData["DescargaExportacaoData"] as TalieViewModel;
+
+            var viewModel = new DescargaExportacaoViewModel
+            {
+                Talie = talieData ?? new TalieViewModel(),
+                Conferentes = await _conferenteBusiness.ListAll(),
+                Equipes = await _equipeBusiness.ListAll(),
+                Operacoes = OperacaoViewModel.Create(),
+                Itens = null
+            };
+            TempData["DescargaExportacaoData"] = talieData;
+            return View("_descargaExportacaoMarcante", viewModel);
+        }
+
 
         [HttpGet]
         public async Task<JsonResult> ObterDadosTaliePorRegistro(int registro)
@@ -57,27 +93,72 @@ namespace Band.Coletor.Redex.Site.Controllers
         [HttpPost]
         public JsonResult GravarTalie(TalieViewModel formModel)
         {
+            TempData["DescargaExportacaoData"] = formModel;
+
+            var _serviceResultSave = new ServiceResult<int>();
+            var _serviceResultUpdate = new ServiceResult<bool>();
             try
             {
-                var result = _talieBusiness.Gravar(formModel);
+                var valid = ValidarDados(formModel);
+                if (valid.Result)
+                {
+                    if (formModel.CodigoTalie == 0)
+                    {
+                        _serviceResultSave = _talieBusiness.Save(formModel).Result;
+                        if (_serviceResultSave.Status)
+                            return Json(new { sucesso = true, mensagem = _serviceResultSave.Mensagens.FirstOrDefault() });
 
-                return Json(new { sucesso = true, mensagem = "Dados gravados com sucesso." });
+                    }
+                    else
+                    {
+                        _serviceResultUpdate = _talieBusiness.Update(formModel).Result;
+                        if (_serviceResultUpdate.Status)
+                            return Json(new { sucesso = false, mensagem = _serviceResultUpdate.Mensagens.FirstOrDefault() });
+                    }
+
+                }
+                else
+                {
+                    return Json(new { sucesso = false, mensagem = valid.Mensagens.FirstOrDefault() });
+                }
+
+
+                return Json(new { sucesso = true, mensagem = "Erro no processamento" });
             }
             catch (Exception ex)
             {
-                return Json(new { sucesso = false, mensagem = "Erro ao gravar os dados. Tente novamentedddd." });
+                return Json(new { sucesso = false, mensagem = ex.Message });
             }
         }
 
-
-        public ActionResult DescargaExportacaoItens()
+        [HttpPost]
+        public JsonResult BuscarNotaFiscal(string numeroNotaFiscal, string codigoBooking, string codigoRegistro)
         {
+            //validacoes
+            var _serviceResult = _talieBusiness.ObterNotaFiscal(numeroNotaFiscal, codigoBooking, codigoRegistro);
+            return Json(new { sucesso = false, mensagem = _serviceResult.Mensagens.FirstOrDefault() });
+        }
+        private ServiceResult<bool> ValidarDados(TalieViewModel formModel)
+        {
+            var _serviceResult = new ServiceResult<bool>();
 
-            var model = new DescargaExportacaoViewModel()
+            if (formModel.StatusTalie == "TALIE FECHADO")
             {
-                Itens = null
-            };
-            return View("_descargaExportacaoItens", model); // Certifique-se de passar o model, se necessário
+                _serviceResult.Mensagens.Add("Talie Fechado - Operação cancelada");
+                _serviceResult.Result = false;
+                return _serviceResult;
+            }
+            //var data = DateTime.ParseExact(formModel.Inicio, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+
+            //if (data.Month > 12)
+            //{
+            //    _seriviceResult.Error = "Data inválida";
+            //    return _seriviceResult;
+            //}
+
+            _serviceResult.Mensagens.Add("Dados validados");
+            _serviceResult.Result = true;
+            return _serviceResult;
         }
 
 

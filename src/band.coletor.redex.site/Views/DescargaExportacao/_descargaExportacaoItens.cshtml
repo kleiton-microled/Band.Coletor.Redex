@@ -18,16 +18,16 @@
                 <label for="cbItensDescarregados">ITENS DESCAREGADOS:</label>
                 <select id="cbItensDescarregados" class="form-control">
                     @*@foreach (var item in Model.Itens)
-                    {
-                        <option value="@item.CodigoItem">@item.Descricao</option>
-                    }*@
+                        {
+                            <option value="@item.CodigoItem">@item.Descricao</option>
+                        }*@
                 </select>
             </div>
         </div>
         <div class="row padding-bottom">
             <div class="form-group col-md-3">
                 <label for="notafiscal">NOTA FISCAL</label>
-                <input type="text" class="form-control" id="notafiscal" name="notafiscal" placeholder="Digite a nota fiscal">
+                <input type="text" class="form-control" id="numeroNotaFiscal" name="numeroNotaFiscal" placeholder="Digite a nota fiscal">
             </div>
             <div class="form-group col-md-3">
                 <label for="quantidade">QUANTIDADE</label>
@@ -116,7 +116,7 @@
         </div>
         <div class="row padding-bottom">
             <div class="form-group col-md-6">
-                <button type="button" onclick="" class="btn btn-primary btn-block">Buscar</button>
+                <button type="button" id="btnBuscarNotaFiscal" data-url="@Url.Action("BuscarNotaFiscal", "DescargaExportacao")" class="btn btn-primary btn-block">Buscar</button>
             </div>
             <div class="form-group col-md-6">
                 <button type="reset" class="btn btn-secondary btn-block">Abrir</button>
@@ -152,3 +152,13 @@
 
     </div>
 </footer>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/descargaExportacaoItens")
+
+}
+
+<script>
+    const codigoRegistro = @Model.Talie.CodigoRegistro;
+    const codigoBooking = @Model.Talie.CodigoBooking;
+</script>

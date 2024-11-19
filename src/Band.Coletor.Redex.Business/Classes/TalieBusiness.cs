@@ -7,6 +7,7 @@ using System;
 using System.Threading.Tasks;
 using Band.Coletor.Redex.Business.Models.Entities;
 using Band.Coletor.Redex.Business.Models;
+using Band.Coletor.Redex.Business.Classes.ServiceResult;
 
 namespace Band.Coletor.Redex.Business.Classes
 {
@@ -20,9 +21,10 @@ namespace Band.Coletor.Redex.Business.Classes
             _repositorio = repositorio;
         }
 
-        public int Gravar(TalieViewModel view)
+        public async Task<ServiceResult<int>> Save(TalieViewModel view)
         {
-            var entity = Talie.InsertCommand(view.CodigoTalie, 
+
+            var entity = TalieEntity.InsertCommand(view.CodigoTalie, 
                                                    Convert.ToDateTime(view.Inicio), 
                                                    view.Conferente, 
                                                    view.Equipe,
@@ -30,10 +32,13 @@ namespace Band.Coletor.Redex.Business.Classes
                                                    view.Operacao,
                                                    view.Placa, 
                                                    view.CodigoGate,
-                                                   view.Registro,
+                                                   view.CodigoRegistro,
                                                    view.Observacao);
 
-            return _repositorio.CadastrarTalie(entity);
+            var _serviceResult =  await _repositorio.GravarTalieAsync(entity);
+           
+            return _serviceResult;
+            
         }
 
         public async Task<TalieViewModel> ObterDadosTaliePorRegistro(int registro)
@@ -84,11 +89,25 @@ namespace Band.Coletor.Redex.Business.Classes
             return null;
         }
 
-        public async Task<bool> UpdateTalie(TalieViewModel view)
+        public async Task<ServiceResult<bool>> Update(TalieViewModel view)
         {
-            var talie = TalieEntity.CreateNew(Convert.ToDateTime(view.Inicio), view.Conferente, view.Equipe, view.Operacao, view.Observacao, 1, view.CodigoTalie);
+            var talie = TalieEntity.CreateNew(Convert.ToDateTime(view.Inicio), 
+                                             view.Conferente, 
+                                             view.Equipe, 
+                                             view.Operacao, 
+                                             view.Observacao, 
+                                             1, 
+                                             view.CodigoTalie);
+
+            var _serviceResult =  await _repositorio.Update(talie);
             
-            return await _repositorio.Update(talie);
+            return _serviceResult;
+
+        }
+
+        public ServiceResult<int> ObterNotaFiscal(string numeroNotaFiscal, string codigoBooking, string codigoRegistro)
+        {
+            return _repositorio.ObterIdNotaFiscal(numeroNotaFiscal, codigoBooking, codigoRegistro);
         }
     }
 }

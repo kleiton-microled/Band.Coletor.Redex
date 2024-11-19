@@ -16,11 +16,12 @@ using System.Threading.Tasks;
 using Band.Coletor.Redex.Infra.Repositorios.Sql;
 using Band.Coletor.Redex.Business.Models.Entities;
 using System.Collections;
+using Band.Coletor.Redex.Business.Classes.ServiceResult;
 
 
 namespace Band.Coletor.Redex.Infra.Repositorios
 {
-    public class TalieRepositorio :BaseRepositorio<Talie>, ITalieRepositorio
+    public class TalieRepositorio : BaseRepositorio<Talie>, ITalieRepositorio
     {
         public TalieRepositorio(string connectionString) : base(connectionString)
         {
@@ -488,31 +489,7 @@ namespace Band.Coletor.Redex.Infra.Repositorios
 
                 parametros.Add(name: "Id", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
-                return con.Query<int>(@"
-                    INSERT INTO
-	                    REDEX..TB_TALIE
-                            (
-		                        INICIO,
-		                        CROSSDOCKING,
-		                        CONFERENTE,
-		                        EQUIPE,
-		                        AUTONUM_BOO,
-		                        FORMA_OPERACAO,
-		                        PLACA,
-		                        AUTONUM_GATE,
-		                        AUTONUM_REG,
-		                        OBS
-                            ) VALUES (
-                                @Inicio,
-                                @CrossDocking,
-                                @ConferenteId,
-                                @EquipeId,
-                                @BookingId,
-                                @OperacaoId,
-                                @Placa,
-                                @GateId,
-                                @RegistroId,
-                                @Observacoes); SELECT AUTONUM_TALIE = @RegistroId FROM TB_TALIE;", parametros).FirstOrDefault();
+                return con.Query<int>(SqlQueries.CadastrarTalie, parametros).FirstOrDefault();
             }
         }
 
@@ -567,7 +544,7 @@ namespace Band.Coletor.Redex.Infra.Repositorios
             using (SqlConnection con = new SqlConnection(Config.StringConexao()))
             {
                 return con.Query<int>(@"SELECT ident_current('redex.dbo.seq_tb_patio_Cs')").Single();
-                
+
             }
         }
 
@@ -586,291 +563,291 @@ namespace Band.Coletor.Redex.Infra.Repositorios
                 return con.Query<int>(@"SELECT ident_current('REDEX..SEQ_TB_AMR_GATE')").Single();
             }
         }
-        
-        
+
+
 
         public void FinalizarTalie(int id, DateTime inicio, decimal pesoBruto, int bookingId)
         {
-        //    using (SqlConnection con = new SqlConnection(Config.StringConexao()))
-        //    {
-        //        con.Open();
+            //    using (SqlConnection con = new SqlConnection(Config.StringConexao()))
+            //    {
+            //        con.Open();
 
-        //        var parametros = new DynamicParameters();
-        //        parametros.Add(name: "TalieId", value: id, direction: ParameterDirection.Input);
-        //        parametros.Add(name: "Inicio", value: inicio, direction: ParameterDirection.Input);
+            //        var parametros = new DynamicParameters();
+            //        parametros.Add(name: "TalieId", value: id, direction: ParameterDirection.Input);
+            //        parametros.Add(name: "Inicio", value: inicio, direction: ParameterDirection.Input);
 
-        //        using (var transaction = con.BeginTransaction())
-        //        {
-        //            var linhas = con.Query<Talie>(@"
-        //                    SELECT
-        //                        D.AUTONUM_BCG As BookingCargaId,
-        //                        B.QTDE_DESCARGA As QuantidadeDescarga,
-        //                        DECODE(B.AUTONUM_EMB, NULL, D.AUTONUM_EMB, B.AUTONUM_EMB) As EmbalagemId,
-        //                        D.AUTONUM_PRO As ProdutoId,
-        //                        B.MARCA,
-        //                        B.COMPRIMENTO,
-        //                        B.LARGURA,
-        //                        B.ALTURA,
-        //                        B.PESO,
-        //                        E.AUTONUM_REGCS As RegistroCsId,
-        //                        B.AUTONUM_NF As NotaFiscalId,
-        //                        B.AUTONUM_TI As TalieItemId,
-        //                        B.QTDE_ESTUFAGEM As QuantidadeEstufagem,
-        //                        B.YARD,
-        //                        B.ARMAZEM,
-        //                        E.AUTONUM_PATIOS As PatioId,
-        //                        B.IMO,
-        //                        B.UNO,
-        //                        B.IMO2,
-        //                        B.UNO2,
-        //                        B.IMO3,
-        //                        B.UNO3,
-        //                        B.IMO4,
-        //                        B.UNO4,
-        //                        ETQ.CODPRODUTO As CodigoProduto
-        //                    FROM
-        //                        REDEX..TB_TALIE A
-        //                    INNER JOIN
-        //                        REDEX..TB_TALIE_ITEM B ON A.AUTONUM_TALIE = B.AUTONUM_TALIE
-        //                    INNER JOIN
-        //                        REDEX..TB_REGISTRO_CS E ON E.AUTONUM_REGCS = B.AUTONUM_REGCS
-        //                    INNER JOIN
-        //                        REDEX..TB_BOOKING_CARGA D ON D.AUTONUM_BCG = E.AUTONUM_BCG
-        //                    INNER JOIN
-        //                        REDEX..TB_BOOKING E ON D.AUTONUM_BOO = E.AUTONUM_BOO
-        //                    LEFT JOIN
-        //                        (
-        //                            SELECT
-        //                                AUTONUM_RCS,
-        //                                SUBSTR(CODPRODUTO,1,8) CODPRODUTO
-        //                            FROM
-        //                                REDEX..ETIQUETAS
-        //                            GROUP BY
-        //                                AUTONUM_RCS,
-        //                                SUBSTR(CODPRODUTO,1,8)
-        //                        ) ETQ ON E.AUTONUM_REGCS = ETQ.AUTONUM_RCS
-        //                    WHERE
-        //                        A.AUTONUM_TALIE = @TalieId", parametros);
+            //        using (var transaction = con.BeginTransaction())
+            //        {
+            //            var linhas = con.Query<Talie>(@"
+            //                    SELECT
+            //                        D.AUTONUM_BCG As BookingCargaId,
+            //                        B.QTDE_DESCARGA As QuantidadeDescarga,
+            //                        DECODE(B.AUTONUM_EMB, NULL, D.AUTONUM_EMB, B.AUTONUM_EMB) As EmbalagemId,
+            //                        D.AUTONUM_PRO As ProdutoId,
+            //                        B.MARCA,
+            //                        B.COMPRIMENTO,
+            //                        B.LARGURA,
+            //                        B.ALTURA,
+            //                        B.PESO,
+            //                        E.AUTONUM_REGCS As RegistroCsId,
+            //                        B.AUTONUM_NF As NotaFiscalId,
+            //                        B.AUTONUM_TI As TalieItemId,
+            //                        B.QTDE_ESTUFAGEM As QuantidadeEstufagem,
+            //                        B.YARD,
+            //                        B.ARMAZEM,
+            //                        E.AUTONUM_PATIOS As PatioId,
+            //                        B.IMO,
+            //                        B.UNO,
+            //                        B.IMO2,
+            //                        B.UNO2,
+            //                        B.IMO3,
+            //                        B.UNO3,
+            //                        B.IMO4,
+            //                        B.UNO4,
+            //                        ETQ.CODPRODUTO As CodigoProduto
+            //                    FROM
+            //                        REDEX..TB_TALIE A
+            //                    INNER JOIN
+            //                        REDEX..TB_TALIE_ITEM B ON A.AUTONUM_TALIE = B.AUTONUM_TALIE
+            //                    INNER JOIN
+            //                        REDEX..TB_REGISTRO_CS E ON E.AUTONUM_REGCS = B.AUTONUM_REGCS
+            //                    INNER JOIN
+            //                        REDEX..TB_BOOKING_CARGA D ON D.AUTONUM_BCG = E.AUTONUM_BCG
+            //                    INNER JOIN
+            //                        REDEX..TB_BOOKING E ON D.AUTONUM_BOO = E.AUTONUM_BOO
+            //                    LEFT JOIN
+            //                        (
+            //                            SELECT
+            //                                AUTONUM_RCS,
+            //                                SUBSTR(CODPRODUTO,1,8) CODPRODUTO
+            //                            FROM
+            //                                REDEX..ETIQUETAS
+            //                            GROUP BY
+            //                                AUTONUM_RCS,
+            //                                SUBSTR(CODPRODUTO,1,8)
+            //                        ) ETQ ON E.AUTONUM_REGCS = ETQ.AUTONUM_RCS
+            //                    WHERE
+            //                        A.AUTONUM_TALIE = @TalieId", parametros);
 
-        //            foreach (var linha in linhas)
-        //            {
-        //                parametros = new DynamicParameters();
+            //            foreach (var linha in linhas)
+            //            {
+            //                parametros = new DynamicParameters();
 
-        //                var patioCsId = ObterProximoIdPatioCS();
+            //                var patioCsId = ObterProximoIdPatioCS();
 
-        //                parametros.Add(name: "PatioCsId", value: patioCsId, direction: ParameterDirection.Input);
-        //                parametros.Add(name: "PrimeiraEntrada", value: inicio, direction: ParameterDirection.Input);
-        //                parametros.Add(name: "BookingCargaId", value: linha.BookingCargaId, direction: ParameterDirection.Input);
-        //                parametros.Add(name: "QuantidadeDescarga", value: linha.QuantidadeDescarga, direction: ParameterDirection.Input);
-        //                parametros.Add(name: "EmbalagemReserva", value: linha.EmbalagemReserva, direction: ParameterDirection.Input);
-        //                parametros.Add(name: "ProdutoId", value: linha.ProdutoId, direction: ParameterDirection.Input);
-        //                parametros.Add(name: "Marca", value: linha.Marca, direction: ParameterDirection.Input);
-        //                parametros.Add(name: "Comprimento", value: linha.Comprimento, direction: ParameterDirection.Input);
-        //                parametros.Add(name: "Largura", value: linha.Largura, direction: ParameterDirection.Input);
-        //                parametros.Add(name: "Altura", value: linha.Altura, direction: ParameterDirection.Input);
-        //                parametros.Add(name: "VolumeDeclarado", value: linha.VolumeDeclarado, direction: ParameterDirection.Input);
-        //                parametros.Add(name: "Peso", value: linha.Peso, direction: ParameterDirection.Input);
-        //                parametros.Add(name: "Historico", value: linha.Historico.ToInt(), direction: ParameterDirection.Input);
-        //                parametros.Add(name: "RegistroCsId", value: linha.RegistroCsId, direction: ParameterDirection.Input);
-        //                parametros.Add(name: "NotaFiscalId", value: linha.NotaFiscalId, direction: ParameterDirection.Input);
-        //                parametros.Add(name: "TalieItemId", value: linha.TalieItemId, direction: ParameterDirection.Input);
-        //                parametros.Add(name: "QuantidadeEstufagem", value: linha.QuantidadeEstufagem, direction: ParameterDirection.Input);
-        //                parametros.Add(name: "Yard", value: linha.Yard, direction: ParameterDirection.Input);
-        //                parametros.Add(name: "Armazem", value: linha.Armazem, direction: ParameterDirection.Input);
-        //                parametros.Add(name: "PatioId", value: linha.PatioId, direction: ParameterDirection.Input);
-        //                parametros.Add(name: "IMO", value: linha.IMO, direction: ParameterDirection.Input);
-        //                parametros.Add(name: "IMO2", value: linha.IMO2, direction: ParameterDirection.Input);
-        //                parametros.Add(name: "IMO3", value: linha.IMO3, direction: ParameterDirection.Input);
-        //                parametros.Add(name: "IMO4", value: linha.IMO4, direction: ParameterDirection.Input);
-        //                parametros.Add(name: "UNO", value: linha.UNO, direction: ParameterDirection.Input);
-        //                parametros.Add(name: "UNO2", value: linha.UNO2, direction: ParameterDirection.Input);
-        //                parametros.Add(name: "UNO3", value: linha.UNO3, direction: ParameterDirection.Input);
-        //                parametros.Add(name: "UNO4", value: linha.UNO4, direction: ParameterDirection.Input);
-        //                parametros.Add(name: "CodigoProduto", value: linha.CodigoProduto, direction: ParameterDirection.Input);
+            //                parametros.Add(name: "PatioCsId", value: patioCsId, direction: ParameterDirection.Input);
+            //                parametros.Add(name: "PrimeiraEntrada", value: inicio, direction: ParameterDirection.Input);
+            //                parametros.Add(name: "BookingCargaId", value: linha.BookingCargaId, direction: ParameterDirection.Input);
+            //                parametros.Add(name: "QuantidadeDescarga", value: linha.QuantidadeDescarga, direction: ParameterDirection.Input);
+            //                parametros.Add(name: "EmbalagemReserva", value: linha.EmbalagemReserva, direction: ParameterDirection.Input);
+            //                parametros.Add(name: "ProdutoId", value: linha.ProdutoId, direction: ParameterDirection.Input);
+            //                parametros.Add(name: "Marca", value: linha.Marca, direction: ParameterDirection.Input);
+            //                parametros.Add(name: "Comprimento", value: linha.Comprimento, direction: ParameterDirection.Input);
+            //                parametros.Add(name: "Largura", value: linha.Largura, direction: ParameterDirection.Input);
+            //                parametros.Add(name: "Altura", value: linha.Altura, direction: ParameterDirection.Input);
+            //                parametros.Add(name: "VolumeDeclarado", value: linha.VolumeDeclarado, direction: ParameterDirection.Input);
+            //                parametros.Add(name: "Peso", value: linha.Peso, direction: ParameterDirection.Input);
+            //                parametros.Add(name: "Historico", value: linha.Historico.ToInt(), direction: ParameterDirection.Input);
+            //                parametros.Add(name: "RegistroCsId", value: linha.RegistroCsId, direction: ParameterDirection.Input);
+            //                parametros.Add(name: "NotaFiscalId", value: linha.NotaFiscalId, direction: ParameterDirection.Input);
+            //                parametros.Add(name: "TalieItemId", value: linha.TalieItemId, direction: ParameterDirection.Input);
+            //                parametros.Add(name: "QuantidadeEstufagem", value: linha.QuantidadeEstufagem, direction: ParameterDirection.Input);
+            //                parametros.Add(name: "Yard", value: linha.Yard, direction: ParameterDirection.Input);
+            //                parametros.Add(name: "Armazem", value: linha.Armazem, direction: ParameterDirection.Input);
+            //                parametros.Add(name: "PatioId", value: linha.PatioId, direction: ParameterDirection.Input);
+            //                parametros.Add(name: "IMO", value: linha.IMO, direction: ParameterDirection.Input);
+            //                parametros.Add(name: "IMO2", value: linha.IMO2, direction: ParameterDirection.Input);
+            //                parametros.Add(name: "IMO3", value: linha.IMO3, direction: ParameterDirection.Input);
+            //                parametros.Add(name: "IMO4", value: linha.IMO4, direction: ParameterDirection.Input);
+            //                parametros.Add(name: "UNO", value: linha.UNO, direction: ParameterDirection.Input);
+            //                parametros.Add(name: "UNO2", value: linha.UNO2, direction: ParameterDirection.Input);
+            //                parametros.Add(name: "UNO3", value: linha.UNO3, direction: ParameterDirection.Input);
+            //                parametros.Add(name: "UNO4", value: linha.UNO4, direction: ParameterDirection.Input);
+            //                parametros.Add(name: "CodigoProduto", value: linha.CodigoProduto, direction: ParameterDirection.Input);
 
-        //                con.Execute(@"
-        //                    INSERT INTO
-        //                     REDEX..TB_PATIO_CS
-        //                      (
-        //                       AUTONUM_PCS,
-        //                       AUTONUM_BCG,
-        //                       QTDE_ENTRADA,
-        //                       AUTONUM_EMB,
-        //                       AUTONUM_PRO,
-        //                       MARCA,
-        //                       VOLUME_DECLARADO,
-        //                       COMPRIMENTO,
-        //                       LARGURA,
-        //                       ALTURA,
-        //                       BRUTO,
-        //                       DT_PRIM_ENTRADA,
-        //                       FLAG_HISTORICO,
-        //                       AUTONUM_REGCS,
-        //                       AUTONUM_NF,
-        //                       TALIE_DESCARGA,
-        //                       QTDE_ESTUFAGEM,
-        //                       YARD,
-        //                       ARMAZEM,
-        //                       AUTONUM_PATIOS,
-        //                       PATIO,
-        //                       IMO,
-        //                       IMO2,
-        //                       IMO3,
-        //                                IMO4,
-        //                                UNO,
-        //                                UNO2,
-        //                       UNO3,
-        //                       UNO4,
-        //                       CODPRODUTO
-        //                      ) VALUES (
-        //                                @PatioCsId,
-        //                                @BookingCargaId,
-        //                                @QuantidadeDescarga,
-        //                                @EmbalagemReserva,
-        //                                @ProdutoId,
-        //                                @Marca,
-        //                                @VolumeDeclarado,
-        //                                @Comprimento,
-        //                                @Largura,
-        //                                @Altura,
-        //                                @Peso,
-        //                                @PrimeiraEntrada,
-        //                                @Historico,
-        //                                @RegistroCsId,
-        //                                @NotaFiscalId,
-        //                                @TalieItemId,
-        //                                @QuantidadeEstufagem,
-        //                                @Yard,
-        //                                @Armazem,
-        //                                @PatioId,
-        //                                @PatioId,
-        //                                @IMO,
-        //                                @IMO2,
-        //                                @IMO3,
-        //                                @IMO4,
-        //                                @UNO,
-        //                                @UNO2,
-        //                                @UNO3,
-        //                                @UNO4,
-        //                                @CodigoProduto
-        //                      )", parametros);
+            //                con.Execute(@"
+            //                    INSERT INTO
+            //                     REDEX..TB_PATIO_CS
+            //                      (
+            //                       AUTONUM_PCS,
+            //                       AUTONUM_BCG,
+            //                       QTDE_ENTRADA,
+            //                       AUTONUM_EMB,
+            //                       AUTONUM_PRO,
+            //                       MARCA,
+            //                       VOLUME_DECLARADO,
+            //                       COMPRIMENTO,
+            //                       LARGURA,
+            //                       ALTURA,
+            //                       BRUTO,
+            //                       DT_PRIM_ENTRADA,
+            //                       FLAG_HISTORICO,
+            //                       AUTONUM_REGCS,
+            //                       AUTONUM_NF,
+            //                       TALIE_DESCARGA,
+            //                       QTDE_ESTUFAGEM,
+            //                       YARD,
+            //                       ARMAZEM,
+            //                       AUTONUM_PATIOS,
+            //                       PATIO,
+            //                       IMO,
+            //                       IMO2,
+            //                       IMO3,
+            //                                IMO4,
+            //                                UNO,
+            //                                UNO2,
+            //                       UNO3,
+            //                       UNO4,
+            //                       CODPRODUTO
+            //                      ) VALUES (
+            //                                @PatioCsId,
+            //                                @BookingCargaId,
+            //                                @QuantidadeDescarga,
+            //                                @EmbalagemReserva,
+            //                                @ProdutoId,
+            //                                @Marca,
+            //                                @VolumeDeclarado,
+            //                                @Comprimento,
+            //                                @Largura,
+            //                                @Altura,
+            //                                @Peso,
+            //                                @PrimeiraEntrada,
+            //                                @Historico,
+            //                                @RegistroCsId,
+            //                                @NotaFiscalId,
+            //                                @TalieItemId,
+            //                                @QuantidadeEstufagem,
+            //                                @Yard,
+            //                                @Armazem,
+            //                                @PatioId,
+            //                                @PatioId,
+            //                                @IMO,
+            //                                @IMO2,
+            //                                @IMO3,
+            //                                @IMO4,
+            //                                @UNO,
+            //                                @UNO2,
+            //                                @UNO3,
+            //                                @UNO4,
+            //                                @CodigoProduto
+            //                      )", parametros);
 
-        //                parametros = new DynamicParameters();
+            //                parametros = new DynamicParameters();
 
-        //                parametros.Add(name: "PatioCsId", value: patioCsId, direction: ParameterDirection.Input);
-        //                parametros.Add(name: "TalieId", value: id, direction: ParameterDirection.Input);
+            //                parametros.Add(name: "PatioCsId", value: patioCsId, direction: ParameterDirection.Input);
+            //                parametros.Add(name: "TalieId", value: id, direction: ParameterDirection.Input);
 
-        //                con.Execute(@"UPDATE REDEX..TB_MARCANTES_RDX SET AUTONUM_PCS = @PatioCsId WHERE AUTONUM_TALIE = @TalieId AND VOLUMES > 0 AND ISNULL(AUTONUM_PCS,0) = 0", parametros);
+            //                con.Execute(@"UPDATE REDEX..TB_MARCANTES_RDX SET AUTONUM_PCS = @PatioCsId WHERE AUTONUM_TALIE = @TalieId AND VOLUMES > 0 AND ISNULL(AUTONUM_PCS,0) = 0", parametros);
 
-        //                var marcantes = con.Query<int>(@"SELECT AUTONUM FROM REDEX..TB_MARCANTES_RDX WHERE AUTONUM_TALIE = @TalieId ORDER BY AUTONUM", parametros);
+            //                var marcantes = con.Query<int>(@"SELECT AUTONUM FROM REDEX..TB_MARCANTES_RDX WHERE AUTONUM_TALIE = @TalieId ORDER BY AUTONUM", parametros);
 
-        //                foreach (var marcante in marcantes)
-        //                {
-        //                    parametros = new DynamicParameters();
+            //                foreach (var marcante in marcantes)
+            //                {
+            //                    parametros = new DynamicParameters();
 
-        //                    parametros.Add(name: "CsYard", value: ObterProximoIdCargaSoltaYard(), direction: ParameterDirection.Input);
-        //                    parametros.Add(name: "Autonum", value: marcante, direction: ParameterDirection.Input);
+            //                    parametros.Add(name: "CsYard", value: ObterProximoIdCargaSoltaYard(), direction: ParameterDirection.Input);
+            //                    parametros.Add(name: "Autonum", value: marcante, direction: ParameterDirection.Input);
 
-        //                    con.Execute(@"
-        //                        INSERT INTO
-        //                            REDEX..TB_CARGA_SOLTA_YARD
-        //                                (
-        //                                     AUTONUM,
-        //                                     AUTONUM_PATIOCS,
-        //                                     ARMAZEM,
-        //                                     YARD,
-        //                                     QUANTIDADE,
-        //                                     MOTIVO_COL
-        //                                ) SELECT
-        //                                   @CsYard,
-        //                                    AUTONUM_PCS,
-        //                                    Armazem,
-        //                                    Yard,
-        //                                    VOLUMES,
-        //                                    0
-        //                                  FROM REDEX..TB_MARCANTES_RDX Where AUTONUM = @Autonum AND ISNULL(ARMAZEM,0) > 0 ", parametros);
+            //                    con.Execute(@"
+            //                        INSERT INTO
+            //                            REDEX..TB_CARGA_SOLTA_YARD
+            //                                (
+            //                                     AUTONUM,
+            //                                     AUTONUM_PATIOCS,
+            //                                     ARMAZEM,
+            //                                     YARD,
+            //                                     QUANTIDADE,
+            //                                     MOTIVO_COL
+            //                                ) SELECT
+            //                                   @CsYard,
+            //                                    AUTONUM_PCS,
+            //                                    Armazem,
+            //                                    Yard,
+            //                                    VOLUMES,
+            //                                    0
+            //                                  FROM REDEX..TB_MARCANTES_RDX Where AUTONUM = @Autonum AND ISNULL(ARMAZEM,0) > 0 ", parametros);
 
-        //                    con.Execute(@"UPDATE REDEX..TB_MARCANTES_RDX SET AUTONUM_CS_YARD = @CsYard WHERE AUTONUM = @Autonum", parametros);
-        //                }
+            //                    con.Execute(@"UPDATE REDEX..TB_MARCANTES_RDX SET AUTONUM_CS_YARD = @CsYard WHERE AUTONUM = @Autonum", parametros);
+            //                }
 
-        //                if (linha.IMO != string.Empty)
-        //                {
-        //                    parametros = new DynamicParameters();
+            //                if (linha.IMO != string.Empty)
+            //                {
+            //                    parametros = new DynamicParameters();
 
-        //                    parametros.Add(name: "IMO", value: linha.IMO, direction: ParameterDirection.Input);
-        //                    parametros.Add(name: "BookingCargaId", value: linha.BookingCargaId, direction: ParameterDirection.Input);
+            //                    parametros.Add(name: "IMO", value: linha.IMO, direction: ParameterDirection.Input);
+            //                    parametros.Add(name: "BookingCargaId", value: linha.BookingCargaId, direction: ParameterDirection.Input);
 
-        //                    con.Execute(@"UPDATE REDEX..TB_BOOKING_CARGA SET IMO = @IMO WHERE AUTONUM_BCG = @BookingCargaId", parametros);
-        //                }
+            //                    con.Execute(@"UPDATE REDEX..TB_BOOKING_CARGA SET IMO = @IMO WHERE AUTONUM_BCG = @BookingCargaId", parametros);
+            //                }
 
-        //                parametros = new DynamicParameters();
+            //                parametros = new DynamicParameters();
 
-        //                parametros.Add(name: "IdAmrGate", value: ObterProximoIdArmGate(), direction: ParameterDirection.Input);
-        //                parametros.Add(name: "GateId", value: linha.GateId, direction: ParameterDirection.Input);
-        //                parametros.Add(name: "PatioCsId", value: patioCsId, direction: ParameterDirection.Input);
-        //                parametros.Add(name: "PesoBruto", value: pesoBruto, direction: ParameterDirection.Input);
-        //                parametros.Add(name: "Inicio", value: inicio, direction: ParameterDirection.Input);
-        //                parametros.Add(name: "BookingId", value: linha.BookingId, direction: ParameterDirection.Input);
+            //                parametros.Add(name: "IdAmrGate", value: ObterProximoIdArmGate(), direction: ParameterDirection.Input);
+            //                parametros.Add(name: "GateId", value: linha.GateId, direction: ParameterDirection.Input);
+            //                parametros.Add(name: "PatioCsId", value: patioCsId, direction: ParameterDirection.Input);
+            //                parametros.Add(name: "PesoBruto", value: pesoBruto, direction: ParameterDirection.Input);
+            //                parametros.Add(name: "Inicio", value: inicio, direction: ParameterDirection.Input);
+            //                parametros.Add(name: "BookingId", value: linha.BookingId, direction: ParameterDirection.Input);
 
-        //                con.Execute(@"
-        //                        INSERT INTO
-        //                         REDEX..TB_AMR_GATE
-        //                          (
-        //                           AUTONUM,
-        //                           GATE,
-        //                           CNTR_RDX,
-        //                           CS_RDX,
-        //                           PESO_ENTRADA,
-        //                           PESO_SAIDA,
-        //                           DATA,
-        //                           ID_BOOKING,
-        //                           ID_OC,
-        //                           FUNCAO_GATE,
-        //                           FLAG_HISTORICO
-        //                          ) VALUES (
-        //                           @IdAmrGate,
-        //                                    @GateId,
-        //                                    0,
-        //                                    @PatioCsId,
-        //                                    @PesoBruto,
-        //                                    0,
-        //                                    @Inicio,
-        //                                    @BookingId,
-        //                                    0,
-        //                                    203,
-        //                                    0
-        //                          )", parametros);
+            //                con.Execute(@"
+            //                        INSERT INTO
+            //                         REDEX..TB_AMR_GATE
+            //                          (
+            //                           AUTONUM,
+            //                           GATE,
+            //                           CNTR_RDX,
+            //                           CS_RDX,
+            //                           PESO_ENTRADA,
+            //                           PESO_SAIDA,
+            //                           DATA,
+            //                           ID_BOOKING,
+            //                           ID_OC,
+            //                           FUNCAO_GATE,
+            //                           FLAG_HISTORICO
+            //                          ) VALUES (
+            //                           @IdAmrGate,
+            //                                    @GateId,
+            //                                    0,
+            //                                    @PatioCsId,
+            //                                    @PesoBruto,
+            //                                    0,
+            //                                    @Inicio,
+            //                                    @BookingId,
+            //                                    0,
+            //                                    203,
+            //                                    0
+            //                          )", parametros);
 
-        //                parametros = new DynamicParameters();
-        //                parametros.Add(name: "PatioCsId", value: patioCsId, direction: ParameterDirection.Input);
+            //                parametros = new DynamicParameters();
+            //                parametros.Add(name: "PatioCsId", value: patioCsId, direction: ParameterDirection.Input);
 
-        //                con.Execute(@"UPDATE REDEX..TB_PATIO_CS SET PCS_PAI = @PatioCsId WHERE AUTONUM_PCS = @PatioCsId", parametros);
-        //            }
+            //                con.Execute(@"UPDATE REDEX..TB_PATIO_CS SET PCS_PAI = @PatioCsId WHERE AUTONUM_PCS = @PatioCsId", parametros);
+            //            }
 
-        //            parametros = new DynamicParameters();
-        //            parametros.Add(name: "TalieId", value: id, direction: ParameterDirection.Input);
+            //            parametros = new DynamicParameters();
+            //            parametros.Add(name: "TalieId", value: id, direction: ParameterDirection.Input);
 
-        //            con.Execute(@"UPDATE REDEX..TB_TALIE SET FLAG_FECHADO = 1,TERMINO = SYSDATE WHERE AUTONUM_TALIE = @TalieId", parametros);
+            //            con.Execute(@"UPDATE REDEX..TB_TALIE SET FLAG_FECHADO = 1,TERMINO = SYSDATE WHERE AUTONUM_TALIE = @TalieId", parametros);
 
-        //            var qtdeBooking = ObterQuantidadeBooking(bookingId);
-        //            var qtdeEntradaBooking = ObterQuantidadeEntradaBooking(bookingId);
+            //            var qtdeBooking = ObterQuantidadeBooking(bookingId);
+            //            var qtdeEntradaBooking = ObterQuantidadeEntradaBooking(bookingId);
 
-        //            if (qtdeBooking != qtdeEntradaBooking)
-        //            {
-        //                parametros = new DynamicParameters();
-        //                parametros.Add(name: "BookingId", value: bookingId, direction: ParameterDirection.Input);
+            //            if (qtdeBooking != qtdeEntradaBooking)
+            //            {
+            //                parametros = new DynamicParameters();
+            //                parametros.Add(name: "BookingId", value: bookingId, direction: ParameterDirection.Input);
 
-        //                con.Execute(@"UPDATE REDEX..TB_BOOKING SET FLAG_FINALIZADO = 1 WHERE AUTONUM_BOO = @BookingId", parametros);
-        //            }
+            //                con.Execute(@"UPDATE REDEX..TB_BOOKING SET FLAG_FINALIZADO = 1 WHERE AUTONUM_BOO = @BookingId", parametros);
+            //            }
 
-        //            parametros = new DynamicParameters();
-        //            parametros.Add(name: "BookingId", value: bookingId, direction: ParameterDirection.Input);
+            //            parametros = new DynamicParameters();
+            //            parametros.Add(name: "BookingId", value: bookingId, direction: ParameterDirection.Input);
 
-        //            con.Execute(@"UPDATE REDEX..TB_BOOKING SET STATUS_RESERVA = 2 WHERE AUTONUM_BOO = @BookingId", parametros);
+            //            con.Execute(@"UPDATE REDEX..TB_BOOKING SET STATUS_RESERVA = 2 WHERE AUTONUM_BOO = @BookingId", parametros);
 
-        //            transaction.Commit();
-        //        }
-        //    }
+            //            transaction.Commit();
+            //        }
+            //    }
         }
 
         public TalieItem ObterItemNF(int registroId, string nf)
@@ -1576,8 +1553,9 @@ namespace Band.Coletor.Redex.Infra.Repositorios
             }
         }
 
-        public async Task<bool> Update(TalieEntity talie)
+        public async Task<ServiceResult<bool>> Update(TalieEntity talie)
         {
+            var _serviceResult = new ServiceResult<bool>();
             var query = SqlQueries.AtualizarTalie;
             try
             {
@@ -1588,26 +1566,117 @@ namespace Band.Coletor.Redex.Infra.Repositorios
                     using (var command = new SqlCommand(query, connection))
                     {
                         // Adiciona os parâmetros
-                        command.Parameters.AddWithValue("@DataInicio", talie.INICIO);
-                        command.Parameters.AddWithValue("@Conferente", talie.CONFERENTE);
-                        command.Parameters.AddWithValue("@Equipe", talie.EQUIPE);
-                        command.Parameters.AddWithValue("@Operacao", talie.FORMA_OPERACAO);
-                        command.Parameters.AddWithValue("@Obs", talie.OBS);
-                        command.Parameters.AddWithValue("@IdGeoCamera", talie.ID_GEO_CAMERA);
-                        command.Parameters.AddWithValue("@AutonumTalie", talie.AUTONUM_TALIE);
+                        command.Parameters.Add("@Inicio", SqlDbType.DateTime).Value = talie.INICIO;
+                        command.Parameters.Add("@ConferenteId", SqlDbType.Int).Value = talie.CONFERENTE;
+                        command.Parameters.Add("@EquipeId", SqlDbType.Int).Value = talie.EQUIPE;
+                        command.Parameters.Add("@OperacaoId", SqlDbType.Int).Value = talie.FORMA_OPERACAO;
+                        command.Parameters.Add("@Observacoes", SqlDbType.VarChar, 100).Value = talie.OBS ?? (object)DBNull.Value;
+                        command.Parameters.Add("@AutonumTalie", SqlDbType.Int).Value = talie.AUTONUM_TALIE;
 
-                        int rowsAffected = await command.ExecuteNonQueryAsync();
-                        return rowsAffected > 0;
+                        int rowsAffected = command.ExecuteNonQuery();
+                        if (rowsAffected > 0)
+                        {
+                            _serviceResult.Result = true;
+                            _serviceResult.Mensagens.Add($"Talie \"{talie.AUTONUM_TALIE}\" atualizado com sucesso!");
+                        }
+                        else
+                        {
+                            _serviceResult.Result = false;
+                            _serviceResult.Mensagens.Add($"Falha ao tentar atualizar Talie \"{talie.AUTONUM_TALIE}\" !");
+                        }
+                        return _serviceResult;
                     }
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Erro ao alterar talie: {ex.Message}");
-                return false;
+                _serviceResult.Result = false;
+                _serviceResult.Error = ex.Message;
+                return _serviceResult;
             }
-            throw new NotImplementedException();
         }
+
+        public async Task<ServiceResult<int>> GravarTalieAsync(TalieEntity talie)
+        {
+            var query = SqlQueries.CadastrarTalie;
+            var _serviceResult = new ServiceResult<int>();
+            try
+            {
+                using (var connection = new SqlConnection(Config.StringConexao()))
+                {
+                    await connection.OpenAsync();
+
+                    using (var command = new SqlCommand(query, connection))
+                    {
+                        // Define os parâmetros
+                        command.Parameters.Add("@Inicio", SqlDbType.DateTime).Value = talie.INICIO;
+                        command.Parameters.Add("@CrossDocking", SqlDbType.Int).Value = 0;
+                        command.Parameters.Add("@ConferenteId", SqlDbType.Int).Value = talie.CONFERENTE;
+                        command.Parameters.Add("@EquipeId", SqlDbType.Int).Value = talie.EQUIPE;
+                        command.Parameters.Add("@BookingId", SqlDbType.Int).Value = talie.AUTONUM_BOO;
+                        command.Parameters.Add("@OperacaoId", SqlDbType.Int).Value = talie.FORMA_OPERACAO;
+                        command.Parameters.Add("@Placa", SqlDbType.VarChar, 100).Value = talie.PLACA ?? string.Empty;
+                        command.Parameters.Add("@GateId", SqlDbType.Int).Value = talie.AUTONUM_GATE;
+                        command.Parameters.Add("@RegistroId", SqlDbType.Int).Value = talie.AUTONUM_REG;
+                        command.Parameters.Add("@Observacoes", SqlDbType.VarChar, 100).Value = talie.OBS ?? (object)DBNull.Value;
+
+                        // Define o timeout
+                        command.CommandTimeout = 30;
+
+                        // Executa a query
+                        var result = command.ExecuteScalar();
+
+                        // Retorna o ID gerado
+                        _serviceResult.Result = result != null ? Convert.ToInt32(result) : 0;
+                        return _serviceResult;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _serviceResult.Error = ex.Message;
+                return _serviceResult;
+            }
+        }
+
+        public ServiceResult<int> ObterIdNotaFiscal(string numeroNotaFiscal, string codigoBooking, string codigoRegistro)
+        {
+            var _serviceResult = new ServiceResult<int>();
+            string query = SqlQueries.ObterIdNotaFiscal;
+            try
+            {
+                using (var connection = Connection)
+                {
+                    var parameters = new DynamicParameters();
+                    parameters.Add("@AutonumBooking", codigoBooking, DbType.Int32);
+                    parameters.Add("@CodigoRegistro", codigoRegistro, DbType.String);
+                    parameters.Add("@NumeroNotaFiscal", codigoRegistro, DbType.String);
+
+
+                    var result = connection.QueryFirstOrDefault(query, parameters);
+
+                    if (result == null)
+                    {
+                        _serviceResult.Result = 0;
+                        _serviceResult.Mensagens.Add("Nota fiscal nao encotrada para o Item");
+                    }
+                    else
+                    {
+                        _serviceResult.Result = result;
+                        _serviceResult.Mensagens.Add("Nota fiscal encotrada para o Item");
+                    }
+
+                    return _serviceResult;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _serviceResult.Error = ex.Message;
+                return _serviceResult;
+            }
+        }
+
         #endregion
     }
 }

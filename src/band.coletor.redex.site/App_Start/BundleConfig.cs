@@ -73,6 +73,15 @@ namespace Band.Coletor.Redex.Site
             bundles.Add(new ScriptBundle("~/bundles/descargaExportacao").Include(
                        "~/Views/DescargaExportacao/scripts/_descargaExportacao.js"));
 
+            bundles.Add(new ScriptBundle("~/bundles/descargaExportacaoItens").Include(
+                      "~/Views/DescargaExportacao/scripts/_descargaExportacaoItens.js"));
+
+            bundles.Add(new ScriptBundle("~/bundles/descargaExportacaoMarcantes").Include(
+                     "~/Views/DescargaExportacao/scripts/_descargaExportacaoMarcantes.js"));
+
+            bundles.Add(new StyleBundle("~/bundles/descargaExportacaoModal").Include(
+                    "~/Views/DescargaExportacao/style/style.css"));
+
             BundleTable.EnableOptimizations = true;
         }
     }

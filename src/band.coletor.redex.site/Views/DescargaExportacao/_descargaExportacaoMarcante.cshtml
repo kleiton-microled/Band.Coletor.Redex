@@ -1,0 +1,62 @@
+﻿@{
+    ViewBag.Title = "Descarga Exportacao Marcante";
+}
+@model Band.Coletor.Redex.Site.Models.DescargaExportacao.DescargaExportacaoViewModel
+<div>
+    <div class="row padding-bottom">
+        <div class="col-md-12">
+            <h4>
+                <i class="fas fa-truck fa-lg"></i>
+                @ViewBag.Title
+            </h4>
+        </div>
+    </div>
+    <!--FORM-->
+    <form method="post" action="@Url.Action("Buscar", "DescargaExportacao")">
+        <div class="row padding-bottom">
+            <div class="form-group col-md-3">
+                <label for="marcante">MARCANTE</label>
+                <input type="text" class="form-control" id="marcante" name="marcante" placeholder="Digite a Marcante">
+            </div>
+            <div class="form-group col-md-3">
+                <label for="marcante">QUANTIDADE</label>
+                <input type="text" class="form-control" id="quantidade" name="quantidade" placeholder="Digite a Quantidade">
+            </div>
+            <div class="form-group col-sm-3">
+                <label for="cbItensDescarregados">ARMAZÉM</label>
+                <select id="cbArmazem" class="form-control">
+                    @*@foreach (var item in Model.Itens)
+                        {
+                            <option value="@item.CodigoItem">@item.Descricao</option>
+                        }*@
+                </select>
+            </div>
+            <div class="form-group col-md-3">
+                <label for="local">LOCAL</label>
+                <input type="text" class="form-control" id="local" name="local" placeholder="Digite o local">
+            </div>
+        </div>
+    </form>
+</div>
+
+
+<footer class="fixed-bottom bg-light py-3">
+    <div class="container d-flex flex-wrap justify-content-start">
+        <a id="lnkVoltar" href="@Url.Action("Index", "DescargaExportacao")" class="btn btn-warning flex-grow-1 mx-1 my-1">
+            <span aria-hidden="true" class="fa fa-window-close"></span>&nbsp;&nbsp;Voltar
+        </a>
+        <a id="lnkGravar" href="#" class="btn btn-warning flex-grow-1 mx-1 my-1">
+            <span aria-hidden="true" class="fa fa-check"></span>&nbsp;&nbsp;Gravar
+        </a>
+    </div>
+</footer>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/descargaExportacaoMarcantes")
+
+}
+
+<script>
+    const codigoRegistro = @Model.Talie.CodigoRegistro;
+    const codigoBooking = @Model.Talie.CodigoBooking;
+</script>

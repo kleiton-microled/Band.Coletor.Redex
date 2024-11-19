@@ -1,0 +1,15 @@
+.modal-bottom .modal-dialog {
+    position: fixed;
+    bottom: -100%;
+    margin: 0;
+    width: 100%;
+    transition: transform 0.3s ease-out;
+}
+
+.modal-bottom.show .modal-dialog {
+    transform: translateY(-100%);
+}
+
+.modal-content {
+    border-radius: 10px 10px 0 0;
+}

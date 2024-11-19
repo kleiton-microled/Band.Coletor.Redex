@@ -1,4 +1,5 @@
 ﻿using Band.Coletor.Redex.Application.ViewModel;
+using Band.Coletor.Redex.Business.Classes.ServiceResult;
 using System.Threading.Tasks;
 
 namespace Band.Coletor.Redex.Business.Interfaces.Business
@@ -6,7 +7,8 @@ namespace Band.Coletor.Redex.Business.Interfaces.Business
     public interface ITalieBusiness
     {
         Task<TalieViewModel> ObterDadosTaliePorRegistro(int registro);
-        int Gravar(TalieViewModel talieViewModel);
-        Task<bool> UpdateTalie(TalieViewModel talieViewModel);
+        Task<ServiceResult<int>> Save(TalieViewModel talieViewModel);
+        Task<ServiceResult<bool>> Update(TalieViewModel talieViewModel);
+        ServiceResult<int> ObterNotaFiscal(string numeroNotaFiscal, string codigoBooking, string codigoRegistro);
     }
 }
