@@ -66,6 +66,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\ContainerBusiness.cs" />
     <Compile Include="Classes\ServiceResult\IServiceResult.cs" />
     <Compile Include="Classes\ServiceResult\ServiceResultcs.cs" />
     <Compile Include="Classes\TalieBusiness.cs" />
@@ -114,6 +115,7 @@
     <Compile Include="Helpers\Converters.cs" />
     <Compile Include="Helpers\DateTimeHelpers.cs" />
     <Compile Include="Helpers\StringHelpers.cs" />
+    <Compile Include="Interfaces\Business\IConteinerBusiness.cs" />
     <Compile Include="Interfaces\Business\IConferenteBusiness.cs" />
     <Compile Include="Interfaces\Business\ITalieBusiness.cs" />
     <Compile Include="Interfaces\Business\IOperacaoBusiness.cs" />
@@ -149,6 +151,8 @@
     <Compile Include="Models\Armazem.cs" />
     <Compile Include="Models\BrowserInfo.cs" />
     <Compile Include="Models\CargaEstufagem.cs" />
+    <Compile Include="Models\CargaConteiner.cs" />
+    <Compile Include="Models\ConteinerBL.cs" />
     <Compile Include="Models\Conteiner.cs" />
     <Compile Include="Models\Embalagem.cs" />
     <Compile Include="Models\Entities\Gate.cs" />

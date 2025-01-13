@@ -1650,7 +1650,7 @@ namespace Band.Coletor.Redex.Infra.Repositorios
                     var parameters = new DynamicParameters();
                     parameters.Add("@AutonumBooking", codigoBooking, DbType.Int32);
                     parameters.Add("@CodigoRegistro", codigoRegistro, DbType.String);
-                    parameters.Add("@NumeroNotaFiscal", codigoRegistro, DbType.String);
+                    parameters.Add("@NumeroNotaFiscal", numeroNotaFiscal, DbType.String);
 
 
                     var result = connection.QueryFirstOrDefault(query, parameters);
@@ -1664,6 +1664,41 @@ namespace Band.Coletor.Redex.Infra.Repositorios
                     {
                         _serviceResult.Result = result;
                         _serviceResult.Mensagens.Add("Nota fiscal encotrada para o Item");
+                    }
+
+                    return _serviceResult;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _serviceResult.Error = ex.Message;
+                return _serviceResult;
+            }
+        }
+
+        public async Task<ServiceResult<TalieItemDTO>> ObterItensNotaFiscal(string numeroNotaFiscal, string codigoRegistro)
+        {
+            var _serviceResult = new ServiceResult<TalieItemDTO>();
+            string query = SqlQueries.ObterItensNotaFiscal;
+            try
+            {
+                using (var connection = Connection)
+                {
+                    var parameters = new DynamicParameters();
+                    parameters.Add("@CodigoRegistro", codigoRegistro, DbType.String);
+                    parameters.Add("@NumeroNotaFiscal", numeroNotaFiscal, DbType.String);
+
+
+                    var result = await connection.QueryFirstOrDefaultAsync<TalieItemDTO>(query, parameters);
+
+                    if (result == null)
+                    {
+                        _serviceResult.Mensagens.Add("Nota Fiscal não identificada no registro.");
+                    }
+                    else
+                    {
+                        _serviceResult.Result = result;
                     }
 
                     return _serviceResult;

@@ -1,4 +1,5 @@
-﻿using Band.Coletor.Redex.Business.Classes.ServiceResult;
+﻿using Band.Coletor.Redex.Application.ViewModel;
+using Band.Coletor.Redex.Business.Classes.ServiceResult;
 using Band.Coletor.Redex.Business.DTO;
 using Band.Coletor.Redex.Business.Models;
 using Band.Coletor.Redex.Business.Models.Entities;
@@ -119,6 +120,7 @@ namespace Band.Coletor.Redex.Business.Interfaces.Repositorios
         Task<Gate> ObterRegistrosGate(int registro);
         Task<ServiceResult<bool>> Update(TalieEntity talie);
         ServiceResult<int> ObterIdNotaFiscal(string numeroNotaFiscal, string codigoBooking, string codigoRegistro);
+        Task<ServiceResult<TalieItemDTO>> ObterItensNotaFiscal(string numeroNotaFiscal, string codigoRegistro);
 
         #endregion
 

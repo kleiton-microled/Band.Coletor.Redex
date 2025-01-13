@@ -3,12 +3,19 @@
 <div class="form-group">
     <label for="@Model.Id">@Model.Descricao</label>
     <select id="@Model.Id" name="@Model.Name" class="form-control" @(Model.Disabled ? "disabled" : "")>
-        <option value="">Selecione</option>
-        @foreach (var item in Model.Options)
+        @if (Model.Options == null || !Model.Options.Any())
         {
-            <option value="@item.Value" @(item.Value == Model.Value ? "selected" : "")>
-                @item.Text
-            </option>
+            <option value="">Selecione</option>
+        }
+        else
+        {
+            <option value="">Selecione</option>
+            foreach (var item in Model.Options)
+            {
+                <option value="@item.Value" @(item.Value == Model.Value ? "selected" : "")>
+                    @item.Text
+                </option>
+            }
         }
     </select>
 </div>

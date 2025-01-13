@@ -10,5 +10,6 @@ namespace Band.Coletor.Redex.Business.Interfaces.Business
         Task<ServiceResult<int>> Save(TalieViewModel talieViewModel);
         Task<ServiceResult<bool>> Update(TalieViewModel talieViewModel);
         ServiceResult<int> ObterNotaFiscal(string numeroNotaFiscal, string codigoBooking, string codigoRegistro);
+        Task<ServiceResult<TalieItemViewModel>> ObterItensNotaFiscal(string numeroNotaFiscal, string codigoRegistro);
     }
 }

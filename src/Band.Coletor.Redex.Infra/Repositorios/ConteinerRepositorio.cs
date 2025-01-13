@@ -1,6 +1,8 @@
-﻿using Band.Coletor.Redex.Business.Interfaces.Repositorios;
+﻿using Band.Coletor.Redex.Business.Classes.ServiceResult;
+using Band.Coletor.Redex.Business.Interfaces.Repositorios;
 using Band.Coletor.Redex.Business.Models;
 using Band.Coletor.Redex.Infra.Configuracao;
+using Band.Coletor.Redex.Infra.Repositorios.Sql;
 using Dapper;
 using System.Collections.Generic;
 using System.Data;
@@ -10,8 +12,12 @@ using System.Runtime.Caching;
 
 namespace Band.Coletor.Redex.Infra.Repositorios
 {
-    public class ConteinerRepositorio : IConteinerRepositorio
+    public class ConteinerRepositorio : BaseRepositorio<ConteinerBL>, IConteinerRepositorio
     {
+        public ConteinerRepositorio(string connectionString) : base(connectionString)
+        {
+        }
+
         public IEnumerable<Conteiner> ConsultarConteinerPorNumero(string idConteiner)
         {
             IEnumerable<Conteiner> conteiners;
@@ -89,6 +95,60 @@ namespace Band.Coletor.Redex.Infra.Repositorios
                     WHERE
                         BOO.REFERENCE=:Reserva", parametros).FirstOrDefault();
             }
+        }
+
+        public ServiceResult<IEnumerable<ConteinerBL>> ObterContainersMarcantes(string lote, int patio)
+        {
+            var _serviceResult = new ServiceResult<IEnumerable<ConteinerBL>>();
+            try
+            {
+                string command = SqlQueries.BuscarContainersMarcantes;
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("lote", lote);
+                parameters.Add("patio", patio);
+                using (var connection = Connection)
+                {
+                    var data = connection.Query<ConteinerBL>(command, parameters);
+                    if (data != null)
+                    {
+                        _serviceResult.Result = data;
+                    }
+                }
+            }
+            catch (System.Exception ex)
+            {
+                _serviceResult.Error = ex.Message;
+                return _serviceResult;
+            }
+
+            return _serviceResult;
+
+        }
+
+        public ServiceResult<CargaConteiner> CarregarDadosContainer(string lote)
+        {
+            var _serviceResult = new ServiceResult<CargaConteiner>();
+            try
+            {
+                string command = SqlQueries.CarregarDadosContainer;
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("lote", lote);
+                using (var connection = Connection)
+                {
+                    var data = connection.QueryFirstOrDefault<CargaConteiner>(command, parameters);
+                    if (data != null)
+                    {
+                        _serviceResult.Result = data;
+                    }
+                }
+            }
+            catch (System.Exception ex)
+            {
+                _serviceResult.Error = ex.Message;
+                return _serviceResult;
+            }
+
+            return _serviceResult;
         }
 
         public string ObterConteinerPorId(int conteinerId)

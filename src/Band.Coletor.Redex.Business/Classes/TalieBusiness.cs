@@ -109,5 +109,16 @@ namespace Band.Coletor.Redex.Business.Classes
         {
             return _repositorio.ObterIdNotaFiscal(numeroNotaFiscal, codigoBooking, codigoRegistro);
         }
+
+        public async Task<ServiceResult<TalieItemViewModel>> ObterItensNotaFiscal(string numeroNotaFiscal, string codigoRegistro)
+        {
+            var data = await _repositorio.ObterItensNotaFiscal(numeroNotaFiscal, codigoRegistro);
+            if (data.Status)
+            {
+                return new ServiceResult<TalieItemViewModel>();
+            }
+
+            return new ServiceResult<TalieItemViewModel>();
+        }
     }
 }

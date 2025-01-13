@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Band.Coletor.Redex.Application.ViewModel;
+using Band.Coletor.Redex.Business.Classes.ServiceResult;
 using Band.Coletor.Redex.Business.Models;
 using Band.Coletor.Redex.Business.Models.Entities;
+using System.Collections.Generic;
 
 namespace Band.Coletor.Redex.Business.Mapping
 {
@@ -13,6 +15,9 @@ namespace Band.Coletor.Redex.Business.Mapping
             CreateMap<Conferente, ConferenteViewModel>();
             CreateMap<Operacao, OperacaoViewModel>();
             CreateMap<TalieEntity, TalieViewModel>();
+
+            CreateMap<ConteinerBL, ConteinerViewModel>();
+            CreateMap<CargaConteiner, CargaConteinerViewModel>();
         }
     }
 }

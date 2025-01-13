@@ -223,6 +223,8 @@
     <Compile Include="Models\DescargaExportacao\DescargaExportacaoViewModel.cs" />
     <Compile Include="Models\EquipeModel.cs" />
     <Compile Include="Models\EstufagemViewModel.cs" />
+    <Compile Include="Models\MarcanteCargaSolta\ContainersViewModel.cs" />
+    <Compile Include="Models\MarcanteCargaSolta\MarcanteCargaSoltaViewModel.cs" />
     <Compile Include="Models\MovimentacaoConteinerViewModel.cs" />
     <Compile Include="Models\PreRegistroViewModel.cs" />
     <Compile Include="Models\RegistroViewModel.cs" />

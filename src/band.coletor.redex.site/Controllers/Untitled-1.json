@@ -1,0 +1,17 @@
+{
+    "requestDate":"2024-11-22T11:32:33",
+    "requestOrigin": "Gabriel.A72252",
+    "customer":{
+        "customerCode":"447878",
+        "documentNumber": "43242342423423",
+        "IsLegalPerson": false
+    },
+    "before":{
+        "officeCode": 2141,
+        "advisorCode": "A72252"
+    },
+    "after":{
+        "officeCode": 2141,
+        "advisorCode": "A57992"
+    }
+}

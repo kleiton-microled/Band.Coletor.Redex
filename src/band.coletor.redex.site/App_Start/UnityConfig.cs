@@ -32,7 +32,7 @@ namespace Band.Coletor.Redex.Site
             string connectionString = ConfigurationManager.ConnectionStrings["StringConexaoSqlServer"].ConnectionString;
 
             // Repositórios
-            container.RegisterType<IConteinerRepositorio, ConteinerRepositorio>();
+            //container.RegisterType<IConteinerRepositorio, ConteinerRepositorio>();
             //container.RegisterType<ITalieRepositorio, TalieRepositorio>();
             container.RegisterType<IUsuarioLoginRepositorio, UsuarioLoginRepositorio>();
             container.RegisterType<ILacreRepositorio, LacreRespositorio>();
@@ -64,6 +64,7 @@ namespace Band.Coletor.Redex.Site
             container.RegisterType<IConferenteRepositorio, ConferenteRepositorio>(new InjectionConstructor(connectionString));
             container.RegisterType<IOperacaoRepositorio, OperacaoRepositorio>(new InjectionConstructor(connectionString));
             container.RegisterType<ITalieRepositorio, TalieRepositorio>(new InjectionConstructor(connectionString));
+            container.RegisterType<IConteinerRepositorio, ConteinerRepositorio>(new InjectionConstructor(connectionString));
 
 
             // Camada de Negócios (Business)
@@ -72,6 +73,7 @@ namespace Band.Coletor.Redex.Site
             container.RegisterType<IConferenteBusiness, ConferenteBusiness>();
             container.RegisterType<IOperacaoBusiness, OperacaoBusiness>();
             container.RegisterType<ITalieBusiness, TalieBusiness>();
+            container.RegisterType<IConteinerBusiness, ContainerBusiness>();
 
             // Configuração do AutoMapper
             var mapperConfig = new MapperConfiguration(cfg =>

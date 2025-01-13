@@ -16,6 +16,7 @@ namespace Band.Coletor.Redex.Site.Controllers
         private readonly IEquipeBusiness _equipeBusiness;
         private readonly IConferenteBusiness _conferenteBusiness;
         private readonly IOperacaoBusiness _operacaoBusiness;
+        private readonly IMarcantesCargaSoltaBusiness _marcantesCargaSoltaBusiness;
         //
 
         private ITalieBusiness _talieBusiness;
@@ -23,13 +24,15 @@ namespace Band.Coletor.Redex.Site.Controllers
                                             IEquipeBusiness equipeBusiness,
                                             IConferenteBusiness conferenteBusiness,
                                             IOperacaoBusiness operacaoBusiness,
-                                            ITalieBusiness talieBusiness)
+                                            ITalieBusiness talieBusiness,
+                                            IMarcantesCargaSoltaBusiness marcantesCargaSoltaBusiness)
         {
             _descargaExportacaoBusiness = descargaExportacaoBusiness;
             _equipeBusiness = equipeBusiness;
             _conferenteBusiness = conferenteBusiness;
             _operacaoBusiness = operacaoBusiness;
             _talieBusiness = talieBusiness;
+            _marcantesCargaSoltaBusiness = marcantesCargaSoltaBusiness;
         }
         public async Task<ActionResult> Index()
         {
@@ -78,7 +81,6 @@ namespace Band.Coletor.Redex.Site.Controllers
             TempData["DescargaExportacaoData"] = talieData;
             return View("_descargaExportacaoMarcante", viewModel);
         }
-
 
         [HttpGet]
         public async Task<JsonResult> ObterDadosTaliePorRegistro(int registro)
@@ -132,12 +134,40 @@ namespace Band.Coletor.Redex.Site.Controllers
         }
 
         [HttpPost]
-        public JsonResult BuscarNotaFiscal(string numeroNotaFiscal, string codigoBooking, string codigoRegistro)
+        public async Task<JsonResult> BuscarNotaFiscal(string numeroNotaFiscal, string codigoBooking, string codigoRegistro)
         {
-            //validacoes
-            var _serviceResult = _talieBusiness.ObterNotaFiscal(numeroNotaFiscal, codigoBooking, codigoRegistro);
-            return Json(new { sucesso = false, mensagem = _serviceResult.Mensagens.FirstOrDefault() });
+            try
+            {
+                var serviceResult = _talieBusiness.ObterNotaFiscal(numeroNotaFiscal, codigoBooking, codigoRegistro);
+
+                if (serviceResult.Result == 0)
+                {
+                    return Json(new
+                    {
+                        sucesso = false,
+                        mensagem = serviceResult.Mensagens.FirstOrDefault()
+                    });
+                }
+
+                var itensNf = await _talieBusiness.ObterItensNotaFiscal(numeroNotaFiscal, codigoRegistro);
+
+                return Json(new
+                {
+                    sucesso = true,
+                    data = itensNf
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    sucesso = false,
+                    mensagem = "Ocorreu um erro ao buscar a nota fiscal.",
+                    detalheErro = ex.Message
+                });
+            }
         }
+
         private ServiceResult<bool> ValidarDados(TalieViewModel formModel)
         {
             var _serviceResult = new ServiceResult<bool>();
@@ -161,6 +191,7 @@ namespace Band.Coletor.Redex.Site.Controllers
             return _serviceResult;
         }
 
+        //buscar os armazens
 
     }
 }

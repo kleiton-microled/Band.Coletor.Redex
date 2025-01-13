@@ -1,6 +1,8 @@
 @{
     ViewBag.Title = "Marcantes Carga Solta";
 }
+@model Band.Coletor.Redex.Site.Models.MarcanteCargaSolta.MarcanteCargaSoltaViewModel
+
 
 <div>
     <div class="row padding-bottom">
@@ -19,9 +21,9 @@
                 </div>*@
             <div class="form-group col-md-12">
                 <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="Pesquise um lote" aria-label="Pesquisar Lote" aria-describedby="basic-addon2">
+                    <input type="text" id="lote" class="form-control" placeholder="Pesquise um lote" aria-label="Pesquisar Lote" aria-describedby="basic-addon2">
                     <div class="input-group-append">
-                        <button class="btn btn-primary" type="button">Filtrar Lote</button>
+                        <button id="btnFiltrarLote" class="btn btn-primary" type="button">Filtrar Lote</button>
                     </div>
                 </div>
             </div>
@@ -29,31 +31,33 @@
 
         <div class="row padding-bottom">
             <div class="form-group col-sm-6">
-                <label for="cbContainer">Selecione um container: </label>
-                <select id="cbContainer" class="form-control">
-                    @*@foreach (var item in Model)
-                        {
-                            <option value="@item.Id">@item.Descricao</option>
-                        }*@
-                </select>
+                @Html.Partial("~/Views/Shared/Components/Selects/component_coletor_select.cshtml", new ComponentColetorSelectModel
+                {
+                    Id = "cbContainers",
+                    Name = "containers",
+                    Descricao = "Selecione o Container",
+                    Value = null,
+                    Disabled = false,
+                    Options = new List<SelectOption>()
+                })
             </div>
             <div class="form-group col-md-3">
                 <label for="quantidade">QUANTIDADE</label>
-                <input type="text" class="form-control" id="quantidade" name="quantidade">
+                <input type="text" class="form-control" id="quantidade" name="quantidade" value="@Model.QuantidadeMarcantes">
             </div>
             <div class="form-group col-md-3">
                 <label for="embalagem">EMBALAGEM</label>
-                <input type="text" class="form-control" id="embalagem" name="embalagem">
+                <input type="text" class="form-control" id="embalagem" name="embalagem" value="@Model.Volume">
             </div>
         </div>
         <div class="row padding-bottom">
             <div class="form-group col-md-8">
                 <label for="marcante">MARCANTE</label>
-                <input type="text" class="form-control" id="marcante" name="marcante">
+                <input type="text" class="form-control" id="marcante" name="marcante" value="@Model.Marcante">
             </div>
             <div class="form-group col-md-4">
                 <label for="qtdMarcantes">QTD.MARCANTES</label>
-                <input type="text" class="form-control" id="qtdMarcantes" name="qtdMarcantes">
+                <input type="text" class="form-control" id="qtdMarcantes" name="qtdMarcantes" value="@Model.QuantidadeMarcantes">
             </div>
         </div>
 
@@ -81,3 +85,42 @@
         </a>
     </div>
 </footer>
+
+@section Scripts {
+    <script>
+        document.getElementById('btnFiltrarLote').addEventListener('click', function () {
+            const lote = document.getElementById('lote').value;
+            const url = `/MarcantesCargaSolta/CarregarContainers?lote=${lote}`;
+
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Erro ao carregar os containers.');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const select = document.getElementById('cbContainers');
+                    select.innerHTML = '<option value="">Selecione</option>'; // Limpa os dados existentes
+
+                    data.Containers.forEach(container => {
+                        const option = document.createElement('option');
+                        option.value = container.Id;
+                        option.textContent = container.Descricao;
+                        select.appendChild(option);
+                    });
+
+                    // Atualize outros campos (se necessário)
+                    document.getElementById('marcante').value = data.Marcante;
+                    document.getElementById('quantidade').value = data.QuantidadeMarcantes;
+                    document.getElementById('embalagem').value = data.Volume;
+                })
+                .catch(error => {
+                    console.error(error);
+                    alert('Erro ao carregar os containers.');
+                });
+        });
+
+
+    </script>
+}

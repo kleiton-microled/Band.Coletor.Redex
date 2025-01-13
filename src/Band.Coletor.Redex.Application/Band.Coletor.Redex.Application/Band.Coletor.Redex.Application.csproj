@@ -10,7 +10,7 @@
     <RootNamespace>Band.Coletor.Redex.Application</RootNamespace>
     <AssemblyName>Band.Coletor.Redex.Application</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-	  <LangVersion>8.0</LangVersion>
+    <LangVersion>8.0</LangVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
   </PropertyGroup>
@@ -44,10 +44,13 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModel\BaseViewModel.cs" />
+    <Compile Include="ViewModel\CargaConteinerViewModel.cs" />
+    <Compile Include="ViewModel\ConteinerViewModel.cs" />
     <Compile Include="ViewModel\ItensDescarregadosViewModel.cs" />
     <Compile Include="ViewModel\OperacaoViewModel.cs" />
     <Compile Include="ViewModel\ConferenteViewModel.cs" />
     <Compile Include="ViewModel\EquipeViewModel.cs" />
+    <Compile Include="ViewModel\TalieItemViewModel.cs" />
     <Compile Include="ViewModel\TalieViewModel.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

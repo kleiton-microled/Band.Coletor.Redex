@@ -211,6 +211,58 @@ namespace Band.Coletor.Redex.Infra.Repositorios.Sql
                                                   WHERE 
                                                       BOO.AUTONUM_BOO = @AutonumBooking
                                                       AND A.NUM_NF = @NumeroNotaFiscal";
+        public const string ObterItensNotaFiscal = @"SELECT 
+                                                        A.AUTONUM_REGCS AS ID,
+                                                        A.QUANTIDADE,
+                                                        B.PESO_BRUTO,
+                                                        B.QTDE,
+                                                        B.AUTONUM_EMB,
+                                                        D.DESC_PRODUTO,
+                                                        C.SIGLA,
+                                                        CONCAT(C.DESCRICAO_EMB, '-', C.AUTONUM_EMB) AS EMBALAGEM,
+                                                        B.IMO,
+                                                        B.IMO2,
+                                                        B.IMO3,
+                                                        B.IMO4,
+                                                        B.UNO,
+                                                        B.UNO2,
+                                                        B.UNO3,
+                                                        B.UNO4
+                                                    FROM 
+                                                        REDEX..TB_REGISTRO_CS A
+                                                    INNER JOIN 
+                                                        REDEX..TB_BOOKING_CARGA B ON A.AUTONUM_BCG = B.AUTONUM_BCG
+                                                    INNER JOIN 
+                                                        REDEX..TB_CAD_EMBALAGENS C ON B.AUTONUM_EMB = C.AUTONUM_EMB
+                                                    INNER JOIN 
+                                                        REDEX..TB_CAD_PRODUTOS D ON B.AUTONUM_PRO = D.AUTONUM_PRO
+                                                    WHERE 
+                                                        A.AUTONUM_REG = @CodigoRegistro
+                                                        AND A.NF = @numeroNotaFiscal;
+                                                    ";
+        public const string BuscarContainersMarcantes = @"SELECT 
+	                                                          c.autonum as Id, 
+	                                                          c.ID_CONTEINER AS Descricao
+	                                                      FROM 
+	                                                          SGIPA..tb_cntr_bl c 
+	                                                      INNER JOIN 
+	                                                          SGIPA..tb_amr_cntr_bl a 
+	                                                      ON 
+	                                                          c.autonum = a.cntr
+	                                                      WHERE 
+	                                                          a.bl = @lote
+	                                                          AND c.PATIO = @patio
+	                                                      ORDER BY 
+	                                                          ID_CONTEINER";
+        public const string CarregarDadosContainer = @"SELECT 
+                                                            c.QUANTIDADE, 
+                                                            E.DESCR AS EMBALAGEM 
+                                                        FROM 
+                                                            SGIPA..TB_CARGA_CNTR C 
+                                                        LEFT JOIN 
+                                                            SGIPA..DTE_TB_EMBALAGENS E ON C.EMBALAGEM = E.CODE 
+                                                        WHERE  
+                                                            C.BL = @lote";
 
         #region DESCARGA CD
         public const string QueryGetTalieByIdConteiner = @"
