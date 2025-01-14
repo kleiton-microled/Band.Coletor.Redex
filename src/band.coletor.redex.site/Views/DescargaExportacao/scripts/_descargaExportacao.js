@@ -3,16 +3,16 @@
 };
 
 
-function obterDadosTalie() {
+function CarregarRegistro() {
     var registro = $("#registro").val();
 
     $.ajax({
-        url: '/DescargaExportacao/ObterDadosTaliePorRegistro',
+        url: '/DescargaExportacao/CarregarRegistro',
         type: 'GET',
-        data: { registro: registro },
+        data: { codigoRegistro: registro },
         success: function (response) {
             // Preencher os campos do formulário com os dados retornados
-            formModel.codigoRegistro = response.Registro || '';
+            formModel.codigoRegistro = response.CodigoRegistro || '';
             formModel.inicio = formatarDataParaInput(response.Inicio) || '';
             formModel.termino = formatarDataParaInput(response.Termino) || '';
             formModel.equipe = response.Equipe || '';
@@ -20,19 +20,15 @@ function obterDadosTalie() {
             formModel.operacao = response.Operacao || '';
             formModel.placa = response.Placa || '';
             formModel.reserva = response.Reserva || '';
-            formModel.codigoTalie = response.CodigoTalie || '';
+            formModel.codigoTalie = response.Talie || '';
             formModel.cliente = response.Cliente || '';
             formModel.statusTali = response.StatusTalie || '';
-            //$("#codigoGate").val(response.CodigoGate);
-            //$("#codigoBooking").val(response.CodigoBooking);
-            //$("#inicio").val(response.Inicio);
-            //$("#termino").val(response.Termino);
-            //$("#observacao").val(response.Observacao);
-            //$("#statusTalie").val(response.StatusTalie);
-            //$("#conferente").val(response.Conferente);
-            //$("#equipe").val(response.Equipe);
-            //$("#camera").val(response.Camera);
-            //$("#operacao").val(response.Operacao);
+            
+            // Setar os valores nos combos
+            setSelectValue("cbEquipe", response.Equipe);
+            setSelectValue("cbConferente", response.Conferente);
+            setSelectValue("cbOperacao", response.Operacao);
+
             preencherFormularioComModel();
             verificarCondicaoParaProximo();
         },
@@ -42,6 +38,31 @@ function obterDadosTalie() {
         }
     });
 }
+
+// Função auxiliar para setar o valor no combo
+function setSelectValue(selectId, value) {
+    const selectElement = document.getElementById(selectId);
+
+    if (!selectElement) {
+        console.error(`Elemento com ID "${selectId}" não encontrado.`);
+        return;
+    }
+
+    // Tenta localizar a opção correspondente
+    let optionFound = false;
+    for (let i = 0; i < selectElement.options.length; i++) {
+        if (selectElement.options[i].value === value.toString()) {
+            selectElement.options[i].selected = true;
+            optionFound = true;
+            break;
+        }
+    }
+
+    if (!optionFound) {
+        console.warn(`Valor "${value}" não encontrado no combo com ID "${selectId}".`);
+    }
+}
+
 
 //
 function preencherFormularioComModel() {
@@ -111,7 +132,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-//GRAVAR TALIE
+// GRAVAR TALIE
 document.getElementById('lnkGravar').addEventListener('click', function (e) {
     e.preventDefault(); // Evita a navegação padrão
 
@@ -127,18 +148,36 @@ document.getElementById('lnkGravar').addEventListener('click', function (e) {
         success: function (response) {
             $('#preloader').hide();
             if (response.sucesso) {
-                alert("Dados gravados com sucesso!");
-                location.reload(); // Atualiza ou redireciona conforme necessário
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Sucesso!',
+                    text: response.mensagem || "Dados gravados com sucesso!",
+                    timer: 2000,
+                    showConfirmButton: false
+                }).then(() => {
+                    CarregarRegistro(); // Atualiza ou redireciona conforme necessário
+                });
             } else {
-                alert(response.mensagem || "Erro ao gravar os dados.");
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Atenção!',
+                    text: response.mensagem || "Erro ao gravar os dados.",
+                    showConfirmButton: true
+                });
             }
         },
         error: function () {
             $('#preloader').hide();
-            alert("Erro ao gravar os dados. Tente novamente.");
+            Swal.fire({
+                icon: 'error',
+                title: 'Erro!',
+                text: "Erro ao gravar os dados. Tente novamente.",
+                showConfirmButton: true
+            });
         }
     });
 });
+
 
 //UTILS
 function formatarDataParaInput(dateString) {

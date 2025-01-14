@@ -36,7 +36,7 @@ namespace Band.Coletor.Redex.Site
             //container.RegisterType<ITalieRepositorio, TalieRepositorio>();
             container.RegisterType<IUsuarioLoginRepositorio, UsuarioLoginRepositorio>();
             container.RegisterType<ILacreRepositorio, LacreRespositorio>();
-            container.RegisterType<IRegistroRepositorio, RegistroRepositorio>();
+            //container.RegisterType<IRegistroRepositorio, RegistroRepositorio>();
             container.RegisterType<IReservaRepositorio, ReservaRepositorio>();
             container.RegisterType<IPreRegistroRepositorio, PreRegistroRepositorio>();
             //container.RegisterType<IConferenteRepositorio, ConferenteRepositorio>();
@@ -62,9 +62,11 @@ namespace Band.Coletor.Redex.Site
             // Registrar repositórios com a connectionString injetada
             container.RegisterType<IEquipeRepositorio, EquipeRepositorio>(new InjectionConstructor(connectionString));
             container.RegisterType<IConferenteRepositorio, ConferenteRepositorio>(new InjectionConstructor(connectionString));
+            container.RegisterType<IArmazenRepositorio, ArmazemRepositorio>(new InjectionConstructor(connectionString));
             container.RegisterType<IOperacaoRepositorio, OperacaoRepositorio>(new InjectionConstructor(connectionString));
             container.RegisterType<ITalieRepositorio, TalieRepositorio>(new InjectionConstructor(connectionString));
             container.RegisterType<IConteinerRepositorio, ConteinerRepositorio>(new InjectionConstructor(connectionString));
+            container.RegisterType<IRegistroRepositorio, RegistroRepositorio>(new InjectionConstructor(connectionString));
 
 
             // Camada de Negócios (Business)
@@ -72,8 +74,10 @@ namespace Band.Coletor.Redex.Site
             container.RegisterType<IEquipeBusiness, EquipeBusiness>();
             container.RegisterType<IConferenteBusiness, ConferenteBusiness>();
             container.RegisterType<IOperacaoBusiness, OperacaoBusiness>();
+            container.RegisterType<IArmazemBusiness, ArmazenBusiness>();
             container.RegisterType<ITalieBusiness, TalieBusiness>();
             container.RegisterType<IConteinerBusiness, ContainerBusiness>();
+            container.RegisterType<IRegistroBusiness, RegistroBusiness>();
 
             // Configuração do AutoMapper
             var mapperConfig = new MapperConfiguration(cfg =>

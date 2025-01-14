@@ -45,11 +45,14 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModel\BaseViewModel.cs" />
     <Compile Include="ViewModel\CargaConteinerViewModel.cs" />
+    <Compile Include="ViewModel\ArmazemViewModel.cs" />
+    <Compile Include="ViewModel\MarcanteViewModel.cs" />
     <Compile Include="ViewModel\ConteinerViewModel.cs" />
     <Compile Include="ViewModel\ItensDescarregadosViewModel.cs" />
     <Compile Include="ViewModel\OperacaoViewModel.cs" />
     <Compile Include="ViewModel\ConferenteViewModel.cs" />
     <Compile Include="ViewModel\EquipeViewModel.cs" />
+    <Compile Include="ViewModel\RegistroViewModel.cs" />
     <Compile Include="ViewModel\TalieItemViewModel.cs" />
     <Compile Include="ViewModel\TalieViewModel.cs" />
   </ItemGroup>

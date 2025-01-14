@@ -16,40 +16,40 @@
         <div class="row padding-bottom">
             <div class="form-group col-md-3">
                 <label for="registro">REGISTRO</label>
-                <input type="text" class="form-control" id="registro" name="registro" value="@Model.Talie.CodigoRegistro" placeholder="Digite o registro">
+                <input type="text" class="form-control" id="registro" name="registro" value="@Model.Registro.CodigoRegistro" placeholder="Digite o registro">
             </div>
             <div class="form-group col-md-3">
                 <label for="inicio">INICIO</label>
-                <input type="datetime-local" class="form-control" id="inicio" name="inicio" value="@Model.Talie.Inicio" disabled>
+                <input type="datetime-local" class="form-control" id="inicio" name="inicio" value="@Model.Registro.Inicio" disabled>
             </div>
             <div class="form-group col-md-3">
                 <label for="termino">TERMINO</label>
-                <input type="datetime-local" class="form-control" id="termino" name="termino" value="@Model.Talie.Termino" disabled>
+                <input type="datetime-local" class="form-control" id="termino" name="termino" value="@Model.Registro.Termino" disabled>
             </div>
             <div class="form-group col-md-3">
                 <label for="talie">TALIE</label>
-                <input type="text" class="form-control" id="talie" name="codigoTalie" placeholder="Digite o TALIE" value="@Model.Talie.CodigoTalie" disabled>
+                <input type="text" class="form-control" id="talie" name="codigoTalie" value="@Model.Registro.Talie" disabled>
             </div>
         </div>
 
         <div class="row padding-bottom">
             <div class="form-group col-md-3">
                 <label for="placa">PLACA</label>
-                <input type="text" class="form-control" id="placa" name="placa" placeholder="Digite a placa" value="@Model.Talie.Placa" disabled>
+                <input type="text" class="form-control" id="placa" name="placa" placeholder="Digite a placa" value="@Model.Registro.Placa" disabled>
             </div>
             <div class="form-group col-md-3">
                 <label for="reserva">RESERVA</label>
-                <input type="text" class="form-control" id="reserva" name="reserva" placeholder="Digite a reserva" value="@Model.Talie.Reserva" disabled>
+                <input type="text" class="form-control" id="reserva" name="reserva" placeholder="Digite a reserva" value="@Model.Registro.Reserva" disabled>
             </div>
             <div class="form-group col-md-3">
                 <label for="cliente">CLIENTE</label>
-                <input type="text" class="form-control" id="cliente" name="cliente" placeholder="Digite o cliente" value="@Model.Talie.Cliente" disabled>
+                <input type="text" class="form-control" id="cliente" name="cliente" placeholder="Digite o cliente" value="@Model.Registro.Cliente" disabled>
             </div>
         </div>
 
         <div class="row padding-bottom">
             <div class="form-group col-md-6">
-                <button type="button" onclick="obterDadosTalie()" class="btn btn-primary btn-block">Buscar</button>
+                <button type="button" onclick="CarregarRegistro()" class="btn btn-primary btn-block">Buscar</button>
             </div>
             <div class="form-group col-md-6">
                 <button type="reset" class="btn btn-secondary btn-block">Restaurar Dados</button>
@@ -63,7 +63,7 @@
                     Id = "cbConferente",
                     Name = "conferente",
                     Descricao = "Selecione o Conferente",
-                    Value = @Model.Talie.Conferente,
+                    Value = @Model.Registro.Conferente,
                     Disabled = false,
                     Options = Model.Conferentes.Select(e => new SelectOption
                     {
@@ -78,7 +78,7 @@
                     Id = "cbEquipe",
                     Name = "equipe",
                     Descricao = "Selecione a Equipe",
-                    Value = Model.Talie.Equipe,
+                    Value = Model.Registro.Equipe,
                     Disabled = false,
                     Options = Model.Equipes.Select(e => new SelectOption
                     {
@@ -93,7 +93,7 @@
                     Id = "cbOperacao",
                     Name = "operacao",
                     Descricao = "Selecione a Operacao",
-                    Value = Convert.ToInt32(@Model.Talie.Operacao),
+                    Value = Convert.ToInt32(@Model.Registro.Operacao),
                     Disabled = false,
                     Options = Model.Operacoes.Select(e => new SelectOption
                     {
@@ -174,6 +174,7 @@
     </div>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 @section Scripts {
     @Scripts.Render("~/bundles/descargaExportacao")

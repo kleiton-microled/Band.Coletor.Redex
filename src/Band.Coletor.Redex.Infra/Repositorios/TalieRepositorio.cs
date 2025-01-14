@@ -1609,7 +1609,7 @@ namespace Band.Coletor.Redex.Infra.Repositorios
                     using (var command = new SqlCommand(query, connection))
                     {
                         // Define os parâmetros
-                        command.Parameters.Add("@Inicio", SqlDbType.DateTime).Value = talie.INICIO;
+                        command.Parameters.Add("@Inicio", SqlDbType.DateTime).Value = DateTime.Now;
                         command.Parameters.Add("@CrossDocking", SqlDbType.Int).Value = 0;
                         command.Parameters.Add("@ConferenteId", SqlDbType.Int).Value = talie.CONFERENTE;
                         command.Parameters.Add("@EquipeId", SqlDbType.Int).Value = talie.EQUIPE;

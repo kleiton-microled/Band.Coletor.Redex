@@ -41,7 +41,7 @@ namespace Band.Coletor.Redex.Business.Classes
             
         }
 
-        public async Task<TalieViewModel> ObterDadosTaliePorRegistro(int registro)
+        public async Task<TalieViewModel> CarregarRegistro(int registro)
         {
             var data = await _repositorio.ObterDadosTaliePorRegistroAsync(registro);
 

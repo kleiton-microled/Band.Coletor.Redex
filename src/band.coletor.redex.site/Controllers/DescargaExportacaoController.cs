@@ -1,8 +1,10 @@
 using Band.Coletor.Redex.Application.ViewModel;
+using Band.Coletor.Redex.Business.Classes;
 using Band.Coletor.Redex.Business.Classes.ServiceResult;
 using Band.Coletor.Redex.Business.Interfaces.Business;
 using Band.Coletor.Redex.Site.Models.DescargaExportacao;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,7 +18,8 @@ namespace Band.Coletor.Redex.Site.Controllers
         private readonly IEquipeBusiness _equipeBusiness;
         private readonly IConferenteBusiness _conferenteBusiness;
         private readonly IOperacaoBusiness _operacaoBusiness;
-        private readonly IMarcantesCargaSoltaBusiness _marcantesCargaSoltaBusiness;
+        private readonly IArmazemBusiness _armazemBusiness;
+        private readonly IRegistroBusiness _registroBusiness;
         //
 
         private ITalieBusiness _talieBusiness;
@@ -25,113 +28,111 @@ namespace Band.Coletor.Redex.Site.Controllers
                                             IConferenteBusiness conferenteBusiness,
                                             IOperacaoBusiness operacaoBusiness,
                                             ITalieBusiness talieBusiness,
-                                            IMarcantesCargaSoltaBusiness marcantesCargaSoltaBusiness)
+                                            IArmazemBusiness armazemBusiness,
+                                            IRegistroBusiness registroBusines)
         {
             _descargaExportacaoBusiness = descargaExportacaoBusiness;
             _equipeBusiness = equipeBusiness;
             _conferenteBusiness = conferenteBusiness;
             _operacaoBusiness = operacaoBusiness;
             _talieBusiness = talieBusiness;
-            _marcantesCargaSoltaBusiness = marcantesCargaSoltaBusiness;
+            _armazemBusiness = armazemBusiness;
+            _registroBusiness = registroBusines;
         }
         public async Task<ActionResult> Index()
         {
-            var talieData = TempData["DescargaExportacaoData"] as TalieViewModel;
+            var registroData = TempData["DescargaExportacaoData"] as RegistroViewModel;
 
             var viewModel = new DescargaExportacaoViewModel
             {
-                Talie = talieData ?? new TalieViewModel(), 
-                Conferentes = await _conferenteBusiness.ListAll(), 
-                Equipes = await _equipeBusiness.ListAll(), 
-                Operacoes = OperacaoViewModel.Create() 
+                Registro = registroData ?? new RegistroViewModel(),
+                Conferentes = await _conferenteBusiness.ListAll(),
+                Equipes = await _equipeBusiness.ListAll(),
+                Armazems = await _armazemBusiness.ListAll(),
+                Operacoes = OperacaoViewModel.Create()
             };
-            TempData["DescargaExportacaoData"] = talieData;
+            TempData["DescargaExportacaoData"] = registroData;
             return View(viewModel);
         }
         public async Task<ActionResult> DescargaExportacaoItens()
         {
 
-            var talieData = TempData["DescargaExportacaoData"] as TalieViewModel;
+            var registroData = TempData["DescargaExportacaoData"] as RegistroViewModel;
 
             var viewModel = new DescargaExportacaoViewModel
             {
-                Talie = talieData ?? new TalieViewModel(),
+                Registro = registroData ?? new RegistroViewModel(),
                 Conferentes = await _conferenteBusiness.ListAll(),
                 Equipes = await _equipeBusiness.ListAll(),
                 Operacoes = OperacaoViewModel.Create(),
                 Itens = null
             };
-            TempData["DescargaExportacaoData"] = talieData;
-            return View("_descargaExportacaoItens", viewModel); 
+            TempData["DescargaExportacaoData"] = registroData;
+            return View("_descargaExportacaoItens", viewModel);
         }
 
         public async Task<ActionResult> DescargaExportacaoMarcantes()
         {
 
-            var talieData = TempData["DescargaExportacaoData"] as TalieViewModel;
+            var registroData = TempData["DescargaExportacaoData"] as RegistroViewModel;
 
             var viewModel = new DescargaExportacaoViewModel
             {
-                Talie = talieData ?? new TalieViewModel(),
+                Registro = registroData ?? new RegistroViewModel(),
                 Conferentes = await _conferenteBusiness.ListAll(),
                 Equipes = await _equipeBusiness.ListAll(),
                 Operacoes = OperacaoViewModel.Create(),
                 Itens = null
             };
-            TempData["DescargaExportacaoData"] = talieData;
+            TempData["DescargaExportacaoData"] = registroData;
             return View("_descargaExportacaoMarcante", viewModel);
         }
 
         [HttpGet]
-        public async Task<JsonResult> ObterDadosTaliePorRegistro(int registro)
+        public async Task<JsonResult> CarregarRegistro(int codigoRegistro)
         {
-            var talie = await _talieBusiness.ObterDadosTaliePorRegistro(registro);
+            var registro = await _registroBusiness.CarregarRegistro(codigoRegistro);
 
 
             // Retorna o objeto "talie" como JSON
-            return Json(talie, JsonRequestBehavior.AllowGet);
+            return Json(registro, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
-        public JsonResult GravarTalie(TalieViewModel formModel)
+        public JsonResult GravarTalie(RegistroViewModel formModel)
         {
             TempData["DescargaExportacaoData"] = formModel;
 
             var _serviceResultSave = new ServiceResult<int>();
-            var _serviceResultUpdate = new ServiceResult<bool>();
+
             try
             {
                 var valid = ValidarDados(formModel);
                 if (valid.Result)
                 {
-                    if (formModel.CodigoTalie == 0)
+                    _serviceResultSave = _registroBusiness.SaveOrUpdate(formModel);
+                    if (_serviceResultSave.Status)
                     {
-                        _serviceResultSave = _talieBusiness.Save(formModel).Result;
-                        if (_serviceResultSave.Status)
-                            return Json(new { sucesso = true, mensagem = _serviceResultSave.Mensagens.FirstOrDefault() });
-
+                        if (_serviceResultSave.Result > 0)
+                        {
+                            _registroBusiness.GeraDescargaAutomatica(formModel.CodigoRegistro, _serviceResultSave.Result);
+                        }
+                        return Json(new { sucesso = true, mensagem = _serviceResultSave.Mensagens.FirstOrDefault() });
                     }
-                    else
-                    {
-                        _serviceResultUpdate = _talieBusiness.Update(formModel).Result;
-                        if (_serviceResultUpdate.Status)
-                            return Json(new { sucesso = false, mensagem = _serviceResultUpdate.Mensagens.FirstOrDefault() });
-                    }
-
                 }
                 else
                 {
                     return Json(new { sucesso = false, mensagem = valid.Mensagens.FirstOrDefault() });
                 }
 
-
-                return Json(new { sucesso = true, mensagem = "Erro no processamento" });
+                return Json(new { sucesso = false, mensagem = "Erro no processamento dos dados. Contate o suporte." });
             }
             catch (Exception ex)
             {
-                return Json(new { sucesso = false, mensagem = ex.Message });
+                return Json(new { sucesso = false, mensagem = $"Ocorreu um erro inesperado: {ex.Message}" });
             }
         }
+
 
         [HttpPost]
         public async Task<JsonResult> BuscarNotaFiscal(string numeroNotaFiscal, string codigoBooking, string codigoRegistro)
@@ -168,30 +169,74 @@ namespace Band.Coletor.Redex.Site.Controllers
             }
         }
 
-        private ServiceResult<bool> ValidarDados(TalieViewModel formModel)
+        private ServiceResult<bool> ValidarDados(RegistroViewModel formModel)
         {
-            var _serviceResult = new ServiceResult<bool>();
-
-            if (formModel.StatusTalie == "TALIE FECHADO")
+            var _serviceResult = new ServiceResult<bool>
             {
-                _serviceResult.Mensagens.Add("Talie Fechado - Operação cancelada");
-                _serviceResult.Result = false;
-                return _serviceResult;
-            }
-            //var data = DateTime.ParseExact(formModel.Inicio, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                Result = true // Inicialmente assume que os dados são válidos
+            };
 
-            //if (data.Month > 12)
+            // Validação de DANFE
+            var danfe = _registroBusiness.ValidarDanfe(formModel.CodigoRegistro);
+            if (danfe == 1) //TODO - verificar com Valdemir
+            {
+                _serviceResult.Result = false;
+                _serviceResult.Mensagens.Add("Encontrado registro de entrada sem número de DANFE informado. Acesse a tela de registro e verifique os dados da nota fiscal.");
+            }
+
+            var notaValida = _registroBusiness.ValidarNotaCadastrada(formModel.CodigoRegistro);
+
+            if (!notaValida) //TODO - verificar com Valdemir
+            {
+                _serviceResult.Result = false;
+                _serviceResult.Mensagens.Add("Registro com NF não cadastrada.");
+            }
+
+            //// Validação do conferente
+            //if (formModel.Conferente == 0)
             //{
-            //    _seriviceResult.Error = "Data inválida";
-            //    return _seriviceResult;
+            //    _serviceResult.Result = false;
+            //    _serviceResult.Mensagens.Add("O conferente é obrigatório. Por favor, preencha este campo.");
             //}
 
-            _serviceResult.Mensagens.Add("Dados validados");
-            _serviceResult.Result = true;
+            //// Validação da equipe
+            //if (formModel.Equipe == 0)
+            //{
+            //    _serviceResult.Result = false;
+            //    _serviceResult.Mensagens.Add("A equipe é obrigatória. Por favor, preencha este campo.");
+            //}
+
+            //// Validação da operação
+            //if (formModel.Operacao == 0)
+            //{
+            //    _serviceResult.Result = false;
+            //    _serviceResult.Mensagens.Add("A operação é obrigatória. Por favor, preencha este campo.");
+            //}
+
+            //// Caso todas as validações sejam bem-sucedidas
+            //if (_serviceResult.Result)
+            //{
+            //    _serviceResult.Mensagens.Add("Todos os dados foram validados com sucesso.");
+            //}
+
             return _serviceResult;
         }
 
+
         //buscar os armazens
+        [HttpGet]
+        public async Task<JsonResult> GetArmazens()
+        {
+            var armazens = await ListarArmazens();
+            return Json(armazens, JsonRequestBehavior.AllowGet);
+        }
+
+        private async Task<List<ArmazemViewModel>> ListarArmazens()
+        {
+            var armazens = await _armazemBusiness.ListAll();
+
+            return armazens.ToList();
+        }
 
     }
 }

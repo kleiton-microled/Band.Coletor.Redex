@@ -263,6 +263,40 @@ namespace Band.Coletor.Redex.Infra.Repositorios.Sql
                                                             SGIPA..DTE_TB_EMBALAGENS E ON C.EMBALAGEM = E.CODE 
                                                         WHERE  
                                                             C.BL = @lote";
+        public const string CarregarRegistro = @"SELECT
+	                                            	b.AUTONUM_REG as CodigoRegistro,
+	                                            	t.INICIO as Inicio,
+	                                            	t.TERMINO as Termino,
+	                                            	t.AUTONUM_TALIE as Talie,
+                                                    b.placa as Placa,
+                                                    e.reference as Reserva,
+                                                    cexp.FANTASIA as Cliente,
+                                                    t.CONFERENTE as Conferente,
+                                                    t.EQUIPE as Equipe,
+                                                    t.FORMA_OPERACAO as Operacao
+                                                FROM REDEX.dbo.tb_gate_new a
+                                                INNER JOIN REDEX.dbo.tb_registro b ON a.autonum = b.autonum_gate
+                                                INNER JOIN REDEX.dbo.tb_booking e ON b.autonum_boo = e.autonum_boo
+                                                INNER JOIN REDEX.dbo.tb_cad_parceiros ccli ON e.autonum_parceiro = ccli.autonum
+                                                INNER JOIN REDEX.dbo.tb_cad_parceiros cexp ON e.autonum_exportador = cexp.autonum
+                                                LEFT JOIN REDEX.dbo.tb_talie t ON b.autonum_reg = t.autonum_reg
+                                                WHERE b.autonum_reg = @CodigoRegistro
+                                                AND b.TIPO_REGISTRO = 'E'";
+
+        public const string ValidarDanfe = @"SELECT
+                                             	COUNT(*)
+                                             FROM
+                                             	REDEX.dbo.tb_registro reg
+                                             INNER JOIN REDEX.dbo.tb_registro_cs rcs ON
+                                             	reg.autonum_reg = rcs.autonum_reg
+                                             INNER JOIN REDEX.dbo.tb_booking boo ON
+                                             	reg.autonum_boo = boo.autonum_boo
+                                             WHERE
+                                             	reg.autonum_reg = @CodigoRegistro
+                                             	AND ISNULL(boo.flag_bagagem,
+                                             	0) = 0
+                                             	AND ISNULL(rcs.danfe,
+                                             	'') = ''";
 
         #region DESCARGA CD
         public const string QueryGetTalieByIdConteiner = @"
@@ -327,6 +361,14 @@ namespace Band.Coletor.Redex.Infra.Repositorios.Sql
                                               ORDER BY
                                                   NOME_EQP";
         #endregion
+        #endregion
+
+        #region DESCARGA EXPORTACAO
+        public const string ListarArmazens = @"SELECT tai.AUTONUM, 
+	                                              tai.DESCR as DISPLAY 
+	                                           FROM TB_ARMAZENS_IPA tai 
+	                                           WHERE tai.DT_SAIDA is null and tai.FLAG_HISTORICO = 0 
+	                                           AND tai.PATIO = 3";
         #endregion
 
     }

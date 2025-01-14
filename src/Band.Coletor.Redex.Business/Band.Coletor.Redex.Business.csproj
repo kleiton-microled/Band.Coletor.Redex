@@ -66,9 +66,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\ArmazenBusiness.cs" />
     <Compile Include="Classes\ContainerBusiness.cs" />
     <Compile Include="Classes\ServiceResult\IServiceResult.cs" />
     <Compile Include="Classes\ServiceResult\ServiceResultcs.cs" />
+    <Compile Include="Classes\RegistroBusiness.cs" />
     <Compile Include="Classes\TalieBusiness.cs" />
     <Compile Include="Classes\OperacaoBusiness.cs" />
     <Compile Include="Classes\ConferenteBusiness.cs" />
@@ -95,6 +97,7 @@
     <Compile Include="DTO\MotivosDTO.cs" />
     <Compile Include="DTO\OperacaoDTO.cs" />
     <Compile Include="DTO\NotaFiscalDTO.cs" />
+    <Compile Include="DTO\RegistroDTO.cs" />
     <Compile Include="DTO\ResumoQuantidadeDescarga.cs" />
     <Compile Include="DTO\RegistroSaidaCaminhaoDTO.cs" />
     <Compile Include="DTO\RomaneioDTO.cs" />
@@ -117,6 +120,8 @@
     <Compile Include="Helpers\StringHelpers.cs" />
     <Compile Include="Interfaces\Business\IConteinerBusiness.cs" />
     <Compile Include="Interfaces\Business\IConferenteBusiness.cs" />
+    <Compile Include="Interfaces\Business\IArmazemBusiness.cs" />
+    <Compile Include="Interfaces\Business\IRegistroBusiness.cs" />
     <Compile Include="Interfaces\Business\ITalieBusiness.cs" />
     <Compile Include="Interfaces\Business\IOperacaoBusiness.cs" />
     <Compile Include="Interfaces\Business\IEquipeBusiness.cs" />
@@ -124,6 +129,7 @@
     <Compile Include="Interfaces\Repositorios\IArmazensRepositorio.cs" />
     <Compile Include="Interfaces\Repositorios\IAutorizaSaidaRepository.cs" />
     <Compile Include="Interfaces\Repositorios\IBaseRepositorio.cs" />
+    <Compile Include="Interfaces\Repositorios\IArmazenRepositorio.cs" />
     <Compile Include="Interfaces\Repositorios\IConferenteRepositorio.cs" />
     <Compile Include="Interfaces\Repositorios\IConteinerRepositorio.cs" />
     <Compile Include="Interfaces\Repositorios\IDescargaExportacaoRepositorio.cs" />
@@ -163,6 +169,7 @@
     <Compile Include="Models\ItemNF.cs" />
     <Compile Include="Models\Lacre.cs" />
     <Compile Include="Models\Marcante.cs" />
+    <Compile Include="Models\ModelsLogic\Armazem.cs" />
     <Compile Include="Models\MovimentacaoConteiner.cs" />
     <Compile Include="Models\NF.cs" />
     <Compile Include="Models\PreRegistro.cs" />

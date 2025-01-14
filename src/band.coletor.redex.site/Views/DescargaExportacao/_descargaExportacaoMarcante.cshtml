@@ -25,18 +25,18 @@
 
             <div class="form-group col-sm-3">
                 @Html.Partial("~/Views/Shared/Components/Selects/component_coletor_select.cshtml", new ComponentColetorSelectModel
-                {
-                    Id = "cbArmazen",
-                    Name = "armazen",
-                    Descricao = "ARMAZÉM",
-                    Value = null,//@Model,
-                    Disabled = false,
-                    //Options = Model.Conferentes.Select(e => new SelectOption
-                    //{
-                    //    Value = e.Id,
-                    //    Text = e.Descricao
-                    //}).ToList()
-                })
+           {
+               Id = "cbArmazen",
+               Name = "armazen",
+               Descricao = "ARMAZÉM",
+               Value = 1,
+               Disabled = false,
+               //Options = Model.Armazems.Select(e => new SelectOption
+               //{
+               //    Value = e.Id,
+               //    Text = e.Descricao
+               //}).ToList()
+           })
             </div>
             <div class="form-group col-md-3">
                 <label for="local">LOCAL</label>
