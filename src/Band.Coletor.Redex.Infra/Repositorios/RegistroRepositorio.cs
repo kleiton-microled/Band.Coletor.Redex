@@ -82,7 +82,6 @@ namespace Band.Coletor.Redex.Infra.Repositorios
                 FROM REDEX..tb_talie 
                 WHERE autonum_reg = @CodigoRegistro";
 
-                verificaTalieSql = verificaTalieSql;
                 int count = connection.ExecuteScalar<int>(verificaTalieSql, new { CodigoRegistro = registro.CodigoRegistro });
 
                 if (count > 0)
@@ -129,7 +128,7 @@ namespace Band.Coletor.Redex.Infra.Repositorios
                                             @Placa,
                                             @Inicio, 
                                             1,--FLAG DESCARGA 
-                                            1,--FLAG ESTUFAGEM
+                                            0,--FLAG ESTUFAGEM
                                             0,--FLAG CARREGAMENTO 
                                             0,--CROSDOCKING 
                                             @Conferente, --ID 

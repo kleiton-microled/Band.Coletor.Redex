@@ -14,6 +14,8 @@ function CarregarRegistro() {
             // Preencher os campos do formulário com os dados retornados
             formModel.codigoRegistro = response.CodigoRegistro || '';
             formModel.inicio = formatarDataParaInput(response.Inicio) || '';
+            document.getElementById('inicio').value = formModel.inicio;
+
             formModel.termino = formatarDataParaInput(response.Termino) || '';
             formModel.equipe = response.Equipe || '';
             formModel.conferente = response.Conferente || '';
@@ -23,11 +25,23 @@ function CarregarRegistro() {
             formModel.codigoTalie = response.Talie || '';
             formModel.cliente = response.Cliente || '';
             formModel.statusTali = response.StatusTalie || '';
-            
+
             // Setar os valores nos combos
-            setSelectValue("cbEquipe", response.Equipe);
-            setSelectValue("cbConferente", response.Conferente);
-            setSelectValue("cbOperacao", response.Operacao);
+            //setSelectValue("cbEquipe", response.Equipe);
+            //setSelectValue("cbConferente", response.Conferente);
+            //setSelectValue("cbOperacao", response.Operacao);
+            //setComboBoxValue("cbConferente", response.Conferente);
+            //setComboBoxValue("cbEquipe", response.Equipe);
+            setComboBoxValue("cbOperacao", response.Operacao);
+
+            console.log("Equipe:", response.Equipe);
+            console.log("Conferente:", response.Conferente);
+            console.log("Operacao:", response.Operacao);
+
+            //console.log("Combo Equipe:", $("#cbEquipe").find(`option[value='${response.Equipe}']`).length);
+            //console.log("Combo Conferente:", $("#cbConferente").find(`option[value='${response.Conferente}']`).length);
+            //console.log("Combo Operacao:", $("#cbOperacao").find(`option[value='${response.Operacao}']`).length);
+
 
             preencherFormularioComModel();
             verificarCondicaoParaProximo();
@@ -40,28 +54,37 @@ function CarregarRegistro() {
 }
 
 // Função auxiliar para setar o valor no combo
-function setSelectValue(selectId, value) {
+function setComboBoxValue(selectId, value) {
     const selectElement = document.getElementById(selectId);
 
+    // Verifica se o elemento existe
     if (!selectElement) {
         console.error(`Elemento com ID "${selectId}" não encontrado.`);
         return;
     }
 
-    // Tenta localizar a opção correspondente
-    let optionFound = false;
-    for (let i = 0; i < selectElement.options.length; i++) {
-        if (selectElement.options[i].value === value.toString()) {
-            selectElement.options[i].selected = true;
-            optionFound = true;
-            break;
-        }
+    // Verifica se o valor não é nulo ou indefinido
+    if (value === null || value === undefined) {
+        console.warn(`Valor para o combo "${selectId}" é nulo ou indefinido.`);
+        return;
     }
 
-    if (!optionFound) {
-        console.warn(`Valor "${value}" não encontrado no combo com ID "${selectId}".`);
+    // Converta o valor para string para garantir a correspondência
+    const valueToSet = value.toString();
+
+    // Verifique se o valor existe nas opções do combo
+    const optionExists = Array.from(selectElement.options).some(
+        (option) => option.value == valueToSet
+    );
+
+    if (optionExists) {
+        selectElement.value = valueToSet;
+        console.log(`Valor "${valueToSet}" foi setado no combo "${selectId}".`);
+    } else {
+        console.warn(`Valor "${valueToSet}" não encontrado no combo com ID "${selectId}".`);
     }
 }
+
 
 
 //
@@ -180,20 +203,20 @@ document.getElementById('lnkGravar').addEventListener('click', function (e) {
 
 
 //UTILS
-function formatarDataParaInput(dateString) {
-    if (!dateString) return '';
+function formatarDataParaInput(data) {
+    if (!data) return '';
 
-    const date = new Date(dateString);
-    if (isNaN(date)) return '';
+    // Divida a data e a hora
+    const [date, time] = data.split(' ');
 
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Adiciona 0 se necessário
-    const day = String(date.getDate()).padStart(2, '0');
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
+    // Reorganize a data para o formato ISO (YYYY-MM-DD)
+    const [day, month, year] = date.split('/');
+    const formattedDate = `${year}-${month}-${day}`;
 
-    return `${year}-${month}-${day}T${hours}:${minutes}`;
+    // Combine a data e o horário
+    return `${formattedDate}T${time}`;
 }
+
 
 document.getElementById('salvarObservacao').addEventListener('click', function () {
     const observacao = document.getElementById('observacaoInput').value;
