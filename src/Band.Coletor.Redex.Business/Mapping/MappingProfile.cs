@@ -22,6 +22,9 @@ namespace Band.Coletor.Redex.Business.Mapping
 
             CreateMap<ConteinerBL, ConteinerViewModel>();
             CreateMap<CargaConteiner, CargaConteinerViewModel>();
+
+            CreateMap<TalieDescargaDTO, TalieDescargaViewModel>();
+            
         }
     }
 }

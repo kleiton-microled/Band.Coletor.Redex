@@ -101,6 +101,7 @@
     <Compile Include="DTO\ResumoQuantidadeDescarga.cs" />
     <Compile Include="DTO\RegistroSaidaCaminhaoDTO.cs" />
     <Compile Include="DTO\RomaneioDTO.cs" />
+    <Compile Include="DTO\TalieDescargaDTO.cs" />
     <Compile Include="DTO\TalieDTO.cs" />
     <Compile Include="DTO\TalieItemDTO.cs" />
     <Compile Include="DTO\UsuarioDTO.cs" />

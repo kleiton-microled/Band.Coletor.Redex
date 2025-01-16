@@ -297,6 +297,24 @@ namespace Band.Coletor.Redex.Infra.Repositorios.Sql
                                              	0) = 0
                                              	AND ISNULL(rcs.danfe,
                                              	'') = ''";
+        public const string ListarDescargas = @"SELECT 
+                                                    TI.AUTONUM_TI AS CodigoItem,
+                                                    'NF ' + ISNULL(CAST(TI.NF AS NVARCHAR), '') + ' ' + 
+                                                    CAST(ISNULL(TI.QTDE_DESCARGA, 0) AS NVARCHAR) + '   ' + 
+                                                    ISNULL(E.SIGLA, E.DESCRICAO_EMB) + ' ' + 
+                                                    FORMAT(ISNULL(TI.COMPRIMENTO, 0), '00.00') + 'x' + 
+                                                    FORMAT(ISNULL(TI.LARGURA, 0), '00.00') + 'x' + 
+                                                    FORMAT(ISNULL(TI.ALTURA, 0), '00.00') AS Descricao
+                                                FROM 
+                                                    REDEX..TB_TALIE T
+                                                INNER JOIN 
+                                                    REDEX..TB_TALIE_ITEM TI ON T.AUTONUM_TALIE = TI.AUTONUM_TALIE
+                                                LEFT JOIN 
+                                                    REDEX..TB_CAD_EMBALAGENS E ON TI.AUTONUM_EMB = E.AUTONUM_EMB
+                                                WHERE 
+                                                    T.AUTONUM_TALIE = @Talie --'404843'
+                                                ORDER BY 
+                                                    TI.AUTONUM_TI";
 
         #region DESCARGA CD
         public const string QueryGetTalieByIdConteiner = @"

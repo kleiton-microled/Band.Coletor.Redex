@@ -53,6 +53,7 @@
     <Compile Include="ViewModel\ConferenteViewModel.cs" />
     <Compile Include="ViewModel\EquipeViewModel.cs" />
     <Compile Include="ViewModel\RegistroViewModel.cs" />
+    <Compile Include="ViewModel\TalieDescargaViewModel.cs" />
     <Compile Include="ViewModel\TalieItemViewModel.cs" />
     <Compile Include="ViewModel\TalieViewModel.cs" />
   </ItemGroup>

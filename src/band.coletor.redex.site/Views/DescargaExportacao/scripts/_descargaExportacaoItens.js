@@ -41,3 +41,44 @@ document.getElementById('btnBuscarNotaFiscal').addEventListener('click', functio
         }
     });
 });
+
+//Listar Descargas
+document.addEventListener("DOMContentLoaded", function () {
+    const talieId = 404843; 
+
+    // Função para carregar os itens
+    function carregarDescargas(talie) {
+        fetch(`/DescargaExportacao/CarregarDescarga?talie=${talie}`)
+            .then(response => response.json())
+            .then(data => {
+                const selectElement = document.getElementById("cbItensDescarregados");
+
+                if (selectElement) {
+                    // Limpa as opções atuais
+                    selectElement.innerHTML = "";
+
+                    // Adiciona a opção padrão
+                    const defaultOption = document.createElement("option");
+                    defaultOption.value = "";
+                    defaultOption.textContent = "Selecione um item";
+                    selectElement.appendChild(defaultOption);
+
+                    // Preenche o select com os dados retornados
+                    data.forEach(item => {
+                        const option = document.createElement("option");
+                        option.value = item.CodigoItem; 
+                        option.textContent = item.Descricao;
+                        selectElement.appendChild(option);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error("Erro ao carregar descargas:", error);
+                alert("Erro ao carregar itens descarregados. Verifique o console para mais detalhes.");
+            });
+    }
+
+    // Chama a função ao carregar a página
+    carregarDescargas(talieId);
+});
+

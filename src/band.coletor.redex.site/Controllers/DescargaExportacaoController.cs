@@ -5,6 +5,7 @@ using Band.Coletor.Redex.Business.Interfaces.Business;
 using Band.Coletor.Redex.Site.Models.DescargaExportacao;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
@@ -237,6 +238,17 @@ namespace Band.Coletor.Redex.Site.Controllers
 
             return armazens.ToList();
         }
+
+        //ITENS
+        #region ITENS
+        [HttpGet]
+        public async Task<JsonResult> CarregarDescarga(long talie)
+        {
+            var descargas = await _talieBusiness.ListarDescargas(talie);
+            return Json(descargas.Result, JsonRequestBehavior.AllowGet);
+        }
+
+        #endregion ITENS
 
     }
 }

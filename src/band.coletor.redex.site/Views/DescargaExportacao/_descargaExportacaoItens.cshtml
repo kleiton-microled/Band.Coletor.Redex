@@ -15,7 +15,7 @@
     <form method="post" action="@Url.Action("Buscar", "DescargaExportacao")">
         <div class="row padding-bottom">
             <div class="form-group col-sm-4">
-                <label for="cbItensDescarregados">ITENS DESCAREGADOS:</label>
+                <label for="cbItensDescarregados">ITENS DESCARREGADOS:</label>
                 <select id="cbItensDescarregados" class="form-control">
                     @*@foreach (var item in Model.Itens)
                         {
@@ -159,6 +159,6 @@
 }
 
 <script>
-    const codigoRegistro = @Model.Talie.CodigoRegistro;
-    const codigoBooking = @Model.Talie.CodigoBooking;
+    const codigoRegistro = @Model.Registro.CodigoRegistro;
+    @*//const codigoBooking = @Model.CodigoBooking;*@
 </script>

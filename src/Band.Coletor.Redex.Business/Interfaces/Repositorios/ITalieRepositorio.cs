@@ -121,6 +121,7 @@ namespace Band.Coletor.Redex.Business.Interfaces.Repositorios
         Task<ServiceResult<bool>> Update(TalieEntity talie);
         ServiceResult<int> ObterIdNotaFiscal(string numeroNotaFiscal, string codigoBooking, string codigoRegistro);
         Task<ServiceResult<TalieItemDTO>> ObterItensNotaFiscal(string numeroNotaFiscal, string codigoRegistro);
+        Task<ServiceResult<List<TalieDescargaDTO>>> ListarDescargas(long talie);
 
         #endregion
 

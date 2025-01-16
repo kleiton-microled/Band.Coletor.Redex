@@ -1712,6 +1712,34 @@ namespace Band.Coletor.Redex.Infra.Repositorios
             }
         }
 
+        public async Task<ServiceResult<List<TalieDescargaDTO>>> ListarDescargas(long talie)
+        {
+            ServiceResult<List<TalieDescargaDTO>> _serviceResult = new ServiceResult<List<TalieDescargaDTO>>();
+            string query = SqlQueries.ListarDescargas;
+            try
+            {
+                using (var connection = Connection)
+                {
+                    var parameters = new DynamicParameters();
+                    parameters.Add("@Talie", talie);
+
+
+                    var result = await connection.QueryAsync<TalieDescargaDTO>(query, parameters);
+
+                    _serviceResult.Result = result.ToList();
+                    
+
+                    return _serviceResult;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _serviceResult.Error = ex.Message;
+                return _serviceResult;
+            }
+        }
+
         #endregion
     }
 }
