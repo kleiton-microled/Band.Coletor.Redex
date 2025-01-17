@@ -107,6 +107,8 @@
     <Compile Include="DTO\UsuarioDTO.cs" />
     <Compile Include="DTO\VeiculosDTO.cs" />
     <Compile Include="DTO\YardDTO.cs" />
+    <Compile Include="Entity\Talie.cs" />
+    <Compile Include="Entity\TalieItem.cs" />
     <Compile Include="Enums\OpcoesDescarga.cs" />
     <Compile Include="Enums\LocalPatio.cs" />
     <Compile Include="Enums\TipoDescarga.cs" />
@@ -153,6 +155,7 @@
     <Compile Include="Interfaces\Repositorios\IUsuarioLoginRepositorio.cs" />
     <Compile Include="Interfaces\Repositorios\ITalieRepositorio.cs" />
     <Compile Include="Interfaces\Repositorios\IVeiculosRepositorio.cs" />
+    <Compile Include="Mapping\Map.cs" />
     <Compile Include="Mapping\MappingProfile.cs" />
     <Compile Include="Models\Agendamento.cs" />
     <Compile Include="Models\Armazem.cs" />

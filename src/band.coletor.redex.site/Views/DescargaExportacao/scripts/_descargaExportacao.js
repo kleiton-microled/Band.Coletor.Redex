@@ -3,55 +3,94 @@
 };
 
 
-function CarregarRegistro() {
-    var registro = $("#registro").val();
+//function CarregarRegistro() {
+//    var registro = $("#registro").val();
 
-    $.ajax({
-        url: '/DescargaExportacao/CarregarRegistro',
-        type: 'GET',
-        data: { codigoRegistro: registro },
-        success: function (response) {
-            // Preencher os campos do formulário com os dados retornados
-            formModel.codigoRegistro = response.CodigoRegistro || '';
-            formModel.inicio = formatarDataParaInput(response.Inicio) || '';
-            document.getElementById('inicio').value = formModel.inicio;
+//    $.ajax({
+//        url: '/DescargaExportacao/CarregarRegistro',
+//        type: 'GET',
+//        data: { codigoRegistro: registro },
+//        success: function (response) {
+//            // Preencher os campos do formulário com os dados retornados
+//            formModel.codigoRegistro = response?.CodigoRegistro || '';
+//            formModel.inicio = formatarDataParaInput(response?.Talie?.Inicio) || '';
+//            document.getElementById('inicio').value = formModel.inicio;
 
-            formModel.termino = formatarDataParaInput(response.Termino) || '';
-            formModel.equipe = response.Equipe || '';
-            formModel.conferente = response.Conferente || '';
-            formModel.operacao = response.Operacao || '';
-            formModel.placa = response.Placa || '';
-            formModel.reserva = response.Reserva || '';
-            formModel.codigoTalie = response.Talie || '';
-            formModel.cliente = response.Cliente || '';
-            formModel.statusTali = response.StatusTalie || '';
+//            formModel.termino = formatarDataParaInput(response?.Talie?.Termino) || '';
+//            formModel.equipe = response?.Talie?.Equipe || '';
+//            formModel.conferente = response?.Talie?.Conferente || '';
+//            formModel.operacao = response?.Talie?.Operacao || '';
+//            formModel.placa = response?.Placa || '';
+//            formModel.reserva = response?.Reserva || '';
+//            formModel.codigoTalie = response?.Talie?.Id || '';
+//            formModel.cliente = response?.Cliente || '';
 
-            // Setar os valores nos combos
-            //setSelectValue("cbEquipe", response.Equipe);
-            //setSelectValue("cbConferente", response.Conferente);
-            //setSelectValue("cbOperacao", response.Operacao);
-            //setComboBoxValue("cbConferente", response.Conferente);
-            //setComboBoxValue("cbEquipe", response.Equipe);
-            setComboBoxValue("cbOperacao", response.Operacao);
+//            document.getElementById('observacaoInput').value = response?.Talie?.Observacao;
 
-            console.log("Equipe:", response.Equipe);
-            console.log("Conferente:", response.Conferente);
-            console.log("Operacao:", response.Operacao);
+//            setComboBoxValue("cbOperacao", response?.Talie?.Operacao);
 
-            //console.log("Combo Equipe:", $("#cbEquipe").find(`option[value='${response.Equipe}']`).length);
-            //console.log("Combo Conferente:", $("#cbConferente").find(`option[value='${response.Conferente}']`).length);
-            //console.log("Combo Operacao:", $("#cbOperacao").find(`option[value='${response.Operacao}']`).length);
+//            preencherFormularioComModel();
+//            verificarCondicaoParaProximo();
+
+//            //popularTabelaItens(response.Talie?.TalieItem);
+//        },
+//        error: function (xhr, status, error) {
+//            console.error("Erro ao obter dados do Talie:", error);
+//            alert("Ocorreu um erro ao buscar os dados. Verifique o console para mais detalhes.");
+//        }
+//    });
+//}
+//function CarregarRegistro() {
+//    // Verifica se o elemento "registro" existe
+//    console.log("Função CarregarRegistro foi chamada!");
+//    const registroInput = document.getElementById('registro');
+//    if (!registroInput) {
+//        console.error("Elemento #registro não encontrado.");
+//        return;
+//    }
+
+//    const registro = registroInput.value;
+
+//    $.ajax({
+//        url: '/DescargaExportacao/CarregarRegistro',
+//        type: 'GET',
+//        data: { codigoRegistro: registro },
+//        success: function (response) {
+//            console.log("Função CarregarRegistro foi chamada 2!");
+//            // Verifica e define os valores apenas se os elementos existirem
+//            if (response) {
+//                if (document.getElementById('inicio')) {
+//                    formModel.inicio = formatarDataParaInput(response?.Talie?.Inicio) || '';
+//                    document.getElementById('inicio').value = formModel.inicio;
+//                }
+
+//                if (document.getElementById('termino')) {
+//                    formModel.termino = formatarDataParaInput(response?.Talie?.Termino) || '';
+//                    document.getElementById('termino').value = formModel.termino;
+//                }
+
+//                if (document.getElementById('observacaoInput')) {
+//                    document.getElementById('observacaoInput').value = response?.Talie?.Observacao || '';
+//                }
+
+//                setComboBoxValue("cbOperacao", response?.Talie?.Operacao);
+
+//                preencherFormularioComModel();
+//                verificarCondicaoParaProximo();
+//            } else {
+//                console.warn("Nenhuma resposta retornada da API.");
+//            }
+//        },
+//        error: function (xhr, status, error) {
+//            console.error("Erro ao obter dados do Talie:", error);
+//            alert("Ocorreu um erro ao buscar os dados. Verifique o console para mais detalhes.");
+//        }
+//    });
+//}
 
 
-            preencherFormularioComModel();
-            verificarCondicaoParaProximo();
-        },
-        error: function (xhr, status, error) {
-            console.error("Erro ao obter dados do Talie:", error);
-            alert("Ocorreu um erro ao buscar os dados. Verifique o console para mais detalhes.");
-        }
-    });
-}
+
+
 
 // Função auxiliar para setar o valor no combo
 function setComboBoxValue(selectId, value) {
@@ -85,9 +124,6 @@ function setComboBoxValue(selectId, value) {
     }
 }
 
-
-
-//
 function preencherFormularioComModel() {
     // Itera sobre as propriedades do modelo e preenche os campos do formulário
     for (const key in formModel) {
@@ -143,10 +179,12 @@ function verificarCondicaoParaProximo() {
     const registro = document.getElementById("registro").value;
 
     // Habilita o botão "Próximo" se o campo "registro" estiver preenchido
-    atualizarEstadoDosBotoes("lnkProximo", registro.trim() !== "");
-    atualizarEstadoDosBotoes("lnkMarcantes", registro.trim() !== "");
-    atualizarEstadoDosBotoes("lnkAvarias", registro.trim() !== "");
-    atualizarEstadoDosBotoes("lnkExcluir", registro.trim() !== "");
+    atualizarEstadoDosBotoes("lnkMarcantes", registro.trim() !== "" && registro > 0);
+    atualizarEstadoDosBotoes("lnkAvarias", registro.trim() !== "" && registro > 0);
+    atualizarEstadoDosBotoes("lnkExcluir", registro.trim() !== "" && registro > 0);
+    atualizarEstadoDosBotoes("lnkGravar", registro.trim() !== "" && registro > 0);
+    atualizarEstadoDosBotoes("lnkObservacao", registro.trim() !== "" && registro > 0);
+    atualizarEstadoDosBotoes("lnkFinalizar", registro.trim() !== "" && registro > 0);
 }
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -201,6 +239,60 @@ document.getElementById('lnkGravar').addEventListener('click', function (e) {
     });
 });
 
+//Observacao
+document.getElementById('salvarObservacao').addEventListener('click', function () {
+    const observacao = document.getElementById('observacaoInput').value;
+    const talie = 404843;
+
+    if (!observacao.trim()) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Atenção',
+            text: 'Por favor, preencha a observação antes de salvar.',
+            confirmButtonText: 'OK'
+        });
+        return;
+    }
+
+    // Chamada ao backend
+    fetch('/DescargaExportacao/GravarObservacao', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ observacao, talie })
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Erro ao salvar observação.');
+            }
+            return response.json();
+        })
+        .then(data => {
+            Swal.fire({
+                icon: 'success',
+                title: 'Sucesso',
+                text: data.mensagem || 'Observação salva com sucesso!',
+                confirmButtonText: 'OK'
+            }).then(() => {
+                // Fecha o modal
+                $('#observacaoModal').modal('hide');
+
+                // Limpa o campo do modal
+                document.getElementById('observacaoInput').value = '';
+            });
+        })
+        .catch(error => {
+            console.error('Erro ao salvar observação:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Erro',
+                text: 'Ocorreu um erro ao salvar a observação. Tente novamente.',
+                confirmButtonText: 'OK'
+            });
+        });
+});
+
 
 //UTILS
 function formatarDataParaInput(data) {
@@ -216,25 +308,5 @@ function formatarDataParaInput(data) {
     // Combine a data e o horário
     return `${formattedDate}T${time}`;
 }
-
-
-document.getElementById('salvarObservacao').addEventListener('click', function () {
-    const observacao = document.getElementById('observacaoInput').value;
-
-    if (!observacao.trim()) {
-        alert('Por favor, preencha a observação antes de salvar.');
-        return;
-    }
-
-    // Aqui você pode salvar a observação no servidor ou processá-la como necessário.
-    console.log('Observação salva:', observacao);
-
-    // Fecha o modal
-    $('#observacaoModal').modal('hide');
-
-    // Limpa o campo do modal
-    document.getElementById('observacaoInput').value = '';
-});
-
 
 

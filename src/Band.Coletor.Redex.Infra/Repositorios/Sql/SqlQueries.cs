@@ -282,6 +282,45 @@ namespace Band.Coletor.Redex.Infra.Repositorios.Sql
                                                 LEFT JOIN REDEX.dbo.tb_talie t ON b.autonum_reg = t.autonum_reg
                                                 WHERE b.autonum_reg = @CodigoRegistro
                                                 AND b.TIPO_REGISTRO = 'E'";
+        public const string CarregarRegistroNew = @"SELECT
+                                                    	--REGISTRO
+                                                    	tr.AUTONUM_REG as Id,
+                                                    	tr.placa as Placa,
+                                                    	e.reference as Reserva,
+                                                    	cexp.FANTASIA as Cliente,
+                                                    	--TALIE
+                                                        tt.AUTONUM_TALIE as Id,
+                                                    	tt.INICIO as Inicio,
+                                                    	tt.TERMINO as Termino,
+                                                    	tt.CONFERENTE as Conferente,
+                                                    	tt.EQUIPE as Equipe,
+                                                    	tt.FORMA_OPERACAO as Operacao,
+                                                    	tt.OBS as Observacao,
+                                                    	--TALIE ITEM
+                                                    	tti.AUTONUM_TI as Id,
+                                                        tti.NF ,
+	                                                    tce.DESCRICAO_EMB as Embalagem,
+	                                                    tti.QTDE_DISPONIVEL as QtdNf,
+	                                                    tti.QTDE_DESCARGA as QtdDescarga
+                                                    FROM
+                                                    	REDEX.dbo.tb_gate_new a
+                                                    INNER JOIN REDEX.dbo.tb_registro tr ON
+                                                    	a.autonum = tr.autonum_gate
+                                                    INNER JOIN REDEX.dbo.tb_booking e ON
+                                                    	tr.autonum_boo = e.autonum_boo
+                                                    INNER JOIN REDEX.dbo.tb_cad_parceiros ccli ON
+                                                    	e.autonum_parceiro = ccli.autonum
+                                                    INNER JOIN REDEX.dbo.tb_cad_parceiros cexp ON
+                                                    	e.autonum_exportador = cexp.autonum
+                                                    LEFT JOIN REDEX.dbo.tb_talie tt ON
+                                                    	tr.autonum_reg = tt.autonum_reg
+                                                    LEFT JOIN REDEX.dbo.TB_TALIE_ITEM tti ON
+                                                    	tt.AUTONUM_TALIE = tti.AUTONUM_TALIE 
+                                                    LEFT JOIN REDEX.dbo.TB_CAD_EMBALAGENS tce ON
+	                                                    tti.AUTONUM_EMB = tce.AUTONUM_EMB 
+                                                    WHERE
+                                                    	tr.autonum_reg = @CodigoRegistro
+                                                    	AND tr.TIPO_REGISTRO = 'E'";
 
         public const string ValidarDanfe = @"SELECT
                                              	COUNT(*)

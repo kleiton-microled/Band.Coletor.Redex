@@ -11,5 +11,6 @@ namespace Band.Coletor.Redex.Business.Interfaces.Business
         void GeraDescargaAutomatica(int codigoRegistro, int autonumTalie);
         bool ValidarNotaCadastrada(int codigoRegistro);
         int ValidarDanfe(int codigoRegistro);
+        void GravarObservacao(string observacao, long talie);
     }
 }

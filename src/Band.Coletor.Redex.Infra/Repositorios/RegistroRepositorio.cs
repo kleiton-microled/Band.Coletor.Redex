@@ -2,11 +2,11 @@
 using Band.Coletor.Redex.Business.DTO;
 using Band.Coletor.Redex.Business.Interfaces.Repositorios;
 using Band.Coletor.Redex.Business.Models;
-using Band.Coletor.Redex.Business.Models.Entities;
 using Band.Coletor.Redex.Infra.Configuracao;
 using Band.Coletor.Redex.Infra.Repositorios.Sql;
 using Dapper;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
@@ -24,20 +24,49 @@ namespace Band.Coletor.Redex.Infra.Repositorios
         {
             try
             {
-                string command = SqlQueries.CarregarRegistro;
+                string command = SqlQueries.CarregarRegistroNew;
+
                 DynamicParameters parameters = new DynamicParameters();
                 parameters.Add("CodigoRegistro", codigoRegistro);
+
                 using (var connection = Connection)
                 {
-                    return await connection.QueryFirstOrDefaultAsync<RegistroDTO>(command, parameters);
+                    var registroDict = new Dictionary<int, RegistroDTO>();
+
+                    var result = await connection.QueryAsync<RegistroDTO, Business.Entity.Talie, Business.Entity.TalieItem, RegistroDTO>(
+                        command,
+                        (registro, talie, talieItem) =>
+                        {
+                            if (!registroDict.TryGetValue(registro.Id, out var registroEntry))
+                            {
+                                registroEntry = registro;
+                                registroEntry.Talie = talie;
+                                if(registroEntry.Talie != null)
+                                    registroEntry.Talie.TalieItem = new List<Business.Entity.TalieItem>();
+
+                                registroDict.Add(registro.Id, registroEntry);
+                            }
+
+                            if (talieItem != null)
+                            {
+                                registroEntry.Talie.TalieItem.Add(talieItem);
+                            }
+
+                            return registroEntry;
+                        },
+                        parameters,
+                        splitOn: "Id,Id"
+                    );
+
+                    return registroDict.Values.FirstOrDefault();
                 }
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
-
-                throw;
+                throw new Exception($"Erro ao carregar registro: {ex.Message}", ex);
             }
         }
+
 
         public Registro ObterRegistroPorLote(int lote)
         {
@@ -100,18 +129,15 @@ namespace Band.Coletor.Redex.Infra.Repositorios
                         forma_operacao = @Operacao
                     WHERE autonum_reg = @CodigoRegistro";
 
-                    updateSql = updateSql;
-
                     connection.Execute(updateSql, new
                     {
-                        Conferente = registro.Conferente,
-                        Equipe = registro.Equipe,
-                        //Reserva = registro.Reserva,
-                        Operacao = registro.Operacao,
+                        Conferente = registro.Talie.Conferente,
+                        Equipe = registro.Talie.Equipe,
+                        Operacao = registro.Talie.Operacao,
                         CodigoRegistro = registro.CodigoRegistro
                     });
 
-                    return registro.Talie;
+                    return registro.Talie.Id;
                 }
                 else
                 {
@@ -141,14 +167,13 @@ namespace Band.Coletor.Redex.Infra.Repositorios
                                         
                                         SELECT CAST(SCOPE_IDENTITY() as int)";
 
-                    insertSql = insertSql;
 
                     int talieId = connection.ExecuteScalar<int>(insertSql, new
                     {
                         Placa = registro.Placa,
-                        Inicio = DateTime.Now,                        
-                        Conferente = registro.Conferente,
-                        Equipe = registro.Equipe,
+                        Inicio = DateTime.Now,
+                        Conferente = registro.Talie.Conferente,
+                        Equipe = registro.Talie.Equipe,
                         CodigoRegistro = registro.CodigoRegistro
                     });
 
@@ -229,7 +254,7 @@ namespace Band.Coletor.Redex.Infra.Repositorios
                     DynamicParameters parameters = new DynamicParameters();
                     parameters.Add("AutonumTalie", autonumTalie);
                     parameters.Add("AutonumRegcs", reg.autonum_regcs);
-                    parameters.Add("QtdeDescarga", reg.quantidade);
+                    parameters.Add("QtdeDescarga", reg.QUANTIDADE);
                     parameters.Add("Peso", pesoNF);
                     parameters.Add("IdNF", idNF);
                     parameters.Add("NF", reg.NF);
@@ -246,6 +271,16 @@ namespace Band.Coletor.Redex.Infra.Repositorios
 
                     connection.Execute(insertItem, parameters);
                 }
+            }
+        }
+
+        public void GravarObservacao(string observacao, long talie)
+        {
+            using (var connection = Connection)
+            {
+                string query = @"UPDATE REDEX.dbo.TB_TALIE SET OBS = @obs WHERE AUTONUM_TALIE = @talie";
+
+                connection.Execute(query, new { obs = observacao, talie = talie });
             }
         }
 
@@ -316,6 +351,8 @@ namespace Band.Coletor.Redex.Infra.Repositorios
 
             return true; // Tudo validado
         }
+
+
         #endregion VALIDACOES
 
     }

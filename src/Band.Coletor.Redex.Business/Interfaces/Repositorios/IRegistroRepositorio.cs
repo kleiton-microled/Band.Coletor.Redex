@@ -13,6 +13,7 @@ namespace Band.Coletor.Redex.Business.Interfaces.Repositorios
         void GeraDescargaAutomatica(int codigoRegistro, int autonumTalie);
         int ValidarDanfe(int codigoRegistro);
         int SaveOrUpdate(RegistroViewModel registro);
+        void GravarObservacao(string observacao, long talie);
 
     }
 }

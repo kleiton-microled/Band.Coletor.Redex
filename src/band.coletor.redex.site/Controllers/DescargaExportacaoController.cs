@@ -52,7 +52,9 @@ namespace Band.Coletor.Redex.Site.Controllers
                 Armazems = await _armazemBusiness.ListAll(),
                 Operacoes = OperacaoViewModel.Create()
             };
-            TempData["DescargaExportacaoData"] = registroData;
+            if(registroData != null)
+                TempData["DescargaExportacaoData"] = registroData;
+
             return View(viewModel);
         }
         public async Task<ActionResult> DescargaExportacaoItens()
@@ -93,7 +95,6 @@ namespace Band.Coletor.Redex.Site.Controllers
         public async Task<JsonResult> CarregarRegistro(int codigoRegistro)
         {
             var registro = await _registroBusiness.CarregarRegistro(codigoRegistro);
-
 
             // Retorna o objeto "talie" como JSON
             return Json(registro, JsonRequestBehavior.AllowGet);
@@ -246,6 +247,14 @@ namespace Band.Coletor.Redex.Site.Controllers
         {
             var descargas = await _talieBusiness.ListarDescargas(talie);
             return Json(descargas.Result, JsonRequestBehavior.AllowGet);
+        }
+
+        //Observacao
+        [HttpPost]
+        public JsonResult GravarObservacao(string observacao, long talie)
+        {
+            _registroBusiness.GravarObservacao(observacao, talie);
+            return Json("Observação Registrada com sucesso!", JsonRequestBehavior.AllowGet);
         }
 
         #endregion ITENS

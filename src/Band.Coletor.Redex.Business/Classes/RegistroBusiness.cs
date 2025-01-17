@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using Band.Coletor.Redex.Business.Models.Entities;
 using Band.Coletor.Redex.Business.Models;
 using Band.Coletor.Redex.Business.Classes.ServiceResult;
+using Band.Coletor.Redex.Application.ViewModel.View;
+using Band.Coletor.Redex.Business.Mapping;
 
 namespace Band.Coletor.Redex.Business.Classes
 {
@@ -50,7 +52,7 @@ namespace Band.Coletor.Redex.Business.Classes
             {
                 if (data != null)
                 {
-                    registroViewModel = _mapper.Map<RegistroViewModel>(data);
+                    registroViewModel = Map.MapToViewModel(data);
                 }
 
                 return registroViewModel;
@@ -88,6 +90,11 @@ namespace Band.Coletor.Redex.Business.Classes
         public bool ValidarNotaCadastrada(int lote)
         {
             return _repositorio.ValidarNotaCadastrada(lote);
+        }
+
+        public void GravarObservacao(string observacao, long talie)
+        {
+            _repositorio.GravarObservacao(observacao, talie);
         }
 
 

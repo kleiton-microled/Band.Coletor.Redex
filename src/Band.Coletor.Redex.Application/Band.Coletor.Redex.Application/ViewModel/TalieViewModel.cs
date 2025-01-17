@@ -20,6 +20,7 @@
         public string StatusTalie { get; set; }
         public string Observacao { get; set; }
         public string Inconsistencia { get; set; }
+        public TalieItemViewModel TalieItem { get; set; }
 
         public static TalieViewModel CreateNew(bool existeTalieAberto, int registro, int codigoTalie, int codigoBooking, string operacao,
                                                 int conferente, int equipe, int camera, string placa, string reserva, int codigoGate, int codigoRegistro,

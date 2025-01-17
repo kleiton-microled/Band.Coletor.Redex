@@ -20,15 +20,15 @@
             </div>
             <div class="form-group col-md-3">
                 <label for="inicio">INICIO</label>
-                <input type="datetime-local" class="form-control" id="inicio" name="inicio" value="@Model.Registro.Inicio" disabled>
+                <input type="datetime-local" class="form-control" id="inicio" name="inicio" value="@Model.Registro.Talie?.Inicio ?? ''" disabled>
             </div>
             <div class="form-group col-md-3">
                 <label for="termino">TERMINO</label>
-                <input type="datetime-local" class="form-control" id="termino" name="termino" value="@Model.Registro.Termino" disabled>
+                <input type="datetime-local" class="form-control" id="termino" name="termino" value="@Model.Registro.Talie?.Termino ?? ''" disabled>
             </div>
             <div class="form-group col-md-3">
                 <label for="talie">TALIE</label>
-                <input type="text" class="form-control" id="talie" name="codigoTalie" value="@Model.Registro.Talie" disabled>
+                <input type="text" class="form-control" id="talie" name="codigoTalie" value="@Model.Registro.Talie?.Id ?? ''" disabled>
             </div>
         </div>
 
@@ -63,7 +63,7 @@
                     Id = "cbConferente",
                     Name = "conferente",
                     Descricao = "Selecione o Conferente",
-                    Value = @Model.Registro.Conferente,
+                    Value = @Model.Registro.Talie?.Conferente,
                     Disabled = false,
                     Options = Model.Conferentes.Select(e => new SelectOption
                     {
@@ -78,7 +78,7 @@
                     Id = "cbEquipe",
                     Name = "equipe",
                     Descricao = "Selecione a Equipe",
-                    Value = Model.Registro.Equipe,
+                    Value = Model.Registro.Talie?.Equipe,
                     Disabled = false,
                     Options = Model.Equipes.Select(e => new SelectOption
                     {
@@ -93,7 +93,7 @@
                     Id = "cbOperacao",
                     Name = "operacao",
                     Descricao = "Selecione a Operacao",
-                    Value = Convert.ToInt32(@Model.Registro.Operacao),
+                    Value = Convert.ToInt32(@Model.Registro.Talie?.Operacao),
                     Disabled = false,
                     Options = Model.Operacoes.Select(e => new SelectOption
                     {
@@ -104,7 +104,29 @@
             </div>
         </div>
     </form>
+
     <pre id="formModel"></pre>
+
+    <!--Tabela de itens-->
+    <div class="table-responsive">
+        <table id="tabelaItens" class="table table-striped table-bordered">
+            <thead class="">
+                <tr>
+                    <th>NF</th>
+                    <th>Item</th>
+                    <th>Embalagem</th>
+                    <th>Quantidade NF</th>
+                    <th>Quantidade Descarga</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- As linhas serão adicionadas dinamicamente -->
+            </tbody>
+        </table>
+    </div>
+
+
 </div>
 <!--MODAL OBS-->
 <div class="modal fade" id="observacaoModal" tabindex="-1" role="dialog" aria-labelledby="observacaoModalLabel" aria-hidden="true">
@@ -164,9 +186,9 @@
             <span aria-hidden="true" class="fa fa-check"></span>&nbsp;&nbsp;Finalizar
         </a>
 
-        <a id="lnkProximo" href="@Url.Action("DescargaExportacaoItens", "DescargaExportacao")" class="btn btn-warning flex-grow-1 mx-1 my-1">
+        @*<a id="lnkProximo" href="@Url.Action("DescargaExportacaoItens", "DescargaExportacao")" class="btn btn-warning flex-grow-1 mx-1 my-1">
             <span aria-hidden="true" class="fa fa-chevron-right"></span>&nbsp;&nbsp;Próximo
-        </a>
+        </a>*@
 
         <a id="lnkHome" href="@Url.Content("~/Home")" class="btn btn-warning flex-grow-1 mx-1 my-1">
             <span aria-hidden="true" class="fa fa-home"></span>&nbsp;&nbsp;Home
@@ -175,7 +197,108 @@
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function CarregarRegistro() {
+        var registro = $("#registro").val();
 
+        $.ajax({
+            url: '/DescargaExportacao/CarregarRegistro',
+            type: 'GET',
+            data: { codigoRegistro: registro },
+            success: function (response) {
+                // Preencher os campos do formulário com os dados retornados
+                formModel.codigoRegistro = response?.CodigoRegistro || '';
+                formModel.inicio = formatarDataParaInput(response?.Talie?.Inicio) || '';
+                document.getElementById('inicio').value = formModel.inicio;
+
+                formModel.termino = formatarDataParaInput(response?.Talie?.Termino) || '';
+                formModel.equipe = response?.Talie?.Equipe || '';
+                formModel.conferente = response?.Talie?.Conferente || '';
+                formModel.operacao = response?.Talie?.Operacao || '';
+                formModel.placa = response?.Placa || '';
+                formModel.reserva = response?.Reserva || '';
+                formModel.codigoTalie = response?.Talie?.Id || '';
+                formModel.cliente = response?.Cliente || '';
+
+                document.getElementById('observacaoInput').value = response?.Talie?.Observacao;
+
+                setComboBoxValue("cbOperacao", response?.Talie?.Operacao);
+
+                preencherFormularioComModel();
+                verificarCondicaoParaProximo();
+
+                const tabela = document.querySelector('#tabelaItens tbody');
+
+                // Limpa a tabela antes de adicionar novos itens
+                tabela.innerHTML = '';
+                console.log(response.Talie.TalieItem);
+                // Itera sobre os itens e adiciona as linhas na tabela
+                if (response.Talie.TalieItem != null) {
+                    let itens = response.Talie.TalieItem;
+                    itens.forEach(item => {
+                        const linha = `
+                                    <tr>
+                                        <td>${item.NF || ''}</td>
+                                        <td>${item.Id || ''}</td>
+                                        <td>${item.Embalagem || ''}</td>
+                                        <td>${item.QtdNf || 0}</td>
+                                        <td>${item.QtdDescarga || 0}</td>
+                                        <td class="text-center">
+                                            <button class="btn btn-sm btn-primary" title="Editar">
+                                                <i class="fa fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-danger" title="Excluir">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                `;
+                        tabela.innerHTML += linha;
+                    });
+                }
+
+                //popularTabelaItens(response.Talie?.TalieItem);
+            },
+            error: function (xhr, status, error) {
+                console.error("Erro ao obter dados do Talie:", error);
+                alert("Ocorreu um erro ao buscar os dados. Verifique o console para mais detalhes.");
+            }
+        });
+    }
+
+    function popularTabelaItens(itens) {
+        // Seleciona o tbody da tabela pelo ID
+        const tabela = document.querySelector('#tabelaItens tbody');
+
+        // Limpa a tabela antes de adicionar novos itens
+        tabela.innerHTML = '';
+
+        // Itera sobre os itens e adiciona as linhas na tabela
+        if (itens.lenght > 0 && itens != null) {
+            itens.forEach(item => {
+                const linha = `
+            <tr>
+                <td>${item.NF || ''}</td>
+                <td>${item.Id || ''}</td>
+                <td>${item.Embalagem || ''}</td>
+                <td>${item.QtdNf || 0}</td>
+                <td>${item.QtdDescarga || 0}</td>
+                <td class="text-center">
+                    <button class="btn btn-sm btn-primary" title="Editar">
+                        <i class="fa fa-edit"></i>
+                    </button>
+                    <button class="btn btn-sm btn-danger" title="Excluir">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+        `;
+                tabela.innerHTML += linha;
+            });
+        }
+
+    }
+</script>
 @section Scripts {
     @Scripts.Render("~/bundles/descargaExportacao")
 

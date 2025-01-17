@@ -56,6 +56,8 @@
     <Compile Include="ViewModel\TalieDescargaViewModel.cs" />
     <Compile Include="ViewModel\TalieItemViewModel.cs" />
     <Compile Include="ViewModel\TalieViewModel.cs" />
+    <Compile Include="ViewModel\View\TalieItemViewModel.cs" />
+    <Compile Include="ViewModel\View\TalieViewModel.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
