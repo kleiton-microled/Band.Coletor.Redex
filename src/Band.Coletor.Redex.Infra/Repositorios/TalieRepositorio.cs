@@ -18,6 +18,8 @@ using Band.Coletor.Redex.Entity;
 using Talie = Band.Coletor.Redex.Business.Models.Talie;
 using TalieItem = Band.Coletor.Redex.Business.Models.TalieItem;
 using Band.Coletor.Redex.Business.Models.Entities;
+using Band.Coletor.Redex.Business.Enums;
+using System.Linq.Dynamic;
 
 
 namespace Band.Coletor.Redex.Infra.Repositorios
@@ -936,7 +938,7 @@ namespace Band.Coletor.Redex.Infra.Repositorios
                     parametros.Add(name: "UNO2", value: item.UNO2, direction: ParameterDirection.Input);
                     parametros.Add(name: "UNO3", value: item.UNO3, direction: ParameterDirection.Input);
                     parametros.Add(name: "UNO4", value: item.UNO4, direction: ParameterDirection.Input);
-                    parametros.Add(name: "CodigoEmbalagem", value: item.EmbalagemId, direction: ParameterDirection.Input);
+                    parametros.Add(name: "CodigoEmbalagem", value: item.CodigoEmbalagem, direction: ParameterDirection.Input);
 
                     parametros.Add(name: "Id", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
@@ -1072,7 +1074,7 @@ namespace Band.Coletor.Redex.Infra.Repositorios
                 parametros.Add(name: "UNO2", value: item.UNO2, direction: ParameterDirection.Input);
                 parametros.Add(name: "UNO3", value: item.UNO3, direction: ParameterDirection.Input);
                 parametros.Add(name: "UNO4", value: item.UNO4, direction: ParameterDirection.Input);
-                parametros.Add(name: "CodigoEmbalagem", value: item.EmbalagemId, direction: ParameterDirection.Input);
+                parametros.Add(name: "CodigoEmbalagem", value: item.CodigoEmbalagem, direction: ParameterDirection.Input);
                 parametros.Add(name: "Id", value: item.Id, direction: ParameterDirection.Input);
 
                 con.Execute(@"
@@ -1129,7 +1131,7 @@ namespace Band.Coletor.Redex.Infra.Repositorios
                         TI.AUTONUM_TI As Id,
                         TI.AUTONUM_TALIE As TalieId,
                         TI.AUTONUM_NF As NotaFiscalId,
-                        (SELECT ISNULL(SUM(QTDE_DESCARGA),0) FROM REDEX..TB_TALIE_ITEM WHERE AUTONUM_REGCS = TI.AUTONUM_REGCS AND AUTONUM_TI = @id) As QuantidadeDescarga,
+                        (SELECT ISNULL(SUM(QTDE_DESCARGA),0) FROM REDEX..TB_TALIE_ITEM WHERE AUTONUM_REGCS = TI.AUTONUM_REGCS AND AUTONUM_TI = @id) As QtdDescarga,
                         (SELECT ISNULL(SUM(QUANTIDADE),0) FROM REDEX..TB_REGISTRO_CS WHERE AUTONUM_REGCS = TI.AUTONUM_REGCS) As Quantidade,
                         TI.REMONTE,
                         TI.FUMIGACAO,
@@ -1152,7 +1154,7 @@ namespace Band.Coletor.Redex.Infra.Repositorios
                         TI.PESO,
                         E.SIGLA,
                         E.SIGLA AS EmbalagemSigla,
-                        E.AUTONUM_EMB As EmbalagemId,
+                        E.AUTONUM_EMB As CodigoEmbalagem,
                         E.DESCRICAO_EMB AS EMBALAGEM,
                         TI.YARD
                     FROM
@@ -1831,11 +1833,112 @@ namespace Band.Coletor.Redex.Infra.Repositorios
                     parameters.Add("@TalieId", talieId);
 
 
-                    var result = await connection.QueryAsync<Entity.TalieItem>(query, parameters);
+                    var result = connection.Query<Entity.TalieItem>(query, parameters);
 
                     _serviceResult.Result = result.ToList();
                 }
 
+            }
+            catch (Exception ex)
+            {
+                _serviceResult.Error = ex.Message;
+                return _serviceResult;
+            }
+
+            return _serviceResult;
+        }
+
+        public async Task<ServiceResult<int>> CadastrarTalieItem(Entity.TalieItem item, int codigoRegistro)
+        {
+            var _serviceResult = new ServiceResult<int>();
+            string query = SqlQueries.CadastrarItemTalie;
+            try
+            {
+                using (var connection = Connection)
+                {
+
+                    string queryDescarga = @"
+                                        SELECT 
+                                            rcs.*, 
+                                            bcg.qtde AS qtde_manifestada, 
+                                            ISNULL(bcg.peso_bruto, 0) / NULLIF(bcg.qtde, 0) AS peso_manifestado,
+                                            bcg.imo, bcg.imo2, bcg.imo3, bcg.imo4, 
+                                            bcg.uno, bcg.uno2, bcg.uno3, bcg.uno4, 
+                                            bcg.autonum_pro, bcg.autonum_emb
+                                        FROM REDEX..tb_registro reg
+                                        INNER JOIN REDEX..tb_registro_cs rcs ON reg.autonum_reg = rcs.autonum_reg
+                                        INNER JOIN REDEX..tb_booking_carga bcg ON rcs.autonum_bcg = bcg.autonum_bcg
+                                        WHERE reg.autonum_reg = @CodigoRegistro";
+
+                    var reg = connection.Query(queryDescarga, new { CodigoRegistro = codigoRegistro }).ToList().FirstOrDefault();
+
+                    string insertItem = @"
+                                        INSERT INTO REDEX..tb_talie_item (
+                                            autonum_talie, autonum_regcs, qtde_descarga, tipo_descarga, 
+                                            diferenca, obs, qtde_disponivel, comprimento, largura, altura, peso, 
+                                            qtde_estufagem, marca, remonte, fumigacao, flag_fragil, flag_madeira, 
+                                            YARD, armazem, autonum_nf, nf, imo, uno, imo2, uno2, imo3, uno3, imo4, uno4, 
+                                            autonum_emb, autonum_pro
+                                        ) VALUES (
+                                            @AutonumTalie, @AutonumRegcs, @QtdDescarga, 'PARCIAL', 
+                                            '0', '', 0, @comprimento, @largura, @altura, @Peso, 0, '', @remonte, @fumigacao, @flagfragil, @flagmadeira, NULL, NULL, 
+                                            @NfId, @NF, @IMO, @UNO, @IMO2, @UNO2, @IMO3, @UNO3, @IMO4, @UNO4, 
+                                            @AutonumEmb, @AutonumPro
+                                        )";
+
+
+                    DynamicParameters parameters = new DynamicParameters();
+                    parameters.Add("AutonumTalie", item.TalieId);
+                    parameters.Add("AutonumRegcs", reg.AUTONUM_REGCS);
+                    parameters.Add("@QtdDescarga", item.QtdDescarga);
+                    parameters.Add("@Peso", item.Peso);
+                    parameters.Add("@NfId", item.IdNotaFiscal);
+                    parameters.Add("@Nf", item.NotaFiscal);
+                    parameters.Add("@Comprimento", item.Comprimento);
+                    parameters.Add("@Largura", item.Altura);
+                    parameters.Add("@Altura", item.Largura);
+                    parameters.Add("@Imo", item.Imo);
+                    parameters.Add("@Imo2", item.Imo2);
+                    parameters.Add("@Imo3", item.Imo3);
+                    parameters.Add("@Imo4", item.Imo4);
+                    parameters.Add("@Uno", item.Uno);
+                    parameters.Add("@Uno2", item.Uno2);
+                    parameters.Add("@Uno3", item.Uno3);
+                    parameters.Add("@Uno4", item.Uno4);
+                    parameters.Add("@Remonte", item.Remonte);
+                    parameters.Add("@Fumigacao", item.Fumigacao);
+                    parameters.Add("@FlagMadeira", item.FlagMadeira);
+                    parameters.Add("@FlagFragil", item.FlagFragil);
+                    parameters.Add("AutonumEmb", item.CodigoEmbalagem);
+                    parameters.Add("AutonumPro", reg.autonum_pro);
+
+                    var result = connection.Execute(insertItem, parameters);
+
+                    _serviceResult.Result = result;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _serviceResult.Error = ex.Message;
+                return _serviceResult;
+            }
+
+            return _serviceResult;
+        }
+
+        public ServiceResult<int> ExlcuirTalieItem(int id)
+        {
+            var _serviceResult = new ServiceResult<int>();
+            var query = @"DELETE FROM REDEX.dbo.TB_TALIE_ITEM WHERE AUTONUM_TI = @TalieItemId";
+
+            try
+            {
+                using (var connection = Connection)
+                {
+                    var result = connection.Execute(query, new { TalieItemId = id });
+                    _serviceResult.Result = result;
+                }
             }
             catch (Exception ex)
             {

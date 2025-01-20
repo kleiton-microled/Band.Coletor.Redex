@@ -315,7 +315,7 @@ namespace Band.Coletor.Redex.Infra.Repositorios.Sql
                                                     	tt.OBS as Observacao,
                                                     	--TALIE ITEM
                                                     	tti.AUTONUM_TI as Id,
-                                                        tti.NF ,
+                                                        tti.NF as NotaFiscal ,
 	                                                    tce.DESCRICAO_EMB as Embalagem,
 	                                                    --tti.QTDE_DISPONIVEL as QtdNf,
                                                         (SELECT ISNULL(SUM(QUANTIDADE),0) FROM REDEX..TB_REGISTRO_CS WHERE AUTONUM_REGCS = trc.AUTONUM_REGCS) As QtdNf,
@@ -334,7 +334,7 @@ namespace Band.Coletor.Redex.Infra.Repositorios.Sql
                                                     	tr.autonum_reg = tt.autonum_reg
                                                     LEFT JOIN REDEX.dbo.TB_TALIE_ITEM tti ON
                                                     	tt.AUTONUM_TALIE = tti.AUTONUM_TALIE 
-                                                    INNER JOIN REDEX.dbo.TB_REGISTRO_CS trc ON
+                                                    LEFT JOIN REDEX.dbo.TB_REGISTRO_CS trc ON
 	                                                    trc.AUTONUM_REGCS = tti.AUTONUM_REGCS 
                                                     LEFT JOIN REDEX.dbo.TB_CAD_EMBALAGENS tce ON
 	                                                    tti.AUTONUM_EMB = tce.AUTONUM_EMB 
@@ -397,6 +397,59 @@ namespace Band.Coletor.Redex.Infra.Repositorios.Sql
                                             INNER JOIN REDEX.dbo.TB_REGISTRO_CS trc ON
 	                                                    trc.AUTONUM_REGCS = tti.AUTONUM_REGCS 
                                             WHERE tti.AUTONUM_TALIE = @TalieId";
+
+        public const string CadastrarItemTalie = @"INSERT INTO REDEX.dbo.TB_TALIE_ITEM (
+                                                                                         AUTONUM_TALIE,
+                                                                                         NF,
+                                                                                         QTDE_DESCARGA,
+                                                                                         AUTONUM_EMB,
+                                                                                         AUTONUM_PRO,
+                                                                                         AUTONUM_NF,
+                                                                                         PESO,
+                                                                                         COMPRIMENTO,
+                                                                                         LARGURA,
+                                                                                         ALTURA,
+                                                                                         TIPO_DESCARGA,
+                                                                                         FLAG_MADEIRA,
+                                                                                         FLAG_FRAGIL,
+                                                                                         REMONTE,
+                                                                                         FUMIGACAO,
+                                                                                         AUTONUM_REGCS,
+                                                                                         IMO,
+                                                                                         IMO2,
+                                                                                         IMO3,
+                                                                                         IMO4,
+                                                                                         UNO,
+                                                                                         UNO2,
+                                                                                         UNO3,
+                                                                                         UNO4
+                                                                                     )
+                                                                                     VALUES (
+                                                                                         @TalieId,
+                                                                                         @Nf,
+                                                                                         @QtdDescarga,
+                                                                                         @EmbalagemId,
+                                                                                         @Produto,
+                                                                                         @NfId,
+                                                                                         @Peso,
+                                                                                         @Comprimento,
+                                                                                         @Largura,
+                                                                                         @Altura,
+                                                                                         'PARCIAL',
+                                                                                         @FlagMadeira,
+                                                                                         @FlagFragil,
+                                                                                         @Remonte,
+                                                                                         @Fumigacao,
+                                                                                         @RegistroCs,
+                                                                                         @Imo,
+                                                                                         @Imo2,
+                                                                                         @Imo3,
+                                                                                         @Imo4,
+                                                                                         @Uno,
+                                                                                         @Uno2,
+                                                                                         @Uno3,
+                                                                                         @Uno4
+                                                                                     ) ";
 
         public const string ValidarDanfe = @"SELECT
                                              	COUNT(*)

@@ -541,10 +541,10 @@ namespace Band.Coletor.Redex.Site.Controllers
                 dadosItem.NotaFiscalId,
                 dadosItem.NotaFiscal,
                 dadosItem.Quantidade,
-                dadosItem.QuantidadeDescarga,
+                dadosItem.QtdDescarga,
                 dadosItem.Remonte,
                 dadosItem.Fumigacao,
-                dadosItem.EmbalagemId,
+                dadosItem.CodigoEmbalagem,
                 dadosItem.EmbalagemSigla,
                 dadosItem.Embalagem,
                 dadosItem.IMO1,
@@ -563,8 +563,8 @@ namespace Band.Coletor.Redex.Site.Controllers
                 dadosItem.Fragil,
                 dadosItem.Madeira,
                 dadosItem.Avariado,
-                Descarga = dadosItem.QuantidadeDescarga,//$"{dadosItem.QuantidadeDescarga} / {dadosItem.Quantidade}",
-                FimNota = (dadosItem.QuantidadeDescarga == dadosItem.Quantidade),
+                Descarga = dadosItem.QtdDescarga,//$"{dadosItem.QuantidadeDescarga} / {dadosItem.Quantidade}",
+                FimNota = (dadosItem.QtdDescarga == dadosItem.Quantidade),
                 produtos,
                 embalagens
             }, JsonRequestBehavior.AllowGet);
@@ -780,7 +780,7 @@ namespace Band.Coletor.Redex.Site.Controllers
                             UNO2 = viewModel.UNO2,
                             UNO3 = viewModel.UNO3,
                             UNO4 = viewModel.UNO4,
-                            EmbalagemId = viewModel.EmbalagemId
+                            CodigoEmbalagem = viewModel.EmbalagemId
                         });
 
                     if (!Validar(talieItemBusca))

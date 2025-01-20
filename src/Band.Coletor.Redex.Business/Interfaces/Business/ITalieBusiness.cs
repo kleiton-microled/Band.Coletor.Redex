@@ -15,6 +15,8 @@ namespace Band.Coletor.Redex.Business.Interfaces.Business
         ServiceResult<TalieItemViewModel> BuscarTalieItem(int talieItem);
         Task<ServiceResult<bool>> UpdateTalieItem(TalieItemViewModel talieItemViewModel);
         Task<ServiceResult<List<TalieItemViewModel>>> BuscarItensDoTalie(int talieId);
+        Task<ServiceResult<int>> CadastrarTalieItem(TalieItemViewModel view, int codigoRegistro);
+        ServiceResult<int> ExcluirTalieItem(int id);
 
 
     }

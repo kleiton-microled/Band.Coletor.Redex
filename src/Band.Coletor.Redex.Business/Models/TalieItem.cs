@@ -59,7 +59,7 @@ namespace Band.Coletor.Redex.Business.Models
             UNO2 = uNO2;
             UNO3 = uNO3;
             UNO4 = uNO4;
-            EmbalagemId = embalagemId;
+            CodigoEmbalagem = embalagemId;
         }
 
         public int TalieId { get; set; }
@@ -114,11 +114,11 @@ namespace Band.Coletor.Redex.Business.Models
 
         public string EmbalagemSigla { get; set; }
 
-        public int EmbalagemId { get; set; }
+        public int CodigoEmbalagem { get; set; }
 
         public string Embalagem { get; set; }
 
-        public decimal QuantidadeDescarga { get; set; }
+        public decimal QtdDescarga { get; set; }
 
         public void Alterar(TalieItem item)
         {
@@ -144,7 +144,7 @@ namespace Band.Coletor.Redex.Business.Models
             UNO2 = item.UNO2;
             UNO3 = item.UNO3;
             UNO4 = item.UNO4;
-            EmbalagemId = item.EmbalagemId;
+            CodigoEmbalagem = item.CodigoEmbalagem;
         }
 
         public override void Validar()
@@ -153,7 +153,7 @@ namespace Band.Coletor.Redex.Business.Models
                 .GreaterThan(0)
                 .WithMessage("Quantidade não informada");
 
-            RuleFor(c => c.EmbalagemId)
+            RuleFor(c => c.CodigoEmbalagem)
                 .GreaterThan(0)
                 .WithMessage("Embalagem não informada");
 

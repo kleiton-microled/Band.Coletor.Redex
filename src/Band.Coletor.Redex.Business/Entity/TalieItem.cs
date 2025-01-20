@@ -8,7 +8,7 @@
         {
             var item = new TalieItem();
             item.Id = id;
-            item.NF = nF;
+            item.NotaFiscal = nF;
             item.CodigoEmbalagem = codigoEmbalagem;
             item.Embalagem = embalagem;
             item.Comprimento = comprimento;
@@ -32,7 +32,9 @@
         }
 
         public int Id { get; set; }
-        public string NF { get; set; }
+        public int TalieId { get; set; }
+        public string NotaFiscal { get; set; }
+        public int IdNotaFiscal { get; set; }
         public int CodigoEmbalagem { get; set; }
         public string Embalagem { get; set; }
         public decimal? Comprimento { get; set; }
@@ -51,5 +53,10 @@
         public string Uno5 { get; set; }
         public int QtdNf { get; set; }
         public int QtdDescarga { get; set; }
+        public bool FlagMadeira { get; set; }
+        public bool FlagFragil { get; set; }
+        public string Remonte { get; set; }
+        public string Fumigacao { get; set; }
+        public int RegistroCargaSolta { get; set; }
     }
 }

@@ -58,9 +58,9 @@
         public string UNO4 { get; set; }
         public string UNO5 { get; set; }
         public string EmbalagemSigla { get; set; }
-        public int EmbalagemId { get; set; }
+        public int CodigoEmbalagem { get; set; }
         public string Embalagem { get; set; }
-        public int QuantidadeDescarga { get; set; }
+        public int QtdDescarga { get; set; }
         public string Resumo { get; set; }
     }
 }

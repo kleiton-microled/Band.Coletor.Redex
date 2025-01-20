@@ -1,4 +1,5 @@
 using Band.Coletor.Redex.Application.ViewModel;
+using Band.Coletor.Redex.Application.ViewModel.View;
 using Band.Coletor.Redex.Business.Classes;
 using Band.Coletor.Redex.Business.Classes.ServiceResult;
 using Band.Coletor.Redex.Business.Interfaces.Business;
@@ -52,7 +53,7 @@ namespace Band.Coletor.Redex.Site.Controllers
                 Armazems = await _armazemBusiness.ListAll(),
                 Operacoes = OperacaoViewModel.Create()
             };
-            if(registroData != null)
+            if (registroData != null)
                 TempData["DescargaExportacaoData"] = registroData;
 
             return View(viewModel);
@@ -270,11 +271,11 @@ namespace Band.Coletor.Redex.Site.Controllers
         }
 
         [HttpPost]
-        public JsonResult SalvarAlteracoesItem(TalieItemViewModel itemAlterado)
+        public JsonResult SalvarAlteracoesItem(Application.ViewModel.TalieItemViewModel itemAlterado, int codigoRegistro)
         {
             try
             {
-                if (itemAlterado.QuantidadeDescarga <= 0)
+                if (itemAlterado.QtdDescarga <= 0)
                 {
                     return Json(new { sucesso = false, mensagem = "Quantidade deve ser maior que zero." });
                 }
@@ -286,37 +287,76 @@ namespace Band.Coletor.Redex.Site.Controllers
                     return Json(new { sucesso = false, mensagem = "Item não encontrado." });
                 }
 
-                if (itemAlterado.Quantidade > itemOriginal.Result.Quantidade)
+
+                // Busca todos os itens relacionados ao original
+                var itensRelacionados = BuscarItensRelacionados(itemOriginal.Result.TalieId);
+
+                // Soma as quantidades dos itens relacionados
+                var quantidadeTotalUsada = itensRelacionados.Sum(i => i.QtdDescarga);
+
+                // Calcula a quantidade ainda disponível
+                var quantidadeDisponivel = itemOriginal.Result.Quantidade - quantidadeTotalUsada;
+
+                // Valida se a quantidade informada pode ser usada
+                if (itemAlterado.QtdDescarga > quantidadeDisponivel)
                 {
-                    return Json(new { sucesso = false, mensagem = "A quantidade deve ser menor que a original." });
+                    return Json(new
+                    {
+                        sucesso = false,
+                        mensagem = $"A quantidade deve ser menor ou igual ao total disponível: {quantidadeDisponivel}."
+                    });
                 }
 
+
+
                 // Atualizar o registro original com a quantidade restante
-                if (itemOriginal.Result.Quantidade != itemAlterado.QuantidadeDescarga)
+                if (itemOriginal.Result.Quantidade != itemAlterado.QtdDescarga)
                 {
-                    itemOriginal.Result.Quantidade -= itemAlterado.Quantidade;
-                    _talieBusiness.UpdateTalieItem(itemOriginal.Result);
+
 
                     // Inserir o novo item com a nova quantidade
-                    var novoItem = new TalieItemViewModel
+
+                    var novoItem = new Application.ViewModel.TalieItemViewModel
                     {
-                        Id = itemOriginal.Result.Id,
-                        Quantidade = itemAlterado.Quantidade,
+                        TalieId = itemAlterado.TalieId,
+                        Quantidade = itemAlterado.QtdDescarga,
                         NotaFiscal = itemAlterado.NotaFiscal,
-                        Embalagem = itemAlterado.Embalagem,
+                        CodigoEmbalagem = itemAlterado.CodigoEmbalagem,
                         Peso = itemAlterado.Peso,
                         Comprimento = itemAlterado.Comprimento,
+                        Largura = itemAlterado.Largura,
+                        IMO = itemAlterado.IMO,
+                        IMO2 = itemAlterado.IMO2,
+                        IMO3 = itemAlterado.IMO3,
+                        IMO4 = itemAlterado.IMO4,
+                        UNO = itemAlterado.UNO,
+                        UNO2 = itemAlterado.UNO2,
+                        UNO3 = itemAlterado.UNO3,
+                        UNO4 = itemAlterado.UNO4,
+                        Remonte = itemAlterado.Remonte,
+                        Fumigacao = itemAlterado.Fumigacao
                         // Adicionar outros campos relevantes
                     };
+
+                    var item = _talieBusiness.CadastrarTalieItem(itemAlterado, codigoRegistro).Result;
+                    if (item.Result > 0)
+                    {
+                        itemOriginal.Result.Quantidade -= itemAlterado.QtdDescarga;
+                        itemOriginal.Result.QtdDescarga -= itemAlterado.QtdDescarga;
+                        var result = _talieBusiness.UpdateTalieItem(itemOriginal.Result).Result;
+
+                        return Json(new { sucesso = true, mensagem = "Novo item cadastrado com sucesso!" });
+                    }
                 }
                 else
                 {
-                    var result =  _talieBusiness.UpdateTalieItem(itemAlterado).Result;
+                    var result = _talieBusiness.UpdateTalieItem(itemAlterado).Result;
                     if (!result.Status)
                     {
                         return Json(new { sucesso = true, mensagem = "Falha ao executar a operação, tente novamente!" });
                     }
                 }
+
                 return Json(new { sucesso = true, mensagem = "Alterações salvas com sucesso!" });
 
             }
@@ -329,10 +369,30 @@ namespace Band.Coletor.Redex.Site.Controllers
         [HttpGet]
         public async Task<ActionResult> RecarregarTabelaItens(int talieId)
         {
-            // Simule a obtenção de dados do banco para edição
             var model = await _talieBusiness.BuscarItensDoTalie(talieId);
 
             return Json(model.Result, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult ExlcluirTalieItem(int talieItemId)
+        {
+            var result = _talieBusiness.ExcluirTalieItem(talieItemId);
+            if (result.Result > 0)
+            {
+                return Json("Item exlcuido com sucesso!", JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                return Json("Falha ao excluir o item, tente novamente!", JsonRequestBehavior.AllowGet);
+            }
+
+        }
+        private List<Application.ViewModel.TalieItemViewModel> BuscarItensRelacionados(int id)
+        {
+            var itens = _talieBusiness.BuscarItensDoTalie(id).Result;
+
+            return itens.Result;
         }
 
         #endregion ITENS

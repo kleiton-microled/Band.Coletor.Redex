@@ -333,6 +333,7 @@
     // Objeto global para armazenar variáveis e funções
     window.App = window.App || {};
     App.TalieId = null; // Inicializa como null
+    App.CodigoRegistro = null;
 
     function CarregarRegistro() {
         var registro = $("#registro").val();
@@ -342,6 +343,7 @@
             type: 'GET',
             data: { codigoRegistro: registro },
             success: function (response) {
+                console.log(response);
                 // Preencher os campos do formulário com os dados retornados
                 formModel.codigoRegistro = response?.CodigoRegistro || '';
                 formModel.inicio = formatarDataParaInput(response?.Talie?.Inicio) || '';
@@ -367,17 +369,17 @@
 
                 // Limpa a tabela antes de adicionar novos itens
                 tabela.innerHTML = '';
-                console.log(response.Talie.TalieItem);
 
                 App.TalieId = response?.Talie?.Id;
+                App.CodigoRegistro = response?.CodigoRegistro;
                 console.log('TalieId: ', App.TalieId);
                 // Itera sobre os itens e adiciona as linhas na tabela
-                if (response.Talie.TalieItem != null) {
+                if (response?.Talie?.TalieItem != null) {
                     let itens = response.Talie.TalieItem;
                     itens.forEach(item => {
                         const linha = `
                                     <tr>
-                                        <td>${item.NF || ''}</td>
+                                        <td>${item.NotaFiscal || ''}</td>
                                         <td>${item.Id || ''}</td>
                                         <td>${item.Embalagem || ''}</td>
                                         <td>${item.QtdNf || 0}</td>
@@ -386,7 +388,7 @@
                                             <button class="btn btn-sm btn-primary" onclick="abrirModalEditarItem(${item.Id})" title="Editar">
                                                 <i class="fa fa-edit"></i>
                                             </button>
-                                            <button class="btn btn-sm btn-danger" title="Excluir">
+                                            <button class="btn btn-sm btn-danger" title="Excluir" onclick="excluirTalieItem(${item.Id})">
                                                 <i class="fa fa-trash"></i>
                                             </button>
                                         </td>
@@ -400,7 +402,11 @@
             },
             error: function (xhr, status, error) {
                 console.error("Erro ao obter dados do Talie:", error);
-                alert("Ocorreu um erro ao buscar os dados. Verifique o console para mais detalhes.");
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Erro',
+                    text: error,
+                });
             }
         });
     }
@@ -420,8 +426,8 @@
                 // Preencher os campos do formulário com os dados retornados
                 document.getElementById('cbItensDescarregados').value = response?.itemDescarregadoId || '';
                 document.getElementById('numeroNotaFiscal').value = response?.NotaFiscal || '';
-                document.getElementById('quantidade').value = response?.Quantidade || '';
-                document.getElementById('codigo_embalagem').value = response?.EmbalagemId || '';
+                document.getElementById('quantidade').value = response?.QtdDescarga || '';
+                document.getElementById('codigo_embalagem').value = response?.CodigoEmbalagem || '';
                 document.getElementById('dc_embalagem').value = response?.Embalagem || '';
                 document.getElementById('comprimento').value = response?.Comprimento || '';
                 document.getElementById('largura').value = response?.Largura || '';
@@ -445,7 +451,11 @@
             },
             error: function (xhr, status, error) {
                 console.error("Erro ao carregar os dados do item:", error);
-                alert("Ocorreu um erro ao carregar os dados. Verifique o console para mais detalhes.");
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Erro',
+                    text: data.mensagem,
+                });
             }
         });
     }
@@ -476,10 +486,12 @@
         }
 
         const itemAlterado = {
+            TalieId: App.TalieId,
             Id: id,
-            QuantidadeDescarga: quantidade,
+            CodigoRegistro: App.CodigoRegistro,
+            QtdDescarga: quantidade,
             NotaFiscal: document.getElementById('numeroNotaFiscal').value,
-            EmbalagemId: document.getElementById('codigo_embalagem').value,
+            CodigoEmbalagem: document.getElementById('codigo_embalagem').value,
             Embalagem: document.getElementById('dc_embalagem').value,
             Comprimento: document.getElementById('comprimento').value,
             Altura: document.getElementById('altura').value,
@@ -536,53 +548,92 @@
             });
     });
 
-    //REcarregar tabela de itens
-    function recarregarItensTabela(talieId) {
-        if (!App.TalieId) {
-            console.warn('TalieId não definido. Certifique-se de que foi carregado.');
-            return;
-        }
-
-        $.ajax({
-            url: '/DescargaExportacao/RecarregarTabelaItens',
-            type: 'GET',
-            data: { talieId: App.TalieId },
-            success: function (response) {
-                const tabela = $('#tabelaItens tbody');
-                tabela.empty(); // Limpa a tabela atual
-                console.log(response);
-                if (response != null) {
-                    let itens = response;
-                    itens.forEach(item => {
-                        const linha = `
-                    <tr>
-                        <td>${item.NF || ''}</td>
-                        <td>${item.Id || ''}</td>
-                        <td>${item.Embalagem || ''}</td>
-                        <td>${item.QtdNf || 0}</td>
-                        <td>${item.QtdDescarga || 0}</td>
-                        <td class="text-center">
-                            <button class="btn btn-sm btn-primary" onclick="abrirModalEditarItem(${item.Id})" title="Editar">
-                                <i class="fa fa-edit"></i>
-                            </button>
-                            <button class="btn btn-sm btn-danger" title="Excluir">
-                                <i class="fa fa-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
-                `;
-                        tabela.innerHTML += linha;
-                    });
-                } else {
-                    tabela.append('<tr><td colspan="6" class="text-center">Nenhum item encontrado.</td></tr>');
-                }
-            },
-            error: function (xhr, status, error) {
-                console.error('Erro ao recarregar a tabela de itens:', error);
-                alert('Ocorreu um erro ao recarregar os itens da tabela. Verifique o console para mais detalhes.');
+    //EXCLUIR UM ITEM
+    function excluirTalieItem(talieItemId) {
+        Swal.fire({
+            title: 'Tem certeza?',
+            text: 'Você realmente deseja excluir este item?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sim, excluir',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: `/DescargaExportacao/ExlcluirTalieItem`,
+                    type: 'POST',
+                    data: { talieItemId: talieItemId },
+                    success: function (response) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Sucesso',
+                            text: response
+                        });
+                        // Opcional: Recarrega os itens da tabela após a exclusão
+                        CarregarRegistro();
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Erro ao excluir o item:", error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Erro',
+                            text: 'Ocorreu um erro ao tentar excluir o item. Tente novamente mais tarde.'
+                        });
+                    }
+                });
             }
         });
     }
+
+
+
+    ////REcarregar tabela de itens
+    //function recarregarItensTabela(talieId) {
+    //    if (!App.TalieId) {
+    //        console.warn('TalieId não definido. Certifique-se de que foi carregado.');
+    //        return;
+    //    }
+
+    //    $.ajax({
+    //        url: '/DescargaExportacao/RecarregarTabelaItens',
+    //        type: 'GET',
+    //        data: { talieId: App.TalieId },
+    //        success: function (response) {
+    //            const tabela = $('#tabelaItens tbody');
+    //            tabela.empty(); // Limpa a tabela atual
+    //            console.log(response);
+    //            if (response != null) {
+    //                let itens = response;
+    //                itens.forEach(item => {
+    //                    const linha = `
+    //                <tr>
+    //                    <td>${item.NF || ''}</td>
+    //                    <td>${item.Id || ''}</td>
+    //                    <td>${item.Embalagem || ''}</td>
+    //                    <td>${item.QtdNf || 0}</td>
+    //                    <td>${item.QtdDescarga || 0}</td>
+    //                    <td class="text-center">
+    //                        <button class="btn btn-sm btn-primary" onclick="abrirModalEditarItem(${item.Id})" title="Editar">
+    //                            <i class="fa fa-edit"></i>
+    //                        </button>
+    //                        <button class="btn btn-sm btn-danger" title="Excluir">
+    //                            <i class="fa fa-trash"></i>
+    //                        </button>
+    //                    </td>
+    //                </tr>
+    //            `;
+    //                    tabela.innerHTML += linha;
+    //                });
+    //            } else {
+    //                tabela.append('<tr><td colspan="6" class="text-center">Nenhum item encontrado.</td></tr>');
+    //            }
+    //        },
+    //        error: function (xhr, status, error) {
+    //            console.error('Erro ao recarregar a tabela de itens:', error);
+    //            alert('Ocorreu um erro ao recarregar os itens da tabela. Verifique o console para mais detalhes.');
+    //        }
+    //    });
+    //}
 
 
 </script>

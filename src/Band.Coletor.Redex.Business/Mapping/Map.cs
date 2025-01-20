@@ -54,7 +54,7 @@ namespace Band.Coletor.Redex.Business.Mapping
                 map.Add(new Application.ViewModel.View.TalieItemViewModel()
                 {
                     Id = item.Id,
-                    NF = item.NF,
+                    NotaFiscal = item.NotaFiscal,
                     Embalagem = item.Embalagem,
                     QtdNf = item.QtdNf,
                     QtdDescarga = item.QtdDescarga

@@ -2,15 +2,11 @@
 using Band.Coletor.Redex.Application.ViewModel;
 using Band.Coletor.Redex.Business.Interfaces.Business;
 using Band.Coletor.Redex.Business.Interfaces.Repositorios;
-using System.Data.SqlClient;
 using System;
 using System.Threading.Tasks;
 using Band.Coletor.Redex.Business.Models.Entities;
-using Band.Coletor.Redex.Business.Models;
 using Band.Coletor.Redex.Business.Classes.ServiceResult;
 using System.Collections.Generic;
-using Band.Coletor.Redex.Business.DTO;
-using Band.Coletor.Redex.Entity;
 
 namespace Band.Coletor.Redex.Business.Classes
 {
@@ -149,7 +145,7 @@ namespace Band.Coletor.Redex.Business.Classes
         {
             var item = Entity.TalieItem.CreateNew(view.Id, 
                                                   view.NotaFiscal, 
-                                                  view.EmbalagemId, 
+                                                  view.CodigoEmbalagem, 
                                                   view.Embalagem,
                                                   view.Comprimento, 
                                                   view.Largura, 
@@ -158,7 +154,7 @@ namespace Band.Coletor.Redex.Business.Classes
                                                   view.IMO,view.IMO2,view.IMO3,view.IMO4,view.IMO5,
                                                   view.UNO, view.UNO2, view.UNO3, view.UNO4, view.UNO5,
                                                   view.Quantidade,
-                                                  view.QuantidadeDescarga);
+                                                  view.QtdDescarga);
 
             return await _repositorio.UpdateTalieItem(item);
         }
@@ -179,6 +175,18 @@ namespace Band.Coletor.Redex.Business.Classes
 
             return _serviceResult;
 
+        }
+
+        public async Task<ServiceResult<int>> CadastrarTalieItem(TalieItemViewModel view, int codigoRegistro)
+        {
+            var item = _mapper.Map<TalieItemViewModel, Entity.TalieItem>(view);
+
+            return await _repositorio.CadastrarTalieItem(item, codigoRegistro);
+        }
+
+        public ServiceResult<int> ExcluirTalieItem(int id)
+        {
+            return _repositorio.ExlcuirTalieItem(id);
         }
     }
 }
