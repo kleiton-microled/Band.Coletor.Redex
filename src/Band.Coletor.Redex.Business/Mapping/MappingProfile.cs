@@ -1,15 +1,12 @@
 ﻿using AutoMapper;
 using Band.Coletor.Redex.Application.ViewModel;
-using Band.Coletor.Redex.Business.Classes.ServiceResult;
 using Band.Coletor.Redex.Business.DTO;
-using Band.Coletor.Redex.Business.Entity;
 using Band.Coletor.Redex.Business.Models;
 using Band.Coletor.Redex.Business.Models.Entities;
 using Band.Coletor.Redex.Business.Models.ModelsLogic;
-using System.Collections.Generic;
 using System.Linq;
-using Talie = Band.Coletor.Redex.Business.Entity.Talie;
-using TalieItem = Band.Coletor.Redex.Business.Entity.TalieItem;
+using Talie = Band.Coletor.Redex.Entity.Talie;
+using TalieItem = Band.Coletor.Redex.Entity.TalieItem;
 
 namespace Band.Coletor.Redex.Business.Mapping
 {
@@ -23,6 +20,9 @@ namespace Band.Coletor.Redex.Business.Mapping
             CreateMap<Operacao, OperacaoViewModel>();
             CreateMap<TalieEntity, TalieViewModel>();
             CreateMap<RegistroDTO, RegistroViewModel>();
+
+            CreateMap<Models.TalieItem, TalieItemViewModel>();
+
 
             // Mapeamento de Talie -> TalieViewModel
             CreateMap<Talie, TalieViewModel>()

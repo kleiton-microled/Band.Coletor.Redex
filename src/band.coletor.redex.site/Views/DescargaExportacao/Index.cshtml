@@ -126,8 +126,140 @@
         </table>
     </div>
 
-
 </div>
+
+<!--MODAL EDITAR ITEM-->
+<div class="modal fade" id="editarItemModal" tabindex="-1" role="dialog" aria-labelledby="editarItemModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editarItemModalLabel">Editar Item</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="@Url.Action("Buscar", "DescargaExportacao")">
+                    <div class="row padding-bottom">
+                        <div class="form-group col-sm-4">
+                            <label for="cbItensDescarregados">ITENS DESCARREGADOS:</label>
+                            <select id="cbItensDescarregados" class="form-control">
+                                @*@foreach (var item in Model.Itens)
+                                    {
+                                        <option value="@item.CodigoItem">@item.Descricao</option>
+                                    }*@
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row padding-bottom">
+                        <div class="form-group col-md-3">
+                            <label for="notafiscal">NOTA FISCAL</label>
+                            <input type="text" class="form-control" id="numeroNotaFiscal" name="numeroNotaFiscal" placeholder="Digite a nota fiscal">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="quantidade">QUANTIDADE</label>
+                            <input type="text" class="form-control" id="quantidade" name="quantidade" data-original="100" data-item-id="123" value="100">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="codigo_embalagem">COD. EMBALAGEM</label>
+                            <input type="text" class="form-control" id="codigo_embalagem" name="codigo_embalagem">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="dc_embalagem">DC. EMBALAGEM</label>
+                            <input type="text" class="form-control" id="dc_embalagem" name="dc_embalagem">
+                        </div>
+                    </div>
+                    <div class="row padding-bottom">
+                        <div class="form-group col-md-3">
+                            <label for="comprimento">CLA</label>
+                            <input type="text" class="form-control" id="comprimento" name="comprimento">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="largura">-</label>
+                            <input type="text" class="form-control" id="largura" name="largura">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="altura">-</label>
+                            <input type="text" class="form-control" id="altura" name="altura">
+                        </div>
+                        <div class="col-sm-1 form-group mt-5">
+                            <input type="checkbox" id="chkMadeiraInd" />
+                            <label for="chkMadeiraInd">Madeira</label>
+                        </div>
+                        <div class="col-sm-1 form-group mt-5">
+                            <input type="checkbox" id="chkFragil" />
+                            <label for="chkFragil">Fragil</label>
+                        </div>
+                    </div>
+                    <div class="row padding-bottom">
+                        <div class="form-group col-md-3">
+                            <label for="peso">PESO</label>
+                            <input type="text" class="form-control" id="peso" name="peso">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="imo">IMO</label>
+                            <input type="text" class="form-control" id="imo" name="imo">
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label for="imo_1">-</label>
+                            <input type="text" class="form-control" id="imo_1" name="imo_1">
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label for="imo_2">-</label>
+                            <input type="text" class="form-control" id="imo_2" name="imo_2">
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label for="imo_3">-</label>
+                            <input type="text" class="form-control" id="imo_3" name="imo_3">
+                        </div>
+                    </div>
+                    <div class="row padding-bottom">
+                        <div class="form-group col-md-3">
+                            <label for="uno">UNO</label>
+                            <input type="text" class="form-control" id="uno" name="uno">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="uno_1">-</label>
+                            <input type="text" class="form-control" id="uno_1" name="uno_1">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="uno_2">-</label>
+                            <input type="text" class="form-control" id="uno_2" name="uno_2">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="uno_3">-</label>
+                            <input type="text" class="form-control" id="uno_3" name="uno_3">
+                        </div>
+                    </div>
+                    <div class="row padding-bottom">
+                        <div class="form-group col-md-3">
+                            <label for="remonte">REMONTE</label>
+                            <input type="text" class="form-control" id="remonte" name="remonte">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="fumigacao">FUMIGACAO</label>
+                            <input type="text" class="form-control" id="fumigacao" name="fumigacao">
+                        </div>
+                    </div>
+                    @*<div class="row padding-bottom">
+                            <div class="form-group col-md-6">
+                                <button type="button" id="btnBuscarNotaFiscal" data-url="@Url.Action("BuscarNotaFiscal", "DescargaExportacao")" class="btn btn-primary btn-block">Buscar</button>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <button type="reset" class="btn btn-secondary btn-block">Abrir</button>
+                            </div>
+                        </div>*@
+                </form>
+                <div id="modalContent"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                <button type="button" class="btn btn-primary" id="salvarAlteracoes">Salvar Alterações</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!--MODAL OBS-->
 <div class="modal fade" id="observacaoModal" tabindex="-1" role="dialog" aria-labelledby="observacaoModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -187,8 +319,8 @@
         </a>
 
         @*<a id="lnkProximo" href="@Url.Action("DescargaExportacaoItens", "DescargaExportacao")" class="btn btn-warning flex-grow-1 mx-1 my-1">
-            <span aria-hidden="true" class="fa fa-chevron-right"></span>&nbsp;&nbsp;Próximo
-        </a>*@
+                <span aria-hidden="true" class="fa fa-chevron-right"></span>&nbsp;&nbsp;Próximo
+            </a>*@
 
         <a id="lnkHome" href="@Url.Content("~/Home")" class="btn btn-warning flex-grow-1 mx-1 my-1">
             <span aria-hidden="true" class="fa fa-home"></span>&nbsp;&nbsp;Home
@@ -198,6 +330,10 @@
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+    // Objeto global para armazenar variáveis e funções
+    window.App = window.App || {};
+    App.TalieId = null; // Inicializa como null
+
     function CarregarRegistro() {
         var registro = $("#registro").val();
 
@@ -232,6 +368,9 @@
                 // Limpa a tabela antes de adicionar novos itens
                 tabela.innerHTML = '';
                 console.log(response.Talie.TalieItem);
+
+                App.TalieId = response?.Talie?.Id;
+                console.log('TalieId: ', App.TalieId);
                 // Itera sobre os itens e adiciona as linhas na tabela
                 if (response.Talie.TalieItem != null) {
                     let itens = response.Talie.TalieItem;
@@ -244,7 +383,7 @@
                                         <td>${item.QtdNf || 0}</td>
                                         <td>${item.QtdDescarga || 0}</td>
                                         <td class="text-center">
-                                            <button class="btn btn-sm btn-primary" title="Editar">
+                                            <button class="btn btn-sm btn-primary" onclick="abrirModalEditarItem(${item.Id})" title="Editar">
                                                 <i class="fa fa-edit"></i>
                                             </button>
                                             <button class="btn btn-sm btn-danger" title="Excluir">
@@ -266,38 +405,186 @@
         });
     }
 
-    function popularTabelaItens(itens) {
-        // Seleciona o tbody da tabela pelo ID
-        const tabela = document.querySelector('#tabelaItens tbody');
+    function abrirModalEditarItem(id) {
+        CarregarDadosModal(id); // Carrega os dados do backend
+        $('#editarItemModal').modal('show');
+    }
 
-        // Limpa a tabela antes de adicionar novos itens
-        tabela.innerHTML = '';
+    function CarregarDadosModal(idItem) {
+        $.ajax({
+            url: '/DescargaExportacao/EditarItemModal', // Endpoint do backend para carregar os dados
+            type: 'GET',
+            data: { id: idItem },
+            success: function (response) {
+                console.log('BuscaItem: ', response);
+                // Preencher os campos do formulário com os dados retornados
+                document.getElementById('cbItensDescarregados').value = response?.itemDescarregadoId || '';
+                document.getElementById('numeroNotaFiscal').value = response?.NotaFiscal || '';
+                document.getElementById('quantidade').value = response?.Quantidade || '';
+                document.getElementById('codigo_embalagem').value = response?.EmbalagemId || '';
+                document.getElementById('dc_embalagem').value = response?.Embalagem || '';
+                document.getElementById('comprimento').value = response?.Comprimento || '';
+                document.getElementById('largura').value = response?.Largura || '';
+                document.getElementById('altura').value = response?.Altura || '';
+                document.getElementById('chkMadeiraInd').checked = response?.Madeira || false;
+                document.getElementById('chkFragil').checked = response?.Fragil || false;
+                document.getElementById('peso').value = response?.Peso || '';
+                document.getElementById('imo').value = response?.Imo || '';
+                document.getElementById('imo_1').value = response?.Imo1 || '';
+                document.getElementById('imo_2').value = response?.Imo2 || '';
+                document.getElementById('imo_3').value = response?.Imo3 || '';
+                document.getElementById('uno').value = response?.Uno || '';
+                document.getElementById('uno_1').value = response?.Uno1 || '';
+                document.getElementById('uno_2').value = response?.Uno2 || '';
+                document.getElementById('uno_3').value = response?.Uno3 || '';
+                document.getElementById('remonte').value = response?.Remonte || '';
+                document.getElementById('fumigacao').value = response?.Fumigacao || '';
+                document.getElementById('quantidade').dataset.itemId = idItem;
+                document.getElementById('quantidade').dataset.original = response?.Quantidade;
 
-        // Itera sobre os itens e adiciona as linhas na tabela
-        if (itens.lenght > 0 && itens != null) {
-            itens.forEach(item => {
-                const linha = `
-            <tr>
-                <td>${item.NF || ''}</td>
-                <td>${item.Id || ''}</td>
-                <td>${item.Embalagem || ''}</td>
-                <td>${item.QtdNf || 0}</td>
-                <td>${item.QtdDescarga || 0}</td>
-                <td class="text-center">
-                    <button class="btn btn-sm btn-primary" title="Editar">
-                        <i class="fa fa-edit"></i>
-                    </button>
-                    <button class="btn btn-sm btn-danger" title="Excluir">
-                        <i class="fa fa-trash"></i>
-                    </button>
-                </td>
-            </tr>
-        `;
-                tabela.innerHTML += linha;
+            },
+            error: function (xhr, status, error) {
+                console.error("Erro ao carregar os dados do item:", error);
+                alert("Ocorreu um erro ao carregar os dados. Verifique o console para mais detalhes.");
+            }
+        });
+    }
+
+    //SALVAR ITEM
+    document.getElementById('salvarAlteracoes').addEventListener('click', function () {
+        console.log('Salvar Item');
+        const quantidade = parseFloat(document.getElementById('quantidade').value);
+        const quantidadeOriginal = parseFloat(document.getElementById('quantidade').dataset.original);
+        const id = document.getElementById('quantidade').dataset.itemId;
+
+        if (quantidade <= 0) {
+            Swal.fire({
+                icon: 'info',
+                title: 'Erro',
+                text: 'A quantidade deve ser maior que zero.',
             });
+            return;
         }
 
+        if (quantidade > quantidadeOriginal) {
+            Swal.fire({
+                icon: 'info',
+                title: 'Erro',
+                text: 'Não é possível alterar um item para uma quantidade maior que o total da Nota Fiscal!',
+            });
+            return;
+        }
+
+        const itemAlterado = {
+            Id: id,
+            QuantidadeDescarga: quantidade,
+            NotaFiscal: document.getElementById('numeroNotaFiscal').value,
+            EmbalagemId: document.getElementById('codigo_embalagem').value,
+            Embalagem: document.getElementById('dc_embalagem').value,
+            Comprimento: document.getElementById('comprimento').value,
+            Altura: document.getElementById('altura').value,
+            Largura: document.getElementById('largura').value,
+            Madeira: document.getElementById('chkMadeiraInd').checked,
+            Fragil: document.getElementById('chkFragil').checked,
+            Peso: document.getElementById('peso').value,
+            //Imo: document.getElementById('imo').value,
+            //Imo2: document.getElementById('imo2').value,
+            //Imo3: document.getElementById('imo3').value,
+            //Uno: document.getElementById('uno').value,
+            //Uno2: document.getElementById('uno2').value,
+            //Uno3: document.getElementById('uno3').value,
+            //Uno4: document.getElementById('uno4').value,
+            Remonte: document.getElementById('remonte').value,
+            Fumigacao: document.getElementById('fumigacao').value
+        };
+        console.log(itemAlterado);
+
+        fetch('/DescargaExportacao/SalvarAlteracoesItem', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(itemAlterado),
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.sucesso) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Sucesso',
+                        text: data.mensagem,
+                    }).then(() => {
+                        // Fechar modal e recarregar a tabela
+                        $('#editarItemModal').modal('hide');
+                        CarregarRegistro();
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Erro',
+                        text: data.mensagem,
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao salvar alterações:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Erro',
+                    text: 'Ocorreu um erro ao salvar as alterações. Tente novamente.',
+                });
+            });
+    });
+
+    //REcarregar tabela de itens
+    function recarregarItensTabela(talieId) {
+        if (!App.TalieId) {
+            console.warn('TalieId não definido. Certifique-se de que foi carregado.');
+            return;
+        }
+
+        $.ajax({
+            url: '/DescargaExportacao/RecarregarTabelaItens',
+            type: 'GET',
+            data: { talieId: App.TalieId },
+            success: function (response) {
+                const tabela = $('#tabelaItens tbody');
+                tabela.empty(); // Limpa a tabela atual
+                console.log(response);
+                if (response != null) {
+                    let itens = response;
+                    itens.forEach(item => {
+                        const linha = `
+                    <tr>
+                        <td>${item.NF || ''}</td>
+                        <td>${item.Id || ''}</td>
+                        <td>${item.Embalagem || ''}</td>
+                        <td>${item.QtdNf || 0}</td>
+                        <td>${item.QtdDescarga || 0}</td>
+                        <td class="text-center">
+                            <button class="btn btn-sm btn-primary" onclick="abrirModalEditarItem(${item.Id})" title="Editar">
+                                <i class="fa fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger" title="Excluir">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                        tabela.innerHTML += linha;
+                    });
+                } else {
+                    tabela.append('<tr><td colspan="6" class="text-center">Nenhum item encontrado.</td></tr>');
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error('Erro ao recarregar a tabela de itens:', error);
+                alert('Ocorreu um erro ao recarregar os itens da tabela. Verifique o console para mais detalhes.');
+            }
+        });
     }
+
+
 </script>
 @section Scripts {
     @Scripts.Render("~/bundles/descargaExportacao")

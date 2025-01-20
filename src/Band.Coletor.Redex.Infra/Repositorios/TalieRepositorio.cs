@@ -3,7 +3,6 @@ using Band.Coletor.Redex.Business.Extensions;
 using Band.Coletor.Redex.Business.Interfaces.Repositorios;
 using Band.Coletor.Redex.Business.Models;
 using Band.Coletor.Redex.Infra.Configuracao;
-using Band.Coletor.Redex.Business.Enums;
 using Dapper;
 using System;
 using System.Collections.Generic;
@@ -11,12 +10,14 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Runtime.Caching;
-using System.Text;
 using System.Threading.Tasks;
 using Band.Coletor.Redex.Infra.Repositorios.Sql;
-using Band.Coletor.Redex.Business.Models.Entities;
-using System.Collections;
+//using Band.Coletor.Redex.Business.Models.Entities;
 using Band.Coletor.Redex.Business.Classes.ServiceResult;
+using Band.Coletor.Redex.Entity;
+using Talie = Band.Coletor.Redex.Business.Models.Talie;
+using TalieItem = Band.Coletor.Redex.Business.Models.TalieItem;
+using Band.Coletor.Redex.Business.Models.Entities;
 
 
 namespace Band.Coletor.Redex.Infra.Repositorios
@@ -850,7 +851,7 @@ namespace Band.Coletor.Redex.Infra.Repositorios
             //    }
         }
 
-        public TalieItem ObterItemNF(int registroId, string nf)
+        public Business.Models.TalieItem ObterItemNF(int registroId, string nf)
         {
             using (SqlConnection con = new SqlConnection(Config.StringConexao()))
             {
@@ -1152,7 +1153,7 @@ namespace Band.Coletor.Redex.Infra.Repositorios
                         E.SIGLA,
                         E.SIGLA AS EmbalagemSigla,
                         E.AUTONUM_EMB As EmbalagemId,
-                        E.DESCRICAO_EMB + '-' + E.AUTONUM_EMB AS EMBALAGEM,
+                        E.DESCRICAO_EMB AS EMBALAGEM,
                         TI.YARD
                     FROM
                         REDEX..TB_TALIE_ITEM TI
@@ -1515,7 +1516,7 @@ namespace Band.Coletor.Redex.Infra.Repositorios
         }
 
         #region METODOS ASYNC
-        public async Task<TalieEntity> ObterDadosTaliePorRegistroAsync(int registro)
+        public async Task<Business.Models.Entities.TalieEntity> ObterDadosTaliePorRegistroAsync(int registro)
         {
             try
             {
@@ -1727,7 +1728,7 @@ namespace Band.Coletor.Redex.Infra.Repositorios
                     var result = await connection.QueryAsync<TalieDescargaDTO>(query, parameters);
 
                     _serviceResult.Result = result.ToList();
-                    
+
 
                     return _serviceResult;
                 }
@@ -1739,6 +1740,112 @@ namespace Band.Coletor.Redex.Infra.Repositorios
                 return _serviceResult;
             }
         }
+
+        public async Task<ServiceResult<Entity.TalieItem>> BuscarItensPeloID(int talieItem)
+        {
+            var _serviceResult = new ServiceResult<Entity.TalieItem>();
+            string query = SqlQueries.ObterItensNotaFiscal;
+            try
+            {
+                using (var connection = Connection)
+                {
+                    var parameters = new DynamicParameters();
+                    parameters.Add("@TalieItem", talieItem);
+
+
+                    var result = await connection.QueryFirstOrDefaultAsync<Entity.TalieItem>(query, parameters);
+
+                    if (result == null)
+                    {
+                        _serviceResult.Mensagens.Add("Nota Fiscal não identificada no registro.");
+                    }
+                    else
+                    {
+                        _serviceResult.Result = result;
+                    }
+
+                    return _serviceResult;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _serviceResult.Error = ex.Message;
+                return _serviceResult;
+            }
+        }
+
+        public async Task<ServiceResult<bool>> UpdateTalieItem(Entity.TalieItem item)
+        {
+            var _serviceResult = new ServiceResult<bool>();
+            var query = SqlQueries.AtualizarTalieItem; // A query SQL para o UPDATE
+            try
+            {
+                using (var connection = Connection)
+                {
+                    var parameters = new DynamicParameters();
+                    // Adiciona os parâmetros
+                    parameters.Add("@TalieItemId", item.Id);
+                    parameters.Add("@QtdDescarga", item.QtdDescarga);
+                    parameters.Add("@IdEmbalagem", item.CodigoEmbalagem);
+                    parameters.Add("@Comprimento", item.Comprimento);
+                    parameters.Add("@Altura", item.Altura); // Corrigido para 'Altura'
+                    parameters.Add("@Largura", item.Largura); // Corrigido para 'Largura'
+                    parameters.Add("@Peso", item.Peso);
+                    parameters.Add("@Imo", item.Imo);
+                    parameters.Add("@Imo2", item.Imo2);
+                    parameters.Add("@Imo3", item.Imo3);
+                    parameters.Add("@Imo4", item.Imo4);
+                    parameters.Add("@Imo5", item.Imo5);
+                    parameters.Add("@Uno", item.Uno);
+                    parameters.Add("@Uno2", item.Uno2);
+                    parameters.Add("@Uno3", item.Uno3);
+                    parameters.Add("@Uno4", item.Uno4);
+                    parameters.Add("@Uno5", item.Uno5);
+
+                    // Executa o comando UPDATE
+                    var rowsAffected = connection.Execute(query, parameters);
+
+                    // Verifica se o comando foi bem-sucedido
+                    _serviceResult.Result = rowsAffected > 0;
+                    return _serviceResult;
+                }
+            }
+            catch (Exception ex)
+            {
+                _serviceResult.Result = false;
+                _serviceResult.Error = ex.Message;
+                return _serviceResult;
+            }
+        }
+
+        public async Task<ServiceResult<List<Entity.TalieItem>>> BuscarItensDoTalie(int talieId)
+        {
+            var _serviceResult = new ServiceResult<List<Entity.TalieItem>>();
+            string query = SqlQueries.ListarItensDoTalie;
+            try
+            {
+                using (var connection = Connection)
+                {
+                    var parameters = new DynamicParameters();
+                    parameters.Add("@TalieId", talieId);
+
+
+                    var result = await connection.QueryAsync<Entity.TalieItem>(query, parameters);
+
+                    _serviceResult.Result = result.ToList();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _serviceResult.Error = ex.Message;
+                return _serviceResult;
+            }
+
+            return _serviceResult;
+        }
+
 
         #endregion
     }

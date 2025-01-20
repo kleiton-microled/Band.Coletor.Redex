@@ -33,7 +33,7 @@ namespace Band.Coletor.Redex.Infra.Repositorios
                 {
                     var registroDict = new Dictionary<int, RegistroDTO>();
 
-                    var result = await connection.QueryAsync<RegistroDTO, Business.Entity.Talie, Business.Entity.TalieItem, RegistroDTO>(
+                    var result = await connection.QueryAsync<RegistroDTO, Entity.Talie, Entity.TalieItem, RegistroDTO>(
                         command,
                         (registro, talie, talieItem) =>
                         {
@@ -42,7 +42,7 @@ namespace Band.Coletor.Redex.Infra.Repositorios
                                 registroEntry = registro;
                                 registroEntry.Talie = talie;
                                 if(registroEntry.Talie != null)
-                                    registroEntry.Talie.TalieItem = new List<Business.Entity.TalieItem>();
+                                    registroEntry.Talie.TalieItem = new List<Entity.TalieItem>();
 
                                 registroDict.Add(registro.Id, registroEntry);
                             }
@@ -253,7 +253,7 @@ namespace Band.Coletor.Redex.Infra.Repositorios
 
                     DynamicParameters parameters = new DynamicParameters();
                     parameters.Add("AutonumTalie", autonumTalie);
-                    parameters.Add("AutonumRegcs", reg.autonum_regcs);
+                    parameters.Add("AutonumRegcs", reg.AUTONUM_REGCS);
                     parameters.Add("QtdeDescarga", reg.QUANTIDADE);
                     parameters.Add("Peso", pesoNF);
                     parameters.Add("IdNF", idNF);

@@ -257,6 +257,84 @@ namespace Band.Coletor.Redex.Site.Controllers
             return Json("Observação Registrada com sucesso!", JsonRequestBehavior.AllowGet);
         }
 
+        [HttpGet]
+        public ActionResult EditarItemModal(int id)
+        {
+            // Simule a obtenção de dados do banco para edição
+            var model = _talieBusiness.BuscarTalieItem(id); //TODO - verificar se esta trazendo o item da TB_TALIE_ITEM
+
+            if (model == null)
+                return HttpNotFound("Item não encontrado.");
+
+            return Json(model.Result, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public JsonResult SalvarAlteracoesItem(TalieItemViewModel itemAlterado)
+        {
+            try
+            {
+                if (itemAlterado.QuantidadeDescarga <= 0)
+                {
+                    return Json(new { sucesso = false, mensagem = "Quantidade deve ser maior que zero." });
+                }
+
+                var itemOriginal = _talieBusiness.BuscarTalieItem(itemAlterado.Id);
+
+                if (itemOriginal == null)
+                {
+                    return Json(new { sucesso = false, mensagem = "Item não encontrado." });
+                }
+
+                if (itemAlterado.Quantidade > itemOriginal.Result.Quantidade)
+                {
+                    return Json(new { sucesso = false, mensagem = "A quantidade deve ser menor que a original." });
+                }
+
+                // Atualizar o registro original com a quantidade restante
+                if (itemOriginal.Result.Quantidade != itemAlterado.QuantidadeDescarga)
+                {
+                    itemOriginal.Result.Quantidade -= itemAlterado.Quantidade;
+                    _talieBusiness.UpdateTalieItem(itemOriginal.Result);
+
+                    // Inserir o novo item com a nova quantidade
+                    var novoItem = new TalieItemViewModel
+                    {
+                        Id = itemOriginal.Result.Id,
+                        Quantidade = itemAlterado.Quantidade,
+                        NotaFiscal = itemAlterado.NotaFiscal,
+                        Embalagem = itemAlterado.Embalagem,
+                        Peso = itemAlterado.Peso,
+                        Comprimento = itemAlterado.Comprimento,
+                        // Adicionar outros campos relevantes
+                    };
+                }
+                else
+                {
+                    var result =  _talieBusiness.UpdateTalieItem(itemAlterado).Result;
+                    if (!result.Status)
+                    {
+                        return Json(new { sucesso = true, mensagem = "Falha ao executar a operação, tente novamente!" });
+                    }
+                }
+                return Json(new { sucesso = true, mensagem = "Alterações salvas com sucesso!" });
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new { sucesso = false, mensagem = "Erro ao salvar alterações: " + ex.Message });
+            }
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> RecarregarTabelaItens(int talieId)
+        {
+            // Simule a obtenção de dados do banco para edição
+            var model = await _talieBusiness.BuscarItensDoTalie(talieId);
+
+            return Json(model.Result, JsonRequestBehavior.AllowGet);
+        }
+
         #endregion ITENS
 
     }

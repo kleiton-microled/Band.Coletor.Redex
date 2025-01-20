@@ -10,6 +10,7 @@ using Band.Coletor.Redex.Business.Models;
 using Band.Coletor.Redex.Business.Classes.ServiceResult;
 using System.Collections.Generic;
 using Band.Coletor.Redex.Business.DTO;
+using Band.Coletor.Redex.Entity;
 
 namespace Band.Coletor.Redex.Business.Classes
 {
@@ -132,6 +133,52 @@ namespace Band.Coletor.Redex.Business.Classes
             _serviceResult.Result = _mapper.Map<List<TalieDescargaViewModel>>(result.Result);
 
             return _serviceResult;
+        }
+
+        public ServiceResult<TalieItemViewModel> BuscarTalieItem(int talieItem)
+        {
+            ServiceResult<TalieItemViewModel> _serviceResult = new ServiceResult<TalieItemViewModel>();
+            var item = _repositorio.ObterItemTaliePorId(talieItem);
+
+            _serviceResult.Result = _mapper.Map<Models.TalieItem,TalieItemViewModel>(item);
+
+            return _serviceResult;
+        }
+
+        public async Task<ServiceResult<bool>> UpdateTalieItem(TalieItemViewModel view)
+        {
+            var item = Entity.TalieItem.CreateNew(view.Id, 
+                                                  view.NotaFiscal, 
+                                                  view.EmbalagemId, 
+                                                  view.Embalagem,
+                                                  view.Comprimento, 
+                                                  view.Largura, 
+                                                  view.Altura,
+                                                  view.Peso,
+                                                  view.IMO,view.IMO2,view.IMO3,view.IMO4,view.IMO5,
+                                                  view.UNO, view.UNO2, view.UNO3, view.UNO4, view.UNO5,
+                                                  view.Quantidade,
+                                                  view.QuantidadeDescarga);
+
+            return await _repositorio.UpdateTalieItem(item);
+        }
+
+        public async Task<ServiceResult<List<TalieItemViewModel>>> BuscarItensDoTalie(int talieId)
+        {
+            var _serviceResult = new ServiceResult<List<TalieItemViewModel>>();
+
+            var itens = await _repositorio.BuscarItensDoTalie(talieId);
+
+            //foreach (var item in itens.Result)
+            //{
+            //    _serviceResult.Result.Add(TalieItemViewModel.CreateNew(item.CodigoEmbalagem, item.em));
+            //}
+
+
+            _serviceResult.Result = _mapper.Map<List<Entity.TalieItem>, List<TalieItemViewModel>>(itens.Result);
+
+            return _serviceResult;
+
         }
     }
 }

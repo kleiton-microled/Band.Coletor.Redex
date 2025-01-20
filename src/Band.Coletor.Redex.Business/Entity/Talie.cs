@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Band.Coletor.Redex.Business.Entity
+namespace Band.Coletor.Redex.Entity
 {
     public class Talie
     {

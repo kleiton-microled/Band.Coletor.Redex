@@ -4,7 +4,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Band.Coletor.Redex.Application.ViewModel;
 using Band.Coletor.Redex.Business.DTO;
-using Band.Coletor.Redex.Business.Entity;
+
+using Band.Coletor.Redex.Entity;
 
 
 namespace Band.Coletor.Redex.Business.Mapping

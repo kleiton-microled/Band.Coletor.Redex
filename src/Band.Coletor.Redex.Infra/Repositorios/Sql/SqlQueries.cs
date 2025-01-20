@@ -202,6 +202,23 @@ namespace Band.Coletor.Redex.Infra.Repositorios.Sql
                                                   OBS = @Observacoes
                                               WHERE 
                                                   AUTONUM_TALIE = @AutonumTalie";
+        public const string AtualizarTalieItem = @"UPDATE REDEX.dbo.TB_TALIE_ITEM  SET QTDE_DESCARGA = @QtdDescarga, 
+                                                   										   AUTONUM_EMB = @IdEmbalagem, 
+                                                   										   COMPRIMENTO = @Comprimento, 
+                                                   										   ALTURA = @Altura, 
+                                                   										   LARGURA = @Largura, 
+                                                   										   PESO =@Peso,
+                                                   										   IMO = @Imo,
+                                                   										   IMO2 = @Imo2,
+                                                   										   IMO3 = @Imo3,
+                                                   										   IMO4 = @Imo4,
+                                                   										   IMO5 = @Imo5,
+                                                   										   UNO = @Uno,
+                                                   										   UNO2 = @Uno2,
+                                                   										   UNO3 = @Uno3,
+                                                   										   UNO4 = @Uno4,
+                                                   										   UNO5 = @Uno5
+                                                   WHERE AUTONUM_TI = @TalieItemId";
         public const string ObterIdNotaFiscal = @"SELECT 
                                                       A.AUTONUM_NF
                                                   FROM 
@@ -300,7 +317,8 @@ namespace Band.Coletor.Redex.Infra.Repositorios.Sql
                                                     	tti.AUTONUM_TI as Id,
                                                         tti.NF ,
 	                                                    tce.DESCRICAO_EMB as Embalagem,
-	                                                    tti.QTDE_DISPONIVEL as QtdNf,
+	                                                    --tti.QTDE_DISPONIVEL as QtdNf,
+                                                        (SELECT ISNULL(SUM(QUANTIDADE),0) FROM REDEX..TB_REGISTRO_CS WHERE AUTONUM_REGCS = trc.AUTONUM_REGCS) As QtdNf,
 	                                                    tti.QTDE_DESCARGA as QtdDescarga
                                                     FROM
                                                     	REDEX.dbo.tb_gate_new a
@@ -316,11 +334,69 @@ namespace Band.Coletor.Redex.Infra.Repositorios.Sql
                                                     	tr.autonum_reg = tt.autonum_reg
                                                     LEFT JOIN REDEX.dbo.TB_TALIE_ITEM tti ON
                                                     	tt.AUTONUM_TALIE = tti.AUTONUM_TALIE 
+                                                    INNER JOIN REDEX.dbo.TB_REGISTRO_CS trc ON
+	                                                    trc.AUTONUM_REGCS = tti.AUTONUM_REGCS 
                                                     LEFT JOIN REDEX.dbo.TB_CAD_EMBALAGENS tce ON
 	                                                    tti.AUTONUM_EMB = tce.AUTONUM_EMB 
                                                     WHERE
                                                     	tr.autonum_reg = @CodigoRegistro
                                                     	AND tr.TIPO_REGISTRO = 'E'";
+        public const string BuscarItemPorId = @"SELECT tti.AUTONUM_TALIE as Id,
+                                            	   tti.NF ,
+                                            	   tti.QTDE_DESCARGA ,
+                                            	   tti.AUTONUM_EMB ,
+                                            	   tce.DESCRICAO_EMB as DescEmbalagem,
+                                            	   tti.COMPRIMENTO ,
+                                            	   tti.LARGURA ,
+                                            	   tti.ALTURA ,
+                                            	   tti.PESO ,
+                                            	   tti.IMO ,
+                                            	   tti.IMO2 ,
+                                            	   tti.IMO3 ,
+                                            	   tti.IMO4 ,
+                                            	   tti.IMO5 ,
+                                            	   tti.UNO ,
+                                            	   tti.UNO2 ,
+                                            	   tti.UNO3 ,
+                                            	   tti.UNO4 ,
+                                            	   tti.UNO5 ,
+                                            	   tti.REMONTE ,
+                                            	   tti.FUMIGACAO ,
+                                            	   tti.FLAG_MADEIRA as FlagMadeira,
+                                            	   tti.FLAG_FRAGIL as FlagFragil
+                                            FROM REDEX.dbo.TB_TALIE_ITEM tti 
+                                            INNER JOIN REDEX.dbo.TB_CAD_EMBALAGENS tce ON tti.AUTONUM_EMB = tce.AUTONUM_EMB 
+                                            WHERE tti.AUTONUM_TI = @TalieItem--'424349'";
+
+        public const string ListarItensDoTalie = @"SELECT tti.AUTONUM_TALIE as Id,
+                                            	   tti.NF,
+                                            	   tti.QTDE_DESCARGA QtdDescarga,
+                                                   (SELECT ISNULL(SUM(QUANTIDADE),0) FROM REDEX..TB_REGISTRO_CS WHERE AUTONUM_REGCS = trc.AUTONUM_REGCS) As QtdNf,
+                                            	   tti.AUTONUM_EMB as CodigoEmbalagem,
+                                            	   tce.DESCRICAO_EMB as Embalagem,
+                                            	   tti.COMPRIMENTO ,
+                                            	   tti.LARGURA ,
+                                            	   tti.ALTURA ,
+                                            	   tti.PESO ,
+                                            	   tti.IMO ,
+                                            	   tti.IMO2 ,
+                                            	   tti.IMO3 ,
+                                            	   tti.IMO4 ,
+                                            	   tti.IMO5 ,
+                                            	   tti.UNO ,
+                                            	   tti.UNO2 ,
+                                            	   tti.UNO3 ,
+                                            	   tti.UNO4 ,
+                                            	   tti.UNO5 ,
+                                            	   tti.REMONTE ,
+                                            	   tti.FUMIGACAO ,
+                                            	   tti.FLAG_MADEIRA as FlagMadeira,
+                                            	   tti.FLAG_FRAGIL as FlagFragil
+                                            FROM REDEX.dbo.TB_TALIE_ITEM tti 
+                                            INNER JOIN REDEX.dbo.TB_CAD_EMBALAGENS tce ON tti.AUTONUM_EMB = tce.AUTONUM_EMB 
+                                            INNER JOIN REDEX.dbo.TB_REGISTRO_CS trc ON
+	                                                    trc.AUTONUM_REGCS = tti.AUTONUM_REGCS 
+                                            WHERE tti.AUTONUM_TALIE = @TalieId";
 
         public const string ValidarDanfe = @"SELECT
                                              	COUNT(*)
