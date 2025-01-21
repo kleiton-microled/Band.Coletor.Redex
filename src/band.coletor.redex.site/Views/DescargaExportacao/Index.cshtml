@@ -199,16 +199,16 @@
                             <input type="text" class="form-control" id="imo" name="imo">
                         </div>
                         <div class="form-group col-md-2">
-                            <label for="imo_1">-</label>
-                            <input type="text" class="form-control" id="imo_1" name="imo_1">
+                            <label for="imo2">-</label>
+                            <input type="text" class="form-control" id="imo2" name="imo2">
                         </div>
                         <div class="form-group col-md-2">
-                            <label for="imo_2">-</label>
-                            <input type="text" class="form-control" id="imo_2" name="imo_2">
+                            <label for="imo3">-</label>
+                            <input type="text" class="form-control" id="imo3" name="imo3">
                         </div>
                         <div class="form-group col-md-2">
-                            <label for="imo_3">-</label>
-                            <input type="text" class="form-control" id="imo_3" name="imo_3">
+                            <label for="imo4">-</label>
+                            <input type="text" class="form-control" id="imo4" name="imo4">
                         </div>
                     </div>
                     <div class="row padding-bottom">
@@ -217,19 +217,23 @@
                             <input type="text" class="form-control" id="uno" name="uno">
                         </div>
                         <div class="form-group col-md-3">
-                            <label for="uno_1">-</label>
-                            <input type="text" class="form-control" id="uno_1" name="uno_1">
+                            <label for="uno2">-</label>
+                            <input type="text" class="form-control" id="uno2" name="uno2">
                         </div>
                         <div class="form-group col-md-3">
-                            <label for="uno_2">-</label>
-                            <input type="text" class="form-control" id="uno_2" name="uno_2">
+                            <label for="uno3">-</label>
+                            <input type="text" class="form-control" id="uno3" name="uno3">
                         </div>
                         <div class="form-group col-md-3">
-                            <label for="uno_3">-</label>
-                            <input type="text" class="form-control" id="uno_3" name="uno_3">
+                            <label for="uno4">-</label>
+                            <input type="text" class="form-control" id="uno4" name="uno4">
                         </div>
                     </div>
                     <div class="row padding-bottom">
+                        <div class="form-group col-md-3">
+                            <label for="fumigacao">FUMIGACAO</label>
+                            <input type="text" class="form-control" id="fumigacao" name="fumigacao">
+                        </div>
                         <div class="col-sm-2 form-group mt-5">
                             <input type="checkbox" id="chkRemonte" />
                             <label for="chkRemonte">REMONTE</label>
@@ -238,9 +242,12 @@
                             <label for="remonte">QTD.REMONTE</label>
                             <input type="text" class="form-control" id="remonte" name="remonte">
                         </div>
-                        <div class="form-group col-md-3">
-                            <label for="fumigacao">FUMIGACAO</label>
-                            <input type="text" class="form-control" id="fumigacao" name="fumigacao">
+
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label for="observacao">OBSERVAÇÃO</label>
+                            <textarea class="form-control" id="observacao" name="observacao" rows="3"></textarea>
                         </div>
                     </div>
                     @*<div class="row padding-bottom">
@@ -445,14 +452,14 @@
                 document.getElementById('chkMadeiraInd').checked = response?.Madeira || false;
                 document.getElementById('chkFragil').checked = response?.Fragil || false;
                 document.getElementById('peso').value = response?.Peso || '';
-                document.getElementById('imo').value = response?.Imo || '';
-                document.getElementById('imo_1').value = response?.Imo1 || '';
-                document.getElementById('imo_2').value = response?.Imo2 || '';
-                document.getElementById('imo_3').value = response?.Imo3 || '';
+                document.getElementById('imo').value = response?.IMO || '';
+                document.getElementById('imo2').value = response?.IMO2 || '';
+                document.getElementById('imo3').value = response?.IMO3 || '';
+                document.getElementById('imo4').value = response?.IMO4 || '';
                 document.getElementById('uno').value = response?.Uno || '';
-                document.getElementById('uno_1').value = response?.Uno1 || '';
-                document.getElementById('uno_2').value = response?.Uno2 || '';
-                document.getElementById('uno_3').value = response?.Uno3 || '';
+                document.getElementById('uno2').value = response?.Uno2 || '';
+                document.getElementById('uno3').value = response?.Uno3 || '';
+                document.getElementById('uno4').value = response?.Uno4 || '';
                 document.getElementById('remonte').value = response?.Remonte || '';
                 document.getElementById('fumigacao').value = response?.Fumigacao || '';
                 document.getElementById('quantidade').dataset.itemId = idItem;
@@ -509,15 +516,19 @@
             Madeira: document.getElementById('chkMadeiraInd').checked,
             Fragil: document.getElementById('chkFragil').checked,
             Peso: document.getElementById('peso').value,
-            //Imo: document.getElementById('imo').value,
-            //Imo2: document.getElementById('imo2').value,
-            //Imo3: document.getElementById('imo3').value,
-            //Uno: document.getElementById('uno').value,
-            //Uno2: document.getElementById('uno2').value,
-            //Uno3: document.getElementById('uno3').value,
-            //Uno4: document.getElementById('uno4').value,
-            Remonte: document.getElementById('remonte').value,
-            Fumigacao: document.getElementById('fumigacao').value
+            Imo: document.getElementById('imo').value,
+            Imo2: document.getElementById('imo2').value,
+            Imo3: document.getElementById('imo3').value,
+            Uno: document.getElementById('uno').value,
+            Uno2: document.getElementById('uno2').value,
+            Uno3: document.getElementById('uno3').value,
+            Uno4: document.getElementById('uno4').value,
+            RemonteChk: document.getElementById('chkRemonte').checked,
+            RemonteQuantidade: document.getElementById('remonte').value,
+            Fumigacao: document.getElementById('fumigacao').value,
+            Numerado: document.getElementById('chkNumerada').checked,
+            Carimbo: document.getElementById('chkCarimbo').checked,
+
         };
         console.log(itemAlterado);
 
