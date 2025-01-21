@@ -290,6 +290,7 @@ namespace Band.Coletor.Redex.Site.Controllers
         {
             try
             {
+                // Validação inicial
                 if (itemAlterado.QtdDescarga <= 0)
                 {
                     return Json(new { sucesso = false, mensagem = "Quantidade deve ser maior que zero." });
@@ -302,9 +303,8 @@ namespace Band.Coletor.Redex.Site.Controllers
                     return Json(new { sucesso = false, mensagem = "Item não encontrado." });
                 }
 
-
-                // Obtém a quantidade total permitida diretamente do banco
-                var quantidadeTotalPermitida = 20;//_talieBusiness.BuscarQuantidadeTotalDaNotaFiscal(itemAlterado.NotaFiscal);
+                // Obtém a quantidade total permitida
+                var quantidadeTotalPermitida = 20;// _talieBusiness.BuscarQuantidadeTotalDaNotaFiscal(itemAlterado.NotaFiscal);
 
                 if (quantidadeTotalPermitida <= 0)
                 {
@@ -315,13 +315,13 @@ namespace Band.Coletor.Redex.Site.Controllers
                     });
                 }
 
-                // Busca todos os itens relacionados à mesma NF (Nota Fiscal)
+                // Busca todos os itens relacionados à mesma NF
                 var itensRelacionados = BuscarItensRelacionados(itemOriginal.Result.TalieId);
 
                 // Soma as quantidades dos itens relacionados
                 var quantidadeTotalUsada = itensRelacionados.Sum(i => i.QtdDescarga);
 
-                // Calcula a quantidade ainda disponível
+                // Calcula a quantidade disponível
                 var quantidadeDisponivel = quantidadeTotalPermitida - quantidadeTotalUsada;
 
                 // Valida se a quantidade informada pode ser usada
@@ -334,23 +334,27 @@ namespace Band.Coletor.Redex.Site.Controllers
                     });
                 }
 
-                // Lógica adicional para criar ou alterar o item
-                // ...
-
-
-
-
-                // Atualizar o registro original com a quantidade restante
-                if (itemOriginal.Result.Quantidade != itemAlterado.QtdDescarga)
+                // Caso a quantidade alterada seja menor que a do item original
+                if (itemAlterado.QtdDescarga < itemOriginal.Result.QtdDescarga)
                 {
+                    // Calcula a quantidade restante
+                    var quantidadeRestante = itemOriginal.Result.QtdDescarga - itemAlterado.QtdDescarga;
 
+                    // Atualiza o item original com a nova quantidade
+                    itemOriginal.Result.QtdDescarga = itemAlterado.QtdDescarga;
 
-                    // Inserir o novo item com a nova quantidade
+                    var updateOriginal = _talieBusiness.UpdateTalieItem(itemOriginal.Result).Result;
 
+                    if (!updateOriginal.Status)
+                    {
+                        return Json(new { sucesso = false, mensagem = "Erro ao atualizar o item original." });
+                    }
+
+                    // Cria um novo item com a quantidade restante
                     var novoItem = new Application.ViewModel.TalieItemViewModel
                     {
                         TalieId = itemAlterado.TalieId,
-                        Quantidade = itemAlterado.QtdDescarga,
+                        Quantidade = quantidadeRestante,
                         NotaFiscal = itemAlterado.NotaFiscal,
                         CodigoEmbalagem = itemAlterado.CodigoEmbalagem,
                         Peso = itemAlterado.Peso,
@@ -366,30 +370,29 @@ namespace Band.Coletor.Redex.Site.Controllers
                         UNO4 = itemAlterado.UNO4,
                         Remonte = itemAlterado.Remonte,
                         Fumigacao = itemAlterado.Fumigacao
-                        // Adicionar outros campos relevantes
                     };
 
-                    var item = _talieBusiness.CadastrarTalieItem(itemAlterado, codigoRegistro).Result;
-                    if (item.Result > 0)
-                    {
-                        itemOriginal.Result.Quantidade -= itemAlterado.QtdDescarga;
-                        itemOriginal.Result.QtdDescarga -= itemAlterado.QtdDescarga;
-                        var result = _talieBusiness.UpdateTalieItem(itemOriginal.Result).Result;
+                    var inserirNovo = _talieBusiness.CadastrarTalieItem(novoItem, codigoRegistro).Result;
 
-                        return Json(new { sucesso = true, mensagem = "Novo item cadastrado com sucesso!" });
+                    if (inserirNovo.Result <= 0)
+                    {
+                        return Json(new { sucesso = false, mensagem = "Erro ao criar o novo item." });
                     }
+
+                    return Json(new { sucesso = true, mensagem = "Item atualizado e novo item criado com sucesso!" });
                 }
                 else
                 {
-                    var result = _talieBusiness.UpdateTalieItem(itemAlterado).Result;
-                    if (!result.Status)
+                    // Atualiza diretamente o item quando não há divisão de quantidade
+                    var updateResult = _talieBusiness.UpdateTalieItem(itemAlterado).Result;
+
+                    if (!updateResult.Status)
                     {
-                        return Json(new { sucesso = true, mensagem = "Falha ao executar a operação, tente novamente!" });
+                        return Json(new { sucesso = false, mensagem = "Erro ao atualizar o item." });
                     }
+
+                    return Json(new { sucesso = true, mensagem = "Alterações salvas com sucesso!" });
                 }
-
-                return Json(new { sucesso = true, mensagem = "Alterações salvas com sucesso!" });
-
             }
             catch (Exception ex)
             {

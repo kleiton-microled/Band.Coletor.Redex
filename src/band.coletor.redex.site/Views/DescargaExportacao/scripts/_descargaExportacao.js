@@ -239,60 +239,6 @@ document.getElementById('lnkGravar').addEventListener('click', function (e) {
     });
 });
 
-//Observacao
-document.getElementById('salvarObservacao').addEventListener('click', function () {
-    const observacao = document.getElementById('observacaoInput').value;
-    const talie = 404843;
-
-    if (!observacao.trim()) {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Atenção',
-            text: 'Por favor, preencha a observação antes de salvar.',
-            confirmButtonText: 'OK'
-        });
-        return;
-    }
-
-    // Chamada ao backend
-    fetch('/DescargaExportacao/GravarObservacao', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ observacao, talie })
-    })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Erro ao salvar observação.');
-            }
-            return response.json();
-        })
-        .then(data => {
-            Swal.fire({
-                icon: 'success',
-                title: 'Sucesso',
-                text: data.mensagem || 'Observação salva com sucesso!',
-                confirmButtonText: 'OK'
-            }).then(() => {
-                // Fecha o modal
-                $('#observacaoModal').modal('hide');
-
-                // Limpa o campo do modal
-                document.getElementById('observacaoInput').value = '';
-            });
-        })
-        .catch(error => {
-            console.error('Erro ao salvar observação:', error);
-            Swal.fire({
-                icon: 'error',
-                title: 'Erro',
-                text: 'Ocorreu um erro ao salvar a observação. Tente novamente.',
-                confirmButtonText: 'OK'
-            });
-        });
-});
-
 
 //UTILS
 function formatarDataParaInput(data) {

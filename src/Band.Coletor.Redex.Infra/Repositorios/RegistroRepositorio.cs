@@ -285,9 +285,22 @@ namespace Band.Coletor.Redex.Infra.Repositorios
         {
             using (var connection = Connection)
             {
-                string query = @"UPDATE REDEX.dbo.TB_TALIE SET OBS = @obs WHERE AUTONUM_TALIE = @talie";
+                string query = @"UPDATE REDEX.dbo.TB_TALIE SET OBS = @Observacao WHERE AUTONUM_TALIE = @TalieId";
 
-                connection.Execute(query, new { obs = observacao, talie = talie });
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("Observacao", observacao);
+                parameters.Add("TalieId", talie);
+
+                try
+                {
+                    connection.Execute(query, parameters);
+                }
+                catch (Exception ex)
+                {
+
+                    throw;
+                }
+                
             }
         }
 

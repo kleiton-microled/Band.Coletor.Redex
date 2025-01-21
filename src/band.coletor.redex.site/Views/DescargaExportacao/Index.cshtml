@@ -16,7 +16,7 @@
         <div class="row padding-bottom">
             <div class="form-group col-md-3">
                 <label for="registro">REGISTRO</label>
-                <input type="text" class="form-control" id="registro" name="registro" value="@Model.Registro.CodigoRegistro" placeholder="Digite o registro">
+                <input type="text" class="form-control" id="registro" name="registro" value="" placeholder="Digite o registro">
             </div>
             <div class="form-group col-md-3">
                 <label for="inicio">INICIO</label>
@@ -52,7 +52,7 @@
                 <button type="button" onclick="CarregarRegistro()" class="btn btn-primary btn-block">Buscar</button>
             </div>
             <div class="form-group col-md-6">
-                <button type="reset" class="btn btn-secondary btn-block">Restaurar Dados</button>
+                <button type="reset" class="btn btn-secondary btn-block">Limpar</button>
             </div>
         </div>
         <!--Combobox conferente, equipe, operacao-->
@@ -140,17 +140,17 @@
             </div>
             <div class="modal-body">
                 <form method="post" action="@Url.Action("Buscar", "DescargaExportacao")">
-                    <div class="row padding-bottom">
+                    <!--<div class="row padding-bottom">
                         <div class="form-group col-sm-4">
                             <label for="cbItensDescarregados">ITENS DESCARREGADOS:</label>
-                            <select id="cbItensDescarregados" class="form-control">
+                            <select id="cbItensDescarregados" class="form-control">-->
                                 @*@foreach (var item in Model.Itens)
                                     {
                                         <option value="@item.CodigoItem">@item.Descricao</option>
                                     }*@
-                            </select>
+                            <!--</select>
                         </div>
-                    </div>
+                    </div>-->
                     <div class="row padding-bottom">
                         <div class="form-group col-md-3">
                             <label for="notafiscal">NOTA FISCAL</label>
@@ -350,6 +350,7 @@
                         title: 'Info',
                         text: response.mensagem,
                     });
+                    limparFormulario();
                 } else {
                     // Preencher os campos do formulário com os dados retornados
                     formModel.codigoRegistro = response?.dados.CodigoRegistro || '';
@@ -592,56 +593,103 @@
         });
     }
 
+    //SALVAR OBSERVACAO
+    document.getElementById('salvarObservacao').addEventListener('click', function () {
+        const observacao = document.getElementById('observacaoInput').value;
+        const talie = App.TalieId;
 
+        if (!observacao.trim()) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Atenção',
+                text: 'Por favor, preencha a observação antes de salvar.',
+                confirmButtonText: 'OK'
+            });
+            return;
+        }
 
-    ////REcarregar tabela de itens
-    //function recarregarItensTabela(talieId) {
-    //    if (!App.TalieId) {
-    //        console.warn('TalieId não definido. Certifique-se de que foi carregado.');
-    //        return;
-    //    }
+        // Chamada ao backend
+        fetch('/DescargaExportacao/GravarObservacao', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ observacao, talie })
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erro ao salvar observação.');
+                }
+                return response.json();
+            })
+            .then(data => {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Sucesso',
+                    text: data.mensagem || 'Observação salva com sucesso!',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    // Fecha o modal
+                    $('#observacaoModal').modal('hide');
 
-    //    $.ajax({
-    //        url: '/DescargaExportacao/RecarregarTabelaItens',
-    //        type: 'GET',
-    //        data: { talieId: App.TalieId },
-    //        success: function (response) {
-    //            const tabela = $('#tabelaItens tbody');
-    //            tabela.empty(); // Limpa a tabela atual
-    //            console.log(response);
-    //            if (response != null) {
-    //                let itens = response;
-    //                itens.forEach(item => {
-    //                    const linha = `
-    //                <tr>
-    //                    <td>${item.NF || ''}</td>
-    //                    <td>${item.Id || ''}</td>
-    //                    <td>${item.Embalagem || ''}</td>
-    //                    <td>${item.QtdNf || 0}</td>
-    //                    <td>${item.QtdDescarga || 0}</td>
-    //                    <td class="text-center">
-    //                        <button class="btn btn-sm btn-primary" onclick="abrirModalEditarItem(${item.Id})" title="Editar">
-    //                            <i class="fa fa-edit"></i>
-    //                        </button>
-    //                        <button class="btn btn-sm btn-danger" title="Excluir">
-    //                            <i class="fa fa-trash"></i>
-    //                        </button>
-    //                    </td>
-    //                </tr>
-    //            `;
-    //                    tabela.innerHTML += linha;
-    //                });
-    //            } else {
-    //                tabela.append('<tr><td colspan="6" class="text-center">Nenhum item encontrado.</td></tr>');
-    //            }
-    //        },
-    //        error: function (xhr, status, error) {
-    //            console.error('Erro ao recarregar a tabela de itens:', error);
-    //            alert('Ocorreu um erro ao recarregar os itens da tabela. Verifique o console para mais detalhes.');
-    //        }
-    //    });
-    //}
+                    // Limpa o campo do modal
+                    document.getElementById('observacaoInput').value = '';
+                });
+            })
+            .catch(error => {
+                console.error('Erro ao salvar observação:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Erro',
+                    text: 'Ocorreu um erro ao salvar a observação. Tente novamente.',
+                    confirmButtonText: 'OK'
+                });
+            });
+    });
 
+    //UTILS
+    function limparFormulario() {
+        // Seleciona todos os inputs, selects e checkboxes do formulário
+        const form = document.querySelector('form');
+        if (!form) {
+            console.error("Formulário não encontrado!");
+            return;
+        }
+
+        const inputs = form.querySelectorAll('input');
+        const selects = form.querySelectorAll('select');
+        const checkboxes = form.querySelectorAll('input[type="checkbox"]');
+
+        // Limpa os valores dos inputs
+        inputs.forEach(input => {
+            if (input.type === 'text' || input.type === 'number' || input.type === 'datetime-local') {
+                input.value = '';
+            }
+        });
+
+        // Reseta os selects para o primeiro valor (placeholder ou default)
+        selects.forEach(select => {
+            select.selectedIndex = 0;
+        });
+
+        // Desmarca todos os checkboxes
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = false;
+        });
+
+        // Limpa a tabela de itens
+        const tabelaItens = document.getElementById('tabelaItens'); // Substitua com o ID da sua tabela
+        if (tabelaItens) {
+            const tbody = tabelaItens.querySelector('tbody');
+            if (tbody) {
+                tbody.innerHTML = ''; // Remove todas as linhas da tabela
+            }
+        }
+
+        verificarCondicaoParaProximo();
+
+        console.log("Formulário limpo com sucesso!");
+    }
 
 </script>
 @section Scripts {
