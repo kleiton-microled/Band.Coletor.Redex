@@ -193,5 +193,10 @@ namespace Band.Coletor.Redex.Business.Classes
         {
             return _repositorio.ObterQuantidadeTotalNotaFiscal(notaFiscal);
         }
+
+        public int ObterConferentes(int idConferente)
+        {
+            return _repositorio.ObterConferentes(idConferente);
+        }
     }
 }

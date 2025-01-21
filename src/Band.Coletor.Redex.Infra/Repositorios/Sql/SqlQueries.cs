@@ -368,7 +368,7 @@ namespace Band.Coletor.Redex.Infra.Repositorios.Sql
                                             INNER JOIN REDEX.dbo.TB_CAD_EMBALAGENS tce ON tti.AUTONUM_EMB = tce.AUTONUM_EMB 
                                             WHERE tti.AUTONUM_TI = @TalieItem--'424349'";
 
-        public const string ListarItensDoTalie = @"SELECT tti.AUTONUM_TALIE as Id,
+        public const string ListarItensDoTalie = @"SELECT tti.AUTONUM_TI as Id,
                                             	   tti.NF,
                                             	   tti.QTDE_DESCARGA QtdDescarga,
                                                    (SELECT ISNULL(SUM(QUANTIDADE),0) FROM REDEX..TB_REGISTRO_CS WHERE AUTONUM_REGCS = trc.AUTONUM_REGCS) As QtdNf,

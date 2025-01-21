@@ -58,19 +58,9 @@
         <!--Combobox conferente, equipe, operacao-->
         <div class="row padding-bottom">
             <div class="form-group col-sm-4">
-                @Html.Partial("~/Views/Shared/Components/Selects/component_coletor_select.cshtml", new ComponentColetorSelectModel
-                {
-                    Id = "cbConferente",
-                    Name = "conferente",
-                    Descricao = "Selecione o Conferente",
-                    Value = @Model.Registro.Talie?.Conferente,
-                    Disabled = false,
-                    Options = Model.Conferentes.Select(e => new SelectOption
-                    {
-                        Value = e.Id,
-                        Text = e.Descricao
-                    }).ToList()
-                })
+                <label for="conferente">CONFERENTE</label>
+                <input type="text" class="form-control" id="conferente" name="conferente" value="@Model.Conferente.Descricao" disabled>
+               
             </div>
             <div class="form-group col-sm-4">
                 @Html.Partial("~/Views/Shared/Components/Selects/component_coletor_select.cshtml", new ComponentColetorSelectModel
@@ -144,11 +134,11 @@
                         <div class="form-group col-sm-4">
                             <label for="cbItensDescarregados">ITENS DESCARREGADOS:</label>
                             <select id="cbItensDescarregados" class="form-control">-->
-                                @*@foreach (var item in Model.Itens)
-                                    {
-                                        <option value="@item.CodigoItem">@item.Descricao</option>
-                                    }*@
-                            <!--</select>
+                    @*@foreach (var item in Model.Itens)
+                        {
+                            <option value="@item.CodigoItem">@item.Descricao</option>
+                        }*@
+                    <!--</select>
                         </div>
                     </div>-->
                     <div class="row padding-bottom">
@@ -170,15 +160,15 @@
                         </div>
                     </div>
                     <div class="row padding-bottom">
-                        <div class="form-group col-md-3">
+                        <div class="form-group col-md-2">
                             <label for="comprimento">COMPRIMENTO</label>
                             <input type="text" class="form-control" id="comprimento" name="comprimento">
                         </div>
-                        <div class="form-group col-md-3">
+                        <div class="form-group col-md-2">
                             <label for="largura">LARGURA</label>
                             <input type="text" class="form-control" id="largura" name="largura">
                         </div>
-                        <div class="form-group col-md-3">
+                        <div class="form-group col-md-2">
                             <label for="altura">ALTURA</label>
                             <input type="text" class="form-control" id="altura" name="altura">
                         </div>
@@ -189,6 +179,14 @@
                         <div class="col-sm-1 form-group mt-5">
                             <input type="checkbox" id="chkFragil" />
                             <label for="chkFragil">Fragil</label>
+                        </div>
+                        <div class="col-sm-2 form-group mt-5">
+                            <input type="checkbox" id="chkNumerada" />
+                            <label for="chkNumerada">Numerada</label>
+                        </div>
+                        <div class="col-sm-1 form-group mt-5">
+                            <input type="checkbox" id="chkCarimbo" />
+                            <label for="chkCarimbo">Carimbo</label>
                         </div>
                     </div>
                     <div class="row padding-bottom">
@@ -232,8 +230,12 @@
                         </div>
                     </div>
                     <div class="row padding-bottom">
-                        <div class="form-group col-md-3">
-                            <label for="remonte">REMONTE</label>
+                        <div class="col-sm-2 form-group mt-5">
+                            <input type="checkbox" id="chkRemonte" />
+                            <label for="chkRemonte">REMONTE</label>
+                        </div>
+                        <div class="form-group col-md-3" id="remonteGroup">
+                            <label for="remonte">QTD.REMONTE</label>
                             <input type="text" class="form-control" id="remonte" name="remonte">
                         </div>
                         <div class="form-group col-md-3">
@@ -359,7 +361,7 @@
 
                     formModel.termino = formatarDataParaInput(response?.dados.Talie?.Termino) || '';
                     formModel.equipe = response?.dados.Talie?.Equipe || '';
-                    formModel.conferente = response?.dados.Talie?.Conferente || '';
+                    //formModel.conferente = response?.dados.Talie?.Conferente || '';
                     //formModel.operacao = response?.Talie?.Operacao || '';
                     formModel.placa = response?.dados.Placa || '';
                     formModel.reserva = response?.dados.Reserva || '';
@@ -432,7 +434,7 @@
             success: function (response) {
                 console.log('BuscaItem: ', response);
                 // Preencher os campos do formulário com os dados retornados
-                document.getElementById('cbItensDescarregados').value = response?.itemDescarregadoId || '';
+                //document.getElementById('cbItensDescarregados').value = response?.itemDescarregadoId || '';
                 document.getElementById('numeroNotaFiscal').value = response?.NotaFiscal || '';
                 document.getElementById('quantidade').value = response?.QtdDescarga || '';
                 document.getElementById('codigo_embalagem').value = response?.CodigoEmbalagem || '';
@@ -690,6 +692,34 @@
 
         console.log("Formulário limpo com sucesso!");
     }
+
+    //Mostra ou esconde o campo de Remonte
+    document.addEventListener('DOMContentLoaded', function () {
+        const chkRemonte = document.getElementById('chkRemonte');
+        const remonteGroup = document.getElementById('remonteGroup');
+
+        // Verifica se os elementos existem
+        if (!chkRemonte || !remonteGroup) {
+            console.error('Elemento chkRemonte ou remonteGroup não encontrado.');
+            return;
+        }
+
+        // Função para mostrar/ocultar o campo "Quantidade"
+        function toggleRemonteInput() {
+            if (chkRemonte.checked) {
+                remonteGroup.style.display = 'block'; // Mostra o campo
+            } else {
+                remonteGroup.style.display = 'none'; // Esconde o campo
+            }
+        }
+
+        // Adiciona o evento de mudança no checkbox
+        chkRemonte.addEventListener('change', toggleRemonteInput);
+
+        // Chama a função uma vez ao carregar a página para garantir o estado inicial correto
+        toggleRemonteInput();
+    });
+
 
 </script>
 @section Scripts {

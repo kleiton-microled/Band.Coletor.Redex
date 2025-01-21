@@ -3,6 +3,7 @@ using Band.Coletor.Redex.Application.ViewModel.View;
 using Band.Coletor.Redex.Business.Classes;
 using Band.Coletor.Redex.Business.Classes.ServiceResult;
 using Band.Coletor.Redex.Business.Interfaces.Business;
+using Band.Coletor.Redex.Site.Extensions;
 using Band.Coletor.Redex.Site.Models.DescargaExportacao;
 using System;
 using System.Collections.Generic;
@@ -22,6 +23,7 @@ namespace Band.Coletor.Redex.Site.Controllers
         private readonly IOperacaoBusiness _operacaoBusiness;
         private readonly IArmazemBusiness _armazemBusiness;
         private readonly IRegistroBusiness _registroBusiness;
+        public  int _conferente = 0;
         //
 
         private ITalieBusiness _talieBusiness;
@@ -44,11 +46,12 @@ namespace Band.Coletor.Redex.Site.Controllers
         public async Task<ActionResult> Index()
         {
             var registroData = TempData["DescargaExportacaoData"] as RegistroViewModel;
+            var conferenteAtual = await ObterConferenteAtualAsync();
 
             var viewModel = new DescargaExportacaoViewModel
             {
                 Registro = registroData ?? new RegistroViewModel(),
-                Conferentes = await _conferenteBusiness.ListAll(),
+                Conferente = conferenteAtual,//await _conferenteBusiness.ListAll(),
                 Equipes = await _equipeBusiness.ListAll(),
                 Armazems = await _armazemBusiness.ListAll(),
                 Operacoes = OperacaoViewModel.Create()
@@ -63,10 +66,12 @@ namespace Band.Coletor.Redex.Site.Controllers
 
             var registroData = TempData["DescargaExportacaoData"] as RegistroViewModel;
 
+            var conferenteAtual = await ObterConferenteAtualAsync();
+
             var viewModel = new DescargaExportacaoViewModel
             {
                 Registro = registroData ?? new RegistroViewModel(),
-                Conferentes = await _conferenteBusiness.ListAll(),
+                Conferente = conferenteAtual,//await _conferenteBusiness.ListAll(),
                 Equipes = await _equipeBusiness.ListAll(),
                 Operacoes = OperacaoViewModel.Create(),
                 Itens = null
@@ -80,10 +85,12 @@ namespace Band.Coletor.Redex.Site.Controllers
 
             var registroData = TempData["DescargaExportacaoData"] as RegistroViewModel;
 
+            var conferenteAtual = await ObterConferenteAtualAsync();
+
             var viewModel = new DescargaExportacaoViewModel
             {
                 Registro = registroData ?? new RegistroViewModel(),
-                Conferentes = await _conferenteBusiness.ListAll(),
+                Conferente = conferenteAtual,
                 Equipes = await _equipeBusiness.ListAll(),
                 Operacoes = OperacaoViewModel.Create(),
                 Itens = null
@@ -256,6 +263,14 @@ namespace Band.Coletor.Redex.Site.Controllers
             return armazens.ToList();
         }
 
+        private async Task<ConferenteViewModel> ObterConferenteAtualAsync()
+        {
+            var conferenteId = _talieBusiness.ObterConferentes(User.ObterId());
+            var conferentes = await _conferenteBusiness.ListAll();
+            return conferentes.FirstOrDefault(x => x.Id == conferenteId);
+        }
+
+
         //ITENS
         #region ITENS
         [HttpGet]
@@ -317,9 +332,15 @@ namespace Band.Coletor.Redex.Site.Controllers
 
                 // Busca todos os itens relacionados à mesma NF
                 var itensRelacionados = BuscarItensRelacionados(itemOriginal.Result.TalieId);
+                if (itensRelacionados == null || !itensRelacionados.Any())
+                {
+                    return Json(new { sucesso = false, mensagem = "Nenhum item relacionado encontrado para a NF." });
+                }
 
-                // Soma as quantidades dos itens relacionados
-                var quantidadeTotalUsada = itensRelacionados.Sum(i => i.QtdDescarga);
+                // Soma as quantidades dos itens relacionados, ignorando o próprio item
+                var quantidadeTotalUsada = itensRelacionados
+                    .Where(i => i.Id != itemAlterado.Id) // Ignorar o próprio item
+                    .Sum(i => i.QtdDescarga);
 
                 // Calcula a quantidade disponível
                 var quantidadeDisponivel = quantidadeTotalPermitida - quantidadeTotalUsada;
@@ -333,6 +354,7 @@ namespace Band.Coletor.Redex.Site.Controllers
                         mensagem = $"A quantidade deve ser menor ou igual ao total disponível: {quantidadeDisponivel}."
                     });
                 }
+
 
                 // Caso a quantidade alterada seja menor que a do item original
                 if (itemAlterado.QtdDescarga < itemOriginal.Result.QtdDescarga)
@@ -355,6 +377,7 @@ namespace Band.Coletor.Redex.Site.Controllers
                     {
                         TalieId = itemAlterado.TalieId,
                         Quantidade = quantidadeRestante,
+                        QtdDescarga = quantidadeRestante,
                         NotaFiscal = itemAlterado.NotaFiscal,
                         CodigoEmbalagem = itemAlterado.CodigoEmbalagem,
                         Peso = itemAlterado.Peso,

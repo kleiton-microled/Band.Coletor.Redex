@@ -7,7 +7,7 @@ namespace Band.Coletor.Redex.Site.Models.DescargaExportacao
     public class DescargaExportacaoViewModel
     {
         public Application.ViewModel.RegistroViewModel Registro { get; set; }
-        public IEnumerable<ConferenteViewModel> Conferentes { get; set; }
+        public ConferenteViewModel Conferente { get; set; }
         public IEnumerable<EquipeViewModel> Equipes { get; set; }
         public IEnumerable<OperacaoViewModel> Operacoes { get; set; }
         public IEnumerable<ItensDescarregadosViewModel> Itens { get; set; }
