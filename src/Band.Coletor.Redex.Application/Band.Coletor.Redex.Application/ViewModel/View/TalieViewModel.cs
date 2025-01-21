@@ -9,7 +9,7 @@ namespace Band.Coletor.Redex.Application.ViewModel.View
         public string Termino { get; set; }
         public int Conferente { get; set; }
         public int Equipe { get; set; }
-        public int Operacao { get; set; }
+        public string Operacao { get; set; }
         public string Observacao { get; set; }
         public List<TalieItemViewModel> TalieItem { get; set; }
 

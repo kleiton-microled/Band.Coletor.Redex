@@ -10,7 +10,7 @@ namespace Band.Coletor.Redex.Entity
         public string Termino { get; set; }
         public int Conferente { get; set; }
         public int Equipe { get; set; }
-        public int Operacao { get; set; }
+        public string Operacao { get; set; }
         public string Observacao { get; set; }
         public List<TalieItem> TalieItem { get; set; }
     }

@@ -352,22 +352,22 @@
                     });
                 } else {
                     // Preencher os campos do formulário com os dados retornados
-                    formModel.codigoRegistro = response?.CodigoRegistro || '';
-                    formModel.inicio = formatarDataParaInput(response?.Talie?.Inicio) || '';
+                    formModel.codigoRegistro = response?.dados.CodigoRegistro || '';
+                    formModel.inicio = formatarDataParaInput(response?.dados.Talie?.Inicio) || '';
                     document.getElementById('inicio').value = formModel.inicio;
 
-                    formModel.termino = formatarDataParaInput(response?.Talie?.Termino) || '';
-                    formModel.equipe = response?.Talie?.Equipe || '';
-                    formModel.conferente = response?.Talie?.Conferente || '';
-                    formModel.operacao = response?.Talie?.Operacao || '';
-                    formModel.placa = response?.Placa || '';
-                    formModel.reserva = response?.Reserva || '';
-                    formModel.codigoTalie = response?.Talie?.Id || '';
-                    formModel.cliente = response?.Cliente || '';
+                    formModel.termino = formatarDataParaInput(response?.dados.Talie?.Termino) || '';
+                    formModel.equipe = response?.dados.Talie?.Equipe || '';
+                    formModel.conferente = response?.dados.Talie?.Conferente || '';
+                    //formModel.operacao = response?.Talie?.Operacao || '';
+                    formModel.placa = response?.dados.Placa || '';
+                    formModel.reserva = response?.dados.Reserva || '';
+                    formModel.codigoTalie = response?.dados.Talie?.Id || '';
+                    formModel.cliente = response?.dados.Cliente || '';
 
-                    document.getElementById('observacaoInput').value = response?.Talie?.Observacao;
+                    document.getElementById('observacaoInput').value = response?.dados.Talie?.Observacao;
 
-                    setComboBoxValue("cbOperacao", response?.Talie?.Operacao);
+                    //setComboBoxValue("cbOperacao", response?.Talie?.Operacao);
 
                     preencherFormularioComModel();
                     verificarCondicaoParaProximo();
@@ -377,12 +377,12 @@
                     // Limpa a tabela antes de adicionar novos itens
                     tabela.innerHTML = '';
 
-                    App.TalieId = response?.Talie?.Id;
-                    App.CodigoRegistro = response?.CodigoRegistro;
+                    App.TalieId = response?.dados.Talie?.Id;
+                    App.CodigoRegistro = response?.dados.CodigoRegistro;
                     console.log('TalieId: ', App.TalieId);
                     // Itera sobre os itens e adiciona as linhas na tabela
-                    if (response?.Talie?.TalieItem != null) {
-                        let itens = response.Talie.TalieItem;
+                    if (response?.dados.Talie?.TalieItem != null) {
+                        let itens = response.dados.Talie.TalieItem;
                         itens.forEach(item => {
                             const linha = `
                     <tr>
