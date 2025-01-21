@@ -126,6 +126,7 @@ namespace Band.Coletor.Redex.Business.Interfaces.Repositorios
         Task<ServiceResult<List<Entity.TalieItem>>> BuscarItensDoTalie(int talieId);
         Task<ServiceResult<int>> CadastrarTalieItem(Entity.TalieItem item, int codigoRegistro);
         ServiceResult<int> ExlcuirTalieItem(int id);
+        ServiceResult<int> ObterQuantidadeTotalNotaFiscal(string notaFiscal);
 
         #endregion
 

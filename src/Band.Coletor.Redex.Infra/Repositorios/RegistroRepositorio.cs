@@ -117,19 +117,24 @@ namespace Band.Coletor.Redex.Infra.Repositorios
                 {
                     // Atualizar
                     string updateSql = @"
-                    UPDATE REDEX..tb_talie 
-                    SET 
-                        flag_descarga = 1,
-                        flag_estufagem = 1,
-                        flag_carregamento = 0,
-                        crossdocking = 0,
-                        conferente = @Conferente,
-                        equipe = @Equipe,
-                        --autonum_boo = @Reserva,
-                        forma_operacao = @Operacao
-                    WHERE autonum_reg = @CodigoRegistro";
+                                        DECLARE @OutputTable TABLE (autonum_talie INT);
+                                    
+                                        UPDATE REDEX..tb_talie
+                                        SET 
+                                            flag_descarga = 1,
+                                            flag_estufagem = 1,
+                                            flag_carregamento = 0,
+                                            crossdocking = 0,
+                                            conferente = @Conferente,
+                                            equipe = @Equipe,
+                                            forma_operacao = @Operacao
+                                        OUTPUT INSERTED.autonum_talie INTO @OutputTable
+                                        WHERE autonum_reg = @CodigoRegistro;
+                                    
+                                        SELECT autonum_talie FROM @OutputTable;
+                                    ";
 
-                    connection.Execute(updateSql, new
+                    var talieId = connection.QueryFirstOrDefault<int>(updateSql, new
                     {
                         Conferente = registro.Talie.Conferente,
                         Equipe = registro.Talie.Equipe,
@@ -137,7 +142,9 @@ namespace Band.Coletor.Redex.Infra.Repositorios
                         CodigoRegistro = registro.CodigoRegistro
                     });
 
-                    return registro.Talie.Id;
+
+
+                    return talieId;
                 }
                 else
                 {

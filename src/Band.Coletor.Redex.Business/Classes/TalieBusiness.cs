@@ -188,5 +188,10 @@ namespace Band.Coletor.Redex.Business.Classes
         {
             return _repositorio.ExlcuirTalieItem(id);
         }
+
+        public ServiceResult<int> BuscarQuantidadeTotalDaNotaFiscal(string notaFiscal)
+        {
+            return _repositorio.ObterQuantidadeTotalNotaFiscal(notaFiscal);
+        }
     }
 }

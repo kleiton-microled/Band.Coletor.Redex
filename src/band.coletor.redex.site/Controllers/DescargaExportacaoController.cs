@@ -97,9 +97,22 @@ namespace Band.Coletor.Redex.Site.Controllers
         {
             var registro = await _registroBusiness.CarregarRegistro(codigoRegistro);
 
-            // Retorna o objeto "talie" como JSON
-            return Json(registro, JsonRequestBehavior.AllowGet);
+            if (registro == null)
+            {
+                return Json(new
+                {
+                    sucesso = false,
+                    mensagem = "Registro não encontrado!"
+                }, JsonRequestBehavior.AllowGet);
+            }
+
+            return Json(new
+            {
+                sucesso = true,
+                dados = registro
+            }, JsonRequestBehavior.AllowGet);
         }
+
 
         [HttpPost]
         public JsonResult GravarTalie(RegistroViewModel formModel)
@@ -116,7 +129,9 @@ namespace Band.Coletor.Redex.Site.Controllers
                     _serviceResultSave = _registroBusiness.SaveOrUpdate(formModel);
                     if (_serviceResultSave.Status)
                     {
-                        if (_serviceResultSave.Result > 0)
+                        var itensRelacionados = BuscarItensRelacionados(_serviceResultSave.Result);
+
+                        if (_serviceResultSave.Result > 0 && itensRelacionados.Count == 0)
                         {
                             _registroBusiness.GeraDescargaAutomatica(formModel.CodigoRegistro, _serviceResultSave.Result);
                         }
@@ -288,14 +303,26 @@ namespace Band.Coletor.Redex.Site.Controllers
                 }
 
 
-                // Busca todos os itens relacionados ao original
+                // Obtém a quantidade total permitida diretamente do banco
+                var quantidadeTotalPermitida = 20;//_talieBusiness.BuscarQuantidadeTotalDaNotaFiscal(itemAlterado.NotaFiscal);
+
+                if (quantidadeTotalPermitida <= 0)
+                {
+                    return Json(new
+                    {
+                        sucesso = false,
+                        mensagem = "Não foi possível obter a quantidade total permitida para a nota fiscal."
+                    });
+                }
+
+                // Busca todos os itens relacionados à mesma NF (Nota Fiscal)
                 var itensRelacionados = BuscarItensRelacionados(itemOriginal.Result.TalieId);
 
                 // Soma as quantidades dos itens relacionados
                 var quantidadeTotalUsada = itensRelacionados.Sum(i => i.QtdDescarga);
 
                 // Calcula a quantidade ainda disponível
-                var quantidadeDisponivel = itemOriginal.Result.Quantidade - quantidadeTotalUsada;
+                var quantidadeDisponivel = quantidadeTotalPermitida - quantidadeTotalUsada;
 
                 // Valida se a quantidade informada pode ser usada
                 if (itemAlterado.QtdDescarga > quantidadeDisponivel)
@@ -306,6 +333,10 @@ namespace Band.Coletor.Redex.Site.Controllers
                         mensagem = $"A quantidade deve ser menor ou igual ao total disponível: {quantidadeDisponivel}."
                     });
                 }
+
+                // Lógica adicional para criar ou alterar o item
+                // ...
+
 
 
 

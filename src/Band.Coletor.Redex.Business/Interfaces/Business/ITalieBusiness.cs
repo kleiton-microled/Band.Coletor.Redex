@@ -17,6 +17,7 @@ namespace Band.Coletor.Redex.Business.Interfaces.Business
         Task<ServiceResult<List<TalieItemViewModel>>> BuscarItensDoTalie(int talieId);
         Task<ServiceResult<int>> CadastrarTalieItem(TalieItemViewModel view, int codigoRegistro);
         ServiceResult<int> ExcluirTalieItem(int id);
+        ServiceResult<int> BuscarQuantidadeTotalDaNotaFiscal(string notaFiscal);
 
 
     }

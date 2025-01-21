@@ -171,15 +171,15 @@
                     </div>
                     <div class="row padding-bottom">
                         <div class="form-group col-md-3">
-                            <label for="comprimento">CLA</label>
+                            <label for="comprimento">COMPRIMENTO</label>
                             <input type="text" class="form-control" id="comprimento" name="comprimento">
                         </div>
                         <div class="form-group col-md-3">
-                            <label for="largura">-</label>
+                            <label for="largura">LARGURA</label>
                             <input type="text" class="form-control" id="largura" name="largura">
                         </div>
                         <div class="form-group col-md-3">
-                            <label for="altura">-</label>
+                            <label for="altura">ALTURA</label>
                             <input type="text" class="form-control" id="altura" name="altura">
                         </div>
                         <div class="col-sm-1 form-group mt-5">
@@ -344,61 +344,68 @@
             data: { codigoRegistro: registro },
             success: function (response) {
                 console.log(response);
-                // Preencher os campos do formulário com os dados retornados
-                formModel.codigoRegistro = response?.CodigoRegistro || '';
-                formModel.inicio = formatarDataParaInput(response?.Talie?.Inicio) || '';
-                document.getElementById('inicio').value = formModel.inicio;
-
-                formModel.termino = formatarDataParaInput(response?.Talie?.Termino) || '';
-                formModel.equipe = response?.Talie?.Equipe || '';
-                formModel.conferente = response?.Talie?.Conferente || '';
-                formModel.operacao = response?.Talie?.Operacao || '';
-                formModel.placa = response?.Placa || '';
-                formModel.reserva = response?.Reserva || '';
-                formModel.codigoTalie = response?.Talie?.Id || '';
-                formModel.cliente = response?.Cliente || '';
-
-                document.getElementById('observacaoInput').value = response?.Talie?.Observacao;
-
-                setComboBoxValue("cbOperacao", response?.Talie?.Operacao);
-
-                preencherFormularioComModel();
-                verificarCondicaoParaProximo();
-
-                const tabela = document.querySelector('#tabelaItens tbody');
-
-                // Limpa a tabela antes de adicionar novos itens
-                tabela.innerHTML = '';
-
-                App.TalieId = response?.Talie?.Id;
-                App.CodigoRegistro = response?.CodigoRegistro;
-                console.log('TalieId: ', App.TalieId);
-                // Itera sobre os itens e adiciona as linhas na tabela
-                if (response?.Talie?.TalieItem != null) {
-                    let itens = response.Talie.TalieItem;
-                    itens.forEach(item => {
-                        const linha = `
-                                    <tr>
-                                        <td>${item.NotaFiscal || ''}</td>
-                                        <td>${item.Id || ''}</td>
-                                        <td>${item.Embalagem || ''}</td>
-                                        <td>${item.QtdNf || 0}</td>
-                                        <td>${item.QtdDescarga || 0}</td>
-                                        <td class="text-center">
-                                            <button class="btn btn-sm btn-primary" onclick="abrirModalEditarItem(${item.Id})" title="Editar">
-                                                <i class="fa fa-edit"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-danger" title="Excluir" onclick="excluirTalieItem(${item.Id})">
-                                                <i class="fa fa-trash"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                `;
-                        tabela.innerHTML += linha;
+                if (!response.sucesso) {
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Info',
+                        text: response.mensagem,
                     });
+                } else {
+                    // Preencher os campos do formulário com os dados retornados
+                    formModel.codigoRegistro = response?.CodigoRegistro || '';
+                    formModel.inicio = formatarDataParaInput(response?.Talie?.Inicio) || '';
+                    document.getElementById('inicio').value = formModel.inicio;
+
+                    formModel.termino = formatarDataParaInput(response?.Talie?.Termino) || '';
+                    formModel.equipe = response?.Talie?.Equipe || '';
+                    formModel.conferente = response?.Talie?.Conferente || '';
+                    formModel.operacao = response?.Talie?.Operacao || '';
+                    formModel.placa = response?.Placa || '';
+                    formModel.reserva = response?.Reserva || '';
+                    formModel.codigoTalie = response?.Talie?.Id || '';
+                    formModel.cliente = response?.Cliente || '';
+
+                    document.getElementById('observacaoInput').value = response?.Talie?.Observacao;
+
+                    setComboBoxValue("cbOperacao", response?.Talie?.Operacao);
+
+                    preencherFormularioComModel();
+                    verificarCondicaoParaProximo();
+
+                    const tabela = document.querySelector('#tabelaItens tbody');
+
+                    // Limpa a tabela antes de adicionar novos itens
+                    tabela.innerHTML = '';
+
+                    App.TalieId = response?.Talie?.Id;
+                    App.CodigoRegistro = response?.CodigoRegistro;
+                    console.log('TalieId: ', App.TalieId);
+                    // Itera sobre os itens e adiciona as linhas na tabela
+                    if (response?.Talie?.TalieItem != null) {
+                        let itens = response.Talie.TalieItem;
+                        itens.forEach(item => {
+                            const linha = `
+                    <tr>
+                        <td>${item.NotaFiscal || ''}</td>
+                        <td>${item.Id || ''}</td>
+                        <td>${item.Embalagem || ''}</td>
+                        <td>${item.QtdNf || 0}</td>
+                        <td>${item.QtdDescarga || 0}</td>
+                        <td class="text-center">
+                            <button class="btn btn-sm btn-primary" onclick="abrirModalEditarItem(${item.Id})" title="Editar">
+                                <i class="fa fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger" title="Excluir" onclick="excluirTalieItem(${item.Id})">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                            tabela.innerHTML += linha;
+                        });
+                    }
                 }
 
-                //popularTabelaItens(response.Talie?.TalieItem);
             },
             error: function (xhr, status, error) {
                 console.error("Erro ao obter dados do Talie:", error);

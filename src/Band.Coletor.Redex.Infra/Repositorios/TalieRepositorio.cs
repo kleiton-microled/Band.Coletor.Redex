@@ -1949,6 +1949,29 @@ namespace Band.Coletor.Redex.Infra.Repositorios
             return _serviceResult;
         }
 
+        public ServiceResult<int> ObterQuantidadeTotalNotaFiscal(string notaFiscal)
+        {
+            var _serviceResult = new ServiceResult<int>();
+            var query = @"SELECT ISNULL(SUM(QUANTIDADE),0) FROM REDEX..TB_REGISTRO_CS WHERE AUTONUM_REGCS = trc.AUTONUM_REGCS As QtdNf,
+";
+
+            try
+            {
+                using (var connection = Connection)
+                {
+                    var result = connection.Execute(query, new { TalieItemId = notaFiscal });
+                    _serviceResult.Result = result;
+                }
+            }
+            catch (Exception ex)
+            {
+                _serviceResult.Error = ex.Message;
+                return _serviceResult;
+            }
+
+            return _serviceResult;
+        }
+
 
         #endregion
     }
