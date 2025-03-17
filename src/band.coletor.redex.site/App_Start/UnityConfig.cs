@@ -67,6 +67,7 @@ namespace Band.Coletor.Redex.Site
             container.RegisterType<ITalieRepositorio, TalieRepositorio>(new InjectionConstructor(connectionString));
             container.RegisterType<IConteinerRepositorio, ConteinerRepositorio>(new InjectionConstructor(connectionString));
             container.RegisterType<IRegistroRepositorio, RegistroRepositorio>(new InjectionConstructor(connectionString));
+            container.RegisterType<IMarcanteRepositorio, MarcanteRepositorio>(new InjectionConstructor(connectionString));
 
 
             // Camada de Negócios (Business)
@@ -78,6 +79,7 @@ namespace Band.Coletor.Redex.Site
             container.RegisterType<ITalieBusiness, TalieBusiness>();
             container.RegisterType<IConteinerBusiness, ContainerBusiness>();
             container.RegisterType<IRegistroBusiness, RegistroBusiness>();
+            container.RegisterType<IMarcanteBusiness, Marcantebusiness>();
 
             // Configuração do AutoMapper
             var mapperConfig = new MapperConfiguration(cfg =>

@@ -178,14 +178,131 @@ function atualizarEstadoDosBotoes(botaoId, habilitar) {
 function verificarCondicaoParaProximo() {
     const registro = document.getElementById("registro").value;
 
-    // Habilita o botão "Próximo" se o campo "registro" estiver preenchido
-    atualizarEstadoDosBotoes("lnkMarcantes", registro.trim() !== "" && registro > 0);
-    atualizarEstadoDosBotoes("lnkAvarias", registro.trim() !== "" && registro > 0);
-    atualizarEstadoDosBotoes("lnkExcluir", registro.trim() !== "" && registro > 0);
-    atualizarEstadoDosBotoes("lnkGravar", registro.trim() !== "" && registro > 0);
-    atualizarEstadoDosBotoes("lnkObservacao", registro.trim() !== "" && registro > 0);
-    atualizarEstadoDosBotoes("lnkFinalizar", registro.trim() !== "" && registro > 0);
+    // Habilitar/desabilitar os outros botões com base no campo "registro"
+    const condicaoHabilitar = registro.trim() !== "" && registro > 0;
+
+    atualizarEstadoDosBotoes("lnkAvarias", condicaoHabilitar);
+    atualizarEstadoDosBotoes("lnkExcluir", condicaoHabilitar);
+    atualizarEstadoDosBotoes("lnkGravar", condicaoHabilitar);
+    atualizarEstadoDosBotoes("lnkObservacao", condicaoHabilitar);
+    atualizarEstadoDosBotoes("lnkFinalizar", condicaoHabilitar);
+
+    // Verifica se há algum checkbox selecionado
+    const isAnyChecked = document.querySelectorAll('.checkbox-item:checked').length > 0;
+
+    // Referência ao botão Marcantes
+    const btnMarcantes = document.getElementById("lnkMarcantes");
+
+    if (btnMarcantes) {
+        // Habilita ou desabilita o botão adicionando ou removendo a classe "disabled"
+        if (isAnyChecked) {
+            btnMarcantes.classList.remove("disabled");
+        } else {
+            btnMarcantes.classList.add("disabled");
+        }
+    }
 }
+
+// Referência ao botão Marcantes
+const btnMarcantes = document.getElementById("lnkMarcantes");
+
+// Adiciona o evento "change" de forma delegada ao contêiner da tabela
+document.getElementById('tabelaItens').addEventListener('change', function (e) {
+    // Verifica se o evento foi disparado por um checkbox   
+    if (e.target && e.target.classList.contains('checkbox-item')) {
+        verificarCondicaoParaProximo(); // Chama a função ao detectar mudança
+    }
+});
+
+// Adiciona eventos de mudança para todos os checkboxes
+document.querySelectorAll('.checkbox-item').forEach(checkbox => {
+    console.log(checkbox);
+    checkbox.addEventListener('change', verificarCondicaoParaProximo);
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+    const tabelaBody = document.querySelector('#tabelaItens tbody'); // Seleciona o <tbody>
+
+    if (tabelaBody) {
+        tabelaBody.addEventListener('click', function (event) {
+            const target = event.target;
+            const tr = target.closest('tr'); // Captura a linha mais próxima
+
+            if (tr) {
+                const checkbox = tr.querySelector('.checkbox-item'); // Captura o checkbox dentro da linha
+
+                // Verifica se o clique foi na linha ou no checkbox
+                if (checkbox && (target.type === 'checkbox' || target.closest('tr'))) {
+                    // Alterna o estado do checkbox (desmarca se já estiver marcado)
+                    const isChecked = checkbox.checked;
+
+                    // Desmarca todos os checkboxes primeiro
+                    document.querySelectorAll('.checkbox-item').forEach(cb => cb.checked = false);
+
+                    // Marca ou desmarca o checkbox clicado com base no estado anterior
+                    checkbox.checked = !isChecked;
+
+                    // Atualiza o estado do botão "Marcantes"
+                    verificarCondicaoParaProximo();
+                }
+            }
+        });
+    }
+});
+
+
+
+
+
+function abrirModalMarcantes() {
+    // Captura o ID selecionado
+    const selectedCheckbox = document.querySelector('.checkbox-item:checked');
+    if (selectedCheckbox) {
+        const selectedId = selectedCheckbox.getAttribute('data-id');
+
+        // Define o ID selecionado no campo hidden do modal
+        document.getElementById('selectedId').value = selectedId;
+        console.log(selectedId);
+
+        // Abre o modal
+        $('#modalMarcantes').modal('show');
+    } else {
+        alert('Por favor, selecione uma linha para continuar.');
+    }
+}
+
+function buscarMarcante(marcante) {
+    // Verifica se o campo "marcante" está vazio
+    if (!marcante.trim()) {
+        console.log('Campo marcante vazio.');
+        return;
+    }
+
+    // Faz a requisição ao backend
+    fetch(`/DescargaExportacao/BuscarMarcante?marcante=${encodeURIComponent(marcante)}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Erro ao buscar marcante.');
+            }
+            return response.json(); // Converte a resposta para JSON
+        })
+        .then(data => {
+            // Manipula os dados retornados pelo backend
+            if (data) {
+                console.log('Dados da marcante:', data);
+                // Atualiza os campos do formulário com os dados retornados
+                document.getElementById('quantidade').value = data.quantidade || '';
+                document.getElementById('local').value = data.local || '';
+            } else {
+                console.log('Nenhum dado encontrado para o marcante.');
+            }
+        })
+        .catch(error => {
+            console.error('Erro ao buscar marcante:', error);
+        });
+}
+
+
 
 document.addEventListener("DOMContentLoaded", function () {
     verificarCondicaoParaProximo();

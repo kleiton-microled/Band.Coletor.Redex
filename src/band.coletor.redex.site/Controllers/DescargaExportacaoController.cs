@@ -23,6 +23,7 @@ namespace Band.Coletor.Redex.Site.Controllers
         private readonly IOperacaoBusiness _operacaoBusiness;
         private readonly IArmazemBusiness _armazemBusiness;
         private readonly IRegistroBusiness _registroBusiness;
+        private readonly IMarcanteBusiness _marcanteBusiness;
         public  int _conferente = 0;
         //
 
@@ -33,7 +34,8 @@ namespace Band.Coletor.Redex.Site.Controllers
                                             IOperacaoBusiness operacaoBusiness,
                                             ITalieBusiness talieBusiness,
                                             IArmazemBusiness armazemBusiness,
-                                            IRegistroBusiness registroBusines)
+                                            IRegistroBusiness registroBusines,
+                                            IMarcanteBusiness marcanteBusiness)
         {
             _descargaExportacaoBusiness = descargaExportacaoBusiness;
             _equipeBusiness = equipeBusiness;
@@ -42,6 +44,7 @@ namespace Band.Coletor.Redex.Site.Controllers
             _talieBusiness = talieBusiness;
             _armazemBusiness = armazemBusiness;
             _registroBusiness = registroBusines;
+            _marcanteBusiness = marcanteBusiness;
         }
         public async Task<ActionResult> Index()
         {
@@ -453,6 +456,26 @@ namespace Band.Coletor.Redex.Site.Controllers
         }
 
         #endregion ITENS
+        [HttpGet]
+        public async Task<ActionResult> BuscarMarcante(string marcante)
+        {
+            if (string.IsNullOrWhiteSpace(marcante))
+            {
+                return Json(new { error = "Marcante não pode ser vazio." }, JsonRequestBehavior.AllowGet);
+            }
 
+            var model = await _marcanteBusiness.BuscarMarcante(marcante);
+
+            if (model == null)
+            {
+                return Json(new { error = "Marcante não encontrado." }, JsonRequestBehavior.AllowGet);
+            }
+
+            return Json(model, JsonRequestBehavior.AllowGet);
+        }
+
+        #region MARCANTES
+
+        #endregion
     }
 }

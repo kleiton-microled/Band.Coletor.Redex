@@ -15,5 +15,11 @@
 }
 
 
+#tabelaItens tbody tr:hover {
+    background-color: #cccccc; /* Cor de fundo ao passar o mouse */
+    cursor: pointer; /* Mostra o cursor de seleção */
+}
+
+
 
 

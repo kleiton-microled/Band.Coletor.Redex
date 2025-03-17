@@ -82,6 +82,7 @@
     <Compile Include="Extensions\Dynamic.cs" />
     <Compile Include="LDAP\ActiveDirectoryService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositorios\MarcanteRepositorio.cs" />
     <Compile Include="Repositorios\ArmazemRepositorio.cs" />
     <Compile Include="Repositorios\ArmazensRepositorio.cs" />
     <Compile Include="Repositorios\AutorizaSaidaRepository.cs" />

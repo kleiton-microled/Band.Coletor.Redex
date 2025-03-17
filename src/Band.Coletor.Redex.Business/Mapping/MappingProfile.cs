@@ -23,6 +23,7 @@ namespace Band.Coletor.Redex.Business.Mapping
 
             CreateMap<Models.TalieItem, TalieItemViewModel>();
             CreateMap<TalieItemViewModel, Entity.TalieItem>();
+            CreateMap<MarcanteViewModel, Marcante>();
 
 //            Mapping types:
 //TalieItemViewModel->TalieItem

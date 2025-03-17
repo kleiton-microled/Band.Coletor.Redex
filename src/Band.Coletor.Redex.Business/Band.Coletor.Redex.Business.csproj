@@ -66,6 +66,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\Marcantebusiness.cs" />
     <Compile Include="Classes\ArmazenBusiness.cs" />
     <Compile Include="Classes\ContainerBusiness.cs" />
     <Compile Include="Classes\ServiceResult\IServiceResult.cs" />
@@ -121,6 +122,7 @@
     <Compile Include="Helpers\Converters.cs" />
     <Compile Include="Helpers\DateTimeHelpers.cs" />
     <Compile Include="Helpers\StringHelpers.cs" />
+    <Compile Include="Interfaces\Business\IMarcanteBusiness.cs" />
     <Compile Include="Interfaces\Business\IConteinerBusiness.cs" />
     <Compile Include="Interfaces\Business\IConferenteBusiness.cs" />
     <Compile Include="Interfaces\Business\IArmazemBusiness.cs" />
@@ -129,10 +131,10 @@
     <Compile Include="Interfaces\Business\IOperacaoBusiness.cs" />
     <Compile Include="Interfaces\Business\IEquipeBusiness.cs" />
     <Compile Include="Interfaces\Business\IDescargaExportacaoBusiness.cs" />
+    <Compile Include="Interfaces\Repositorios\IArmazenRepositorio.cs" />
     <Compile Include="Interfaces\Repositorios\IArmazensRepositorio.cs" />
     <Compile Include="Interfaces\Repositorios\IAutorizaSaidaRepository.cs" />
     <Compile Include="Interfaces\Repositorios\IBaseRepositorio.cs" />
-    <Compile Include="Interfaces\Repositorios\IArmazenRepositorio.cs" />
     <Compile Include="Interfaces\Repositorios\IConferenteRepositorio.cs" />
     <Compile Include="Interfaces\Repositorios\IConteinerRepositorio.cs" />
     <Compile Include="Interfaces\Repositorios\IDescargaExportacaoRepositorio.cs" />
@@ -148,6 +150,7 @@
     <Compile Include="Interfaces\Repositorios\IOperacaoRepositorio.cs" />
     <Compile Include="Interfaces\Repositorios\IPatiosRepositorio.cs" />
     <Compile Include="Interfaces\Repositorios\IPreRegistroRepositorio.cs" />
+    <Compile Include="Interfaces\Repositorios\IMarcanteRepositorio.cs" />
     <Compile Include="Interfaces\Repositorios\IRegistroRepositorio.cs" />
     <Compile Include="Interfaces\Repositorios\IReservaRepositorio.cs" />
     <Compile Include="Interfaces\Repositorios\ISaidaCaminhaoRepositorio.cs" />
